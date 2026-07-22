@@ -70,6 +70,31 @@ new class extends Component {
         $this->dispatch('notify', 'Status der Eingangsrechnung aktualisiert!');
     }
 
+    public function exportCsv()
+    {
+        $invoices = SubcontractorInvoice::with(['project', 'contact'])->get();
+        
+        $csvData = "Rechnungsnummer;Datum;Subunternehmer;UStID;Baustelle;SteuerRegelung;NettoBetrag;Status\n";
+
+        foreach ($invoices as $inv) {
+            $csvData .= implode(';', [
+                '"' . $inv->invoice_number . '"',
+                '"' . date('d.m.Y', strtotime($inv->invoice_date)) . '"',
+                '"' . str_replace('"', '""', $inv->contact?->display_name ?: 'Direkt') . '"',
+                '"' . $inv->contact?->vat_id . '"',
+                '"' . str_replace('"', '""', $inv->project->name) . '"',
+                '"' . ($inv->tax_mode === '13b' ? '§13b Reverse Charge' : 'Standard 19%') . '"',
+                '"' . number_format($inv->amount_net, 2, ',', '') . '"',
+                '"' . $inv->status_label . '"',
+            ]) . "\n";
+        }
+
+        return response()->streamDownload(function () use ($csvData) {
+            echo "\xEF\xBB\xBF";
+            echo $csvData;
+        }, 'DATEV_BT_Bautechnik_Baukosten_' . date('Y-m-d') . '.csv');
+    }
+
     public function saveInvoice()
     {
         $this->validate([
@@ -114,9 +139,14 @@ new class extends Component {
             <p class="text-xs text-slate-500">Prüfung, Steuernachweise & Rechnungsfreigabe von Fremdleistungen und Material.</p>
         </div>
 
-        <button wire:click="openCreateModal" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/10 whitespace-nowrap">
-            + Eingangsrechnung erfassen
-        </button>
+        <div class="flex items-center gap-3">
+            <button wire:click="exportCsv" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl transition flex items-center gap-2 border border-slate-200 shadow-2xs">
+                📊 DATEV / Excel Export
+            </button>
+            <button wire:click="openCreateModal" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/10 whitespace-nowrap">
+                + Eingangsrechnung erfassen
+            </button>
+        </div>
     </div>
 
     <!-- Invoices Directory -->

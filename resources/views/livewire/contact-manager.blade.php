@@ -17,8 +17,25 @@ new class extends Component {
     public bool $showDetailModal = false;
     public ?string $selectedContactId = null;
     public string $activeDetailTab = 'overview'; // overview, projects, invoices, offers, baukosten
+    public bool $isDetailEditing = false;
+    public array $detailForm = [
+        'company_name' => '',
+        'type' => 'kunde',
+        'salutation' => 'Herr',
+        'first_name' => '',
+        'last_name' => '',
+        'email' => '',
+        'phone' => '',
+        'mobile' => '',
+        'street' => '',
+        'zip' => '',
+        'city' => '',
+        'vat_id' => '',
+        'notes' => '',
+    ];
+    public string $newNoteText = '';
 
-    // Form fields
+    // Form fields for standalone create modal
     public string $type = 'kunde';
     public string $companyName = '';
     public string $salutation = 'Herr';
@@ -77,7 +94,86 @@ new class extends Component {
     {
         $this->selectedContactId = $id;
         $this->activeDetailTab = 'overview';
+        $this->isDetailEditing = false;
+        $this->newNoteText = '';
+
+        $contact = Contact::findOrFail($id);
+        $this->detailForm = [
+            'company_name' => $contact->company_name ?? '',
+            'type' => $contact->type ?? 'kunde',
+            'salutation' => $contact->salutation ?? 'Herr',
+            'first_name' => $contact->first_name ?? '',
+            'last_name' => $contact->last_name ?? '',
+            'email' => $contact->email ?? '',
+            'phone' => $contact->phone ?? '',
+            'mobile' => $contact->mobile ?? '',
+            'street' => $contact->street ?? '',
+            'zip' => $contact->zip ?? '',
+            'city' => $contact->city ?? '',
+            'vat_id' => $contact->vat_id ?? '',
+            'notes' => $contact->notes ?? '',
+        ];
+
         $this->showDetailModal = true;
+    }
+
+    public function toggleDetailEdit()
+    {
+        $this->isDetailEditing = !$this->isDetailEditing;
+    }
+
+    public function saveDetailStammdaten()
+    {
+        if (!$this->selectedContactId) return;
+
+        Contact::where('id', $this->selectedContactId)->update([
+            'company_name' => $this->detailForm['company_name'],
+            'type' => $this->detailForm['type'],
+            'salutation' => $this->detailForm['salutation'],
+            'first_name' => $this->detailForm['first_name'],
+            'last_name' => $this->detailForm['last_name'],
+            'email' => $this->detailForm['email'],
+            'phone' => $this->detailForm['phone'],
+            'mobile' => $this->detailForm['mobile'],
+            'street' => $this->detailForm['street'],
+            'zip' => $this->detailForm['zip'],
+            'city' => $this->detailForm['city'],
+            'vat_id' => $this->detailForm['vat_id'],
+            'notes' => $this->detailForm['notes'],
+        ]);
+
+        $this->isDetailEditing = false;
+        $this->dispatch('notify', 'Stammdaten erfolgreich im Popup aktualisiert!');
+    }
+
+    public function addQuickNote()
+    {
+        if (!$this->selectedContactId || empty(trim($this->newNoteText))) return;
+
+        $contact = Contact::findOrFail($this->selectedContactId);
+        $timestamp = date('d.m.Y H:i');
+        $formattedEntry = "📌 [" . $timestamp . "]: " . trim($this->newNoteText);
+        
+        $updatedNotes = !empty($contact->notes) 
+            ? $formattedEntry . "\n\n" . $contact->notes 
+            : $formattedEntry;
+
+        $contact->update(['notes' => $updatedNotes]);
+        $this->detailForm['notes'] = $updatedNotes;
+        $this->newNoteText = '';
+
+        $this->dispatch('notify', 'Neue Notiz mit Zeitstempel hinzugefügt!');
+    }
+
+    public function saveNotesOnly()
+    {
+        if (!$this->selectedContactId) return;
+
+        Contact::where('id', $this->selectedContactId)->update([
+            'notes' => $this->detailForm['notes']
+        ]);
+
+        $this->dispatch('notify', 'Notizen erfolgreich gespeichert!');
     }
 
     public function closeDetailModal()
@@ -290,7 +386,7 @@ new class extends Component {
                 <!-- Footer Actions -->
                 <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
                     <button wire:click="openDetailModal('{{ $contact->id }}')" class="px-3 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition border border-blue-200/60 flex items-center gap-1">
-                        🔍 Details
+                        🔍 Details & Notizen
                     </button>
 
                     <div class="flex items-center gap-2">
@@ -311,7 +407,7 @@ new class extends Component {
         @endforelse
     </div>
 
-    <!-- CONTACT DETAIL VIEW MODAL (DETAILANSICHT) -->
+    <!-- CONTACT DETAIL VIEW MODAL (DETAILANSICHT MIT INLINE-EDIT & NOTIZ-SYSTEM) -->
     @if ($showDetailModal && $this->selectedContact)
         @php $c = $this->selectedContact; @endphp
         <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
@@ -341,8 +437,8 @@ new class extends Component {
 
                     <!-- Action buttons & Close -->
                     <div class="flex items-center gap-2 relative z-10">
-                        <button wire:click="openEditModal('{{ $c->id }}')" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl transition border border-white/20">
-                            ✏️ Bearbeiten
+                        <button wire:click="toggleDetailEdit" class="px-3.5 py-1.5 {{ $isDetailEditing ? 'bg-amber-500 hover:bg-amber-600 text-slate-900 font-extrabold' : 'bg-white/10 hover:bg-white/20 text-white font-bold' }} text-xs rounded-xl transition border border-white/20 flex items-center gap-1.5">
+                            {{ $isDetailEditing ? '👁️ Direkt-Bearbeitung beenden' : '✏️ Stammdaten im Popup anpassen' }}
                         </button>
                         <button wire:click="closeDetailModal" class="p-2 text-slate-400 hover:text-white rounded-full bg-white/10 hover:bg-white/20 transition">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -373,7 +469,7 @@ new class extends Component {
                 <!-- Detail Tabs Navigation -->
                 <div class="flex border-b border-slate-200 bg-white px-6">
                     <button wire:click="$set('activeDetailTab', 'overview')" class="py-3.5 px-4 text-xs font-bold border-b-2 transition {{ $activeDetailTab === 'overview' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600 hover:text-slate-900' }}">
-                        📋 Stammdaten & Kontakt
+                        📋 Stammdaten & Notizbuch
                     </button>
                     <button wire:click="$set('activeDetailTab', 'projects')" class="py-3.5 px-4 text-xs font-bold border-b-2 transition flex items-center gap-1.5 {{ $activeDetailTab === 'projects' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600 hover:text-slate-900' }}">
                         🏢 Baustellen & Projekte <span class="px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700">{{ $c->projects->count() }}</span>
@@ -394,89 +490,197 @@ new class extends Component {
                 <!-- Tab Contents Container -->
                 <div class="p-6 overflow-y-auto flex-1 space-y-6">
 
-                    <!-- TAB 1: STAMMDATEN & KONTAKT -->
+                    <!-- TAB 1: STAMMDATEN & NOTIZEN (MIT INLINE-BEARBEITUNG) -->
                     @if ($activeDetailTab === 'overview')
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                             
-                            <!-- Master Data Box -->
-                            <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 space-y-4">
-                                <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Kontaktdaten & Kommunikation</h4>
+                            <!-- Master Data Box (8 cols or 6 cols) -->
+                            <div class="lg:col-span-7 bg-slate-50 border border-slate-200/80 rounded-2xl p-5 space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Kontaktdaten & Stammdaten</h4>
+                                    @if (!$isDetailEditing)
+                                        <button wire:click="toggleDetailEdit" class="text-xs font-bold text-blue-600 hover:underline">
+                                            ✏️ Direkt im Popup bearbeiten
+                                        </button>
+                                    @endif
+                                </div>
                                 
-                                <div class="space-y-3 text-xs">
-                                    <div>
-                                        <span class="text-slate-400 font-medium block">Firma / Unternehmen:</span>
-                                        <span class="font-bold text-slate-900 text-sm">{{ $c->company_name ?: '— (Privatperson)' }}</span>
-                                    </div>
+                                @if ($isDetailEditing)
+                                    <!-- INLINE EDITING FORM INSIDE POPUP -->
+                                    <div class="space-y-3 text-xs bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block font-bold text-slate-700 mb-1">Kategorie / Typ</label>
+                                                <select wire:model="detailForm.type" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs font-semibold">
+                                                    <option value="kunde">👤 Privatkunde</option>
+                                                    <option value="hausverwaltung">🏢 Hausverwaltung (WEG)</option>
+                                                    <option value="bautraeger">🏗️ Bauträger</option>
+                                                    <option value="subunternehmer">🛠️ Subunternehmer (§13b)</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block font-bold text-slate-700 mb-1">Firma / Unternehmen</label>
+                                                <input wire:model="detailForm.company_name" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
+                                            </div>
+                                        </div>
 
-                                    <div>
-                                        <span class="text-slate-400 font-medium block">Ansprechpartner:</span>
-                                        <span class="font-bold text-slate-900">{{ $c->salutation }} {{ $c->first_name }} {{ $c->last_name }}</span>
-                                    </div>
+                                        <div class="grid grid-cols-3 gap-2">
+                                            <div>
+                                                <label class="block font-bold text-slate-700 mb-1">Anrede</label>
+                                                <select wire:model="detailForm.salutation" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
+                                                    <option value="Herr">Herr</option>
+                                                    <option value="Frau">Frau</option>
+                                                    <option value="Firma">Firma</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block font-bold text-slate-700 mb-1">Vorname</label>
+                                                <input wire:model="detailForm.first_name" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
+                                            </div>
+                                            <div>
+                                                <label class="block font-bold text-slate-700 mb-1">Nachname</label>
+                                                <input wire:model="detailForm.last_name" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
+                                            </div>
+                                        </div>
 
-                                    <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200/60">
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block font-bold text-slate-700 mb-1">E-Mail</label>
+                                                <input wire:model="detailForm.email" type="email" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
+                                            </div>
+                                            <div>
+                                                <label class="block font-bold text-slate-700 mb-1">Telefon</label>
+                                                <input wire:model="detailForm.phone" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block font-bold text-slate-700 mb-1">Mobil</label>
+                                                <input wire:model="detailForm.mobile" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
+                                            </div>
+                                            <div>
+                                                <label class="block font-bold text-slate-700 mb-1">USt-IdNr.</label>
+                                                <input wire:model="detailForm.vat_id" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
+                                            </div>
+                                        </div>
+
                                         <div>
-                                            <span class="text-slate-400 font-medium block">E-Mail:</span>
-                                            @if ($c->email)
-                                                <a href="mailto:{{ $c->email }}" class="font-bold text-blue-600 hover:underline block truncate">{{ $c->email }}</a>
-                                            @else
-                                                <span class="text-slate-400 italic">Nicht angegeben</span>
+                                            <label class="block font-bold text-slate-700 mb-1">Straße & Nr</label>
+                                            <input wire:model="detailForm.street" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
+                                        </div>
+
+                                        <div class="grid grid-cols-3 gap-2">
+                                            <div>
+                                                <label class="block font-bold text-slate-700 mb-1">PLZ</label>
+                                                <input wire:model="detailForm.zip" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
+                                            </div>
+                                            <div class="col-span-2">
+                                                <label class="block font-bold text-slate-700 mb-1">Ort</label>
+                                                <input wire:model="detailForm.city" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
+                                            </div>
+                                        </div>
+
+                                        <div class="flex justify-end gap-2 pt-2">
+                                            <button type="button" wire:click="toggleDetailEdit" class="px-3 py-1.5 bg-slate-100 text-slate-700 font-bold rounded-lg text-xs">Abbrechen</button>
+                                            <button type="button" wire:click="saveDetailStammdaten" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-xs shadow-xs">💾 Stammdaten Speichern</button>
+                                        </div>
+                                    </div>
+                                @else
+                                    <!-- READ-ONLY STAMMDATEN VIEW -->
+                                    <div class="space-y-3 text-xs">
+                                        <div>
+                                            <span class="text-slate-400 font-medium block">Firma / Unternehmen:</span>
+                                            <span class="font-bold text-slate-900 text-sm">{{ $c->company_name ?: '— (Privatperson)' }}</span>
+                                        </div>
+
+                                        <div>
+                                            <span class="text-slate-400 font-medium block">Ansprechpartner:</span>
+                                            <span class="font-bold text-slate-900">{{ $c->salutation }} {{ $c->first_name }} {{ $c->last_name }}</span>
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200/60">
+                                            <div>
+                                                <span class="text-slate-400 font-medium block">E-Mail:</span>
+                                                @if ($c->email)
+                                                    <a href="mailto:{{ $c->email }}" class="font-bold text-blue-600 hover:underline block truncate">{{ $c->email }}</a>
+                                                @else
+                                                    <span class="text-slate-400 italic">Nicht angegeben</span>
+                                                @endif
+                                            </div>
+
+                                            <div>
+                                                <span class="text-slate-400 font-medium block">Telefon Festnetz:</span>
+                                                @if ($c->phone)
+                                                    <a href="tel:{{ $c->phone }}" class="font-bold text-slate-900 hover:underline">{{ $c->phone }}</a>
+                                                @else
+                                                    <span class="text-slate-400 italic">Nicht angegeben</span>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200/60">
+                                            <div>
+                                                <span class="text-slate-400 font-medium block">Mobiltelefon:</span>
+                                                @if ($c->mobile)
+                                                    <a href="tel:{{ $c->mobile }}" class="font-bold text-slate-900 hover:underline">{{ $c->mobile }}</a>
+                                                @else
+                                                    <span class="text-slate-400 italic">Nicht angegeben</span>
+                                                @endif
+                                            </div>
+
+                                            <div>
+                                                <span class="text-slate-400 font-medium block">USt-IdNr. / Steuernummer:</span>
+                                                <span class="font-mono text-slate-900 font-bold">{{ $c->vat_id ?: 'Keine angegeben' }}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="pt-2 border-t border-slate-200/60">
+                                            <span class="text-slate-400 font-medium block">Anschrift:</span>
+                                            <p class="font-bold text-slate-900 mt-0.5">
+                                                {{ $c->street ?: 'Keine Straße angegeben' }}<br>
+                                                {{ $c->zip }} {{ $c->city }}
+                                            </p>
+                                            @if ($c->street && $c->city)
+                                                <a href="https://maps.google.com/?q={{ urlencode($c->street . ', ' . $c->zip . ' ' . $c->city) }}" target="_blank" class="inline-flex items-center gap-1 text-[11px] text-blue-600 font-bold hover:underline mt-1">
+                                                    🗺️ In Google Maps öffnen ↗
+                                                </a>
                                             @endif
                                         </div>
+                                    </div>
+                                @endif
+                            </div>
 
-                                        <div>
-                                            <span class="text-slate-400 font-medium block">Telefon Festnetz:</span>
-                                            @if ($c->phone)
-                                                <a href="tel:{{ $c->phone }}" class="font-bold text-slate-900 hover:underline">{{ $c->phone }}</a>
-                                            @else
-                                                <span class="text-slate-400 italic">Nicht angegeben</span>
-                                            @endif
-                                        </div>
+                            <!-- MULTIPLE NOTES & NOTIZ-BUCH SYSTEM (5 cols) -->
+                            <div class="lg:col-span-5 bg-slate-50 border border-slate-200/80 rounded-2xl p-5 space-y-4 flex flex-col justify-between">
+                                <div>
+                                    <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider flex items-center justify-between">
+                                        <span>📝 Notizen & Notizbuch</span>
+                                        <span class="text-[10px] font-bold text-slate-400">Zeitstempel-Journal</span>
+                                    </h4>
+
+                                    <!-- Quick add new note box -->
+                                    <div class="mt-3 space-y-2 bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
+                                        <label class="block text-[11px] font-bold text-slate-700">+ Neue Notiz / Telefonnotiz hinzufügen:</label>
+                                        <textarea wire:model="newNoteText" rows="2" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder="z. B. 23.07. Telefonat wegen Abnahme am Dienstag..."></textarea>
+                                        <button type="button" wire:click="addQuickNote" class="w-full py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg transition shadow-xs">
+                                            📌 Notiz mit Datum anfügen
+                                        </button>
                                     </div>
 
-                                    <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200/60">
-                                        <div>
-                                            <span class="text-slate-400 font-medium block">Mobiltelefon:</span>
-                                            @if ($c->mobile)
-                                                <a href="tel:{{ $c->mobile }}" class="font-bold text-slate-900 hover:underline">{{ $c->mobile }}</a>
-                                            @else
-                                                <span class="text-slate-400 italic">Nicht angegeben</span>
-                                            @endif
+                                    <!-- Editable / Formatted Notes History -->
+                                    <div class="mt-4 space-y-2">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-[11px] font-bold text-slate-500 uppercase">Notiz-Historie (Volltext):</span>
+                                            <button type="button" wire:click="saveNotesOnly" class="text-[11px] font-bold text-blue-600 hover:underline">
+                                                💾 Notizen speichern
+                                            </button>
                                         </div>
-
-                                        <div>
-                                            <span class="text-slate-400 font-medium block">USt-IdNr. / Steuernummer:</span>
-                                            <span class="font-mono text-slate-900 font-bold">{{ $c->vat_id ?: 'Keine angegeben' }}</span>
-                                        </div>
+                                        <textarea wire:model="detailForm.notes" rows="6" class="w-full bg-white border border-slate-300 rounded-xl p-3 text-xs text-slate-800 leading-relaxed font-sans focus:outline-none focus:border-blue-600" placeholder="Noch keine Notizen hinterlegt..."></textarea>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Address & Notes Box -->
-                            <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 space-y-4">
-                                <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Anschrift & Notizen</h4>
-                                
-                                <div class="space-y-3 text-xs">
-                                    <div>
-                                        <span class="text-slate-400 font-medium block">Anschrift:</span>
-                                        <p class="font-bold text-slate-900 mt-0.5">
-                                            {{ $c->street ?: 'Keine Straße angegeben' }}<br>
-                                            {{ $c->zip }} {{ $c->city }}
-                                        </p>
-                                        @if ($c->street && $c->city)
-                                            <a href="https://maps.google.com/?q={{ urlencode($c->street . ', ' . $c->zip . ' ' . $c->city) }}" target="_blank" class="inline-flex items-center gap-1 text-[11px] text-blue-600 font-bold hover:underline mt-1">
-                                                🗺️ In Google Maps öffnen ↗
-                                            </a>
-                                        @endif
-                                    </div>
-
-                                    <div class="pt-3 border-t border-slate-200/60">
-                                        <span class="text-slate-400 font-medium block mb-1">Interne Notizen & Anmerkungen:</span>
-                                        <div class="bg-white p-3 rounded-xl border border-slate-200 text-slate-700 italic min-h-20 text-xs leading-relaxed">
-                                            {{ $c->notes ?: 'Keine Notizen zu diesem Kontakt hinterlegt.' }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     @endif
 
@@ -650,7 +854,8 @@ new class extends Component {
                 </div>
 
                 <!-- Modal Footer -->
-                <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+                <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center">
+                    <span class="text-xs text-slate-500 font-medium">💡 Änderungen werden in Echtzeit in der Datenbank aktualisiert.</span>
                     <button wire:click="closeDetailModal" class="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-xs">
                         Schließen
                     </button>
@@ -660,7 +865,7 @@ new class extends Component {
         </div>
     @endif
 
-    <!-- Create / Edit Contact Modal -->
+    <!-- Standalone Create / Edit Contact Modal -->
     @if ($showContactModal)
         <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-xl shadow-2xl overflow-hidden">

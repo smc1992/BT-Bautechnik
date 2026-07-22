@@ -36,4 +36,8 @@ Route::view('einstellungen', 'einstellungen')
     ->middleware(['auth', 'verified'])
     ->name('company-settings');
 
+Route::view('ki-agent', 'ki-agent')
+    ->middleware(['auth', 'verified'])
+    ->name('ai-agent');
+
 require __DIR__.'/auth.php';

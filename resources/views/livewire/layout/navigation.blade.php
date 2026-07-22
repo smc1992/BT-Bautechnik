@@ -51,6 +51,9 @@ new class extends Component
                     <x-nav-link :href="route('company-settings')" :active="request()->routeIs('company-settings')" wire:navigate>
                         {{ __('Einstellungen') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('ai-agent')" :active="request()->routeIs('ai-agent')" wire:navigate class="text-purple-700 font-black">
+                        🤖 {{ __('KI-Agent') }}
+                    </x-nav-link>
                 </div>
             </div>
 

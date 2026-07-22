@@ -29,15 +29,27 @@ new class extends Component
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden space-x-5 sm:-my-px sm:ms-6 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     <x-nav-link :href="route('invoices')" :active="request()->routeIs('invoices')" wire:navigate>
-                        {{ __('Rechnungen & Angebote') }}
+                        {{ __('Rechnungen') }}
                     </x-nav-link>
                     <x-nav-link :href="route('contacts')" :active="request()->routeIs('contacts')" wire:navigate>
-                        {{ __('Kontakte & Kunden') }}
+                        {{ __('Kontakte') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('daily-logs')" :active="request()->routeIs('daily-logs')" wire:navigate>
+                        {{ __('Bautagebuch') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('subcontractor-invoices')" :active="request()->routeIs('subcontractor-invoices')" wire:navigate>
+                        {{ __('Baukosten') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('defects')" :active="request()->routeIs('defects')" wire:navigate>
+                        {{ __('Mängel') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('company-settings')" :active="request()->routeIs('company-settings')" wire:navigate>
+                        {{ __('Einstellungen') }}
                     </x-nav-link>
                 </div>
             </div>

@@ -16,4 +16,8 @@ Route::view('rechnungen', 'rechnungen')
     ->middleware(['auth', 'verified'])
     ->name('invoices');
 
+Route::view('kontakte', 'kontakte')
+    ->middleware(['auth', 'verified'])
+    ->name('contacts');
+
 require __DIR__.'/auth.php';

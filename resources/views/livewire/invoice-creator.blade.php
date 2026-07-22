@@ -388,6 +388,49 @@ new class extends Component {
 
         $this->loadSavedDocuments();
     }
+
+    // AI OpenAI Integration
+    public bool $showAiModal = false;
+    public string $aiRawText = '';
+
+    public function parseWithAi(\App\Services\OpenAiParserService $parser)
+    {
+        if (empty(trim($this->aiRawText))) {
+            $this->dispatch('notify', 'Bitte geben Sie zuerst einen Text oder ein Angebot ein.');
+            return;
+        }
+
+        try {
+            $parsed = $parser->parseOfferDocument($this->aiRawText);
+
+            if (!empty($parsed['sections'])) {
+                $newItems = [];
+                $posCount = 1;
+                foreach ($parsed['sections'] as $section) {
+                    foreach ($section['items'] ?? [] as $it) {
+                        $newItems[] = [
+                            'id' => Str::random(8),
+                            'pos_number' => $it['pos_number'] ?? strval($posCount++),
+                            'description' => ($section['title'] ?? '') ? ($section['title'] . ': ' . ($it['description'] ?? '')) : ($it['description'] ?? ''),
+                            'quantity' => floatval($it['quantity'] ?? 1),
+                            'unit' => $it['unit'] ?? 'Stk',
+                            'price' => floatval($it['unit_price'] ?? 0),
+                            'vatRate' => 19.00
+                        ];
+                    }
+                }
+
+                if (count($newItems) > 0) {
+                    $this->items = $newItems;
+                    $this->showAiModal = false;
+                    $this->aiRawText = '';
+                    $this->dispatch('notify', '✨ ' . count($newItems) . ' Positionen erfolgreich per OpenAI analysiert und importiert!');
+                }
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('notify', 'Fehler bei der KI-Analyse: ' . $e->getMessage());
+        }
+    }
 }; ?>
 
 <div class="space-y-6">
@@ -404,6 +447,9 @@ new class extends Component {
             </button>
         </div>
         <div class="flex space-x-2">
+            <button wire:click="$set('showAiModal', true)" class="px-3.5 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl transition shadow-md shadow-purple-500/20 flex items-center gap-1.5">
+                ✨ KI-Textimport (OpenAI)
+            </button>
             <button wire:click="resetForm" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition border border-slate-200 shadow-2xs">
                 Formular leeren
             </button>
@@ -842,4 +888,38 @@ new class extends Component {
         </div>
 
     </div>
+
+    <!-- OpenAI Import Modal -->
+    @if ($showAiModal)
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">🤖</span>
+                        <h3 class="text-base font-extrabold text-white">KI-Freitext & Angebots-Import (OpenAI)</h3>
+                    </div>
+                    <button wire:click="$set('showAiModal', false)" class="text-slate-400 hover:text-white">✕</button>
+                </div>
+
+                <div class="p-6 space-y-4">
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Fügen Sie hier unstrukturierten Text (z.B. Leistungsbeschreibung, Subunternehmer-Angebot, E-Mail oder WhatsApp-Nachricht) ein. Die KI analysiert den Text und wandelt ihn automatisch in saubere LV-Positionen mit Mengen, Einheiten & Preisen um!
+                    </p>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Unstrukturierter Text / Angebotstext</label>
+                        <textarea wire:model="aiRawText" rows="7" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-600 focus:outline-none font-sans" placeholder="Beispiel:&#10;Pos 1: 15 m² Flachdachabdichtung Bitumen für 45 EUR/m²&#10;Pos 2: 2 Stk Entwässerungsabläufe montieren je 120 EUR&#10;Pos 3: Pauschale Baustelleneinrichtung 350 EUR"></textarea>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-2">
+                        <button type="button" wire:click="$set('showAiModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">Abbrechen</button>
+                        <button type="button" wire:click="parseWithAi" wire:loading.attr="disabled" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold shadow-md shadow-purple-500/20 flex items-center gap-2">
+                            <span wire:loading wire:target="parseWithAi">⌛ Analysiere mit OpenAI...</span>
+                            <span wire:loading.remove wire:target="parseWithAi">✨ Per KI in Positionen umwandeln</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>

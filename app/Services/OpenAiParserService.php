@@ -14,12 +14,13 @@ class OpenAiParserService
     public function __construct()
     {
         $apiKey = config('services.openai.key') ?: env('OPENAI_API_KEY');
+        
         if ($apiKey) {
             $this->client = OpenAI::client($apiKey);
         }
         
-        // Default to GPT-5.6 Terra as of 2026 for balanced intelligence/cost
-        $this->model = config('services.openai.model') ?: env('OPENAI_MODEL', 'gpt-5.6-terra');
+        // Default to gpt-4o-mini for fast & cost-efficient structured extraction
+        $this->model = config('services.openai.model') ?: env('OPENAI_MODEL', 'gpt-4o-mini');
     }
 
     /**

@@ -189,5 +189,26 @@ new class extends Component {
                 </div>
             </div>
         </div>
+
+        <!-- OpenAI & KI-Schnittstelle Card -->
+        <div class="lg:col-span-2 bg-gradient-to-br from-slate-900 via-slate-800 to-purple-950 text-white rounded-2xl p-6 shadow-md space-y-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">🤖</span>
+                    <div>
+                        <h3 class="font-black text-white text-base">OpenAI KI-Schnittstelle & Automatische Angebotserstellung</h3>
+                        <p class="text-xs text-slate-300">Intelligente KI-Strukturierung unformatierter Leistungsbeschreibungen & E-Mails.</p>
+                    </div>
+                </div>
+
+                <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 🟢 Aktiv & Betriebsbereit (OPENAI_API_KEY)
+                </span>
+            </div>
+
+            <p class="text-xs text-slate-300 pt-2 border-t border-white/10">
+                Der OpenAI API Key ist konfiguriert. Im Rechnungs- & Angebotsmodul (<code>/rechnungen</code>) steht Ihnen ab sofort der Button <strong>✨ KI-Textimport (OpenAI)</strong> zur Verfügung, um aus jedem Freitext oder Subunternehmer-Angebot automatisch saubere Rechnungspositionen zu generieren.
+            </p>
+        </div>
     </form>
 </div>

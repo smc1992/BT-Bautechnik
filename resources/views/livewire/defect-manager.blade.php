@@ -76,6 +76,31 @@ new class extends Component {
         $this->showModal = false;
         $this->dispatch('notify', 'Mangel erfolgreich erfasst!');
     }
+
+    // AI VOB/B Notice Generator
+    public bool $showNoticeModal = false;
+    public string $noticeText = '';
+
+    public function generateNoticeLetter(string $defectId, \App\Services\OpenAiParserService $parser)
+    {
+        $defect = Defect::with(['project', 'assignedContact'])->find($defectId);
+        if (!$defect) return;
+
+        try {
+            $this->noticeText = $parser->generateDefectNoticeLetter([
+                'project' => $defect->project?->name ?? 'Baustelle',
+                'contact' => $defect->assignedContact?->company_name ?? $defect->assignedContact?->name ?? 'Subunternehmer',
+                'title' => $defect->title,
+                'location' => $defect->location,
+                'description' => $defect->description,
+                'deadline' => $defect->deadline ? date('d.m.Y', strtotime($defect->deadline)) : '7 Tage',
+            ]);
+            $this->showNoticeModal = true;
+            $this->dispatch('notify', '✨ VOB/B Mängelrüge per KI erzeugt!');
+        } catch (\Exception $e) {
+            $this->dispatch('notify', 'Fehler bei Erstellung der Mängelrüge: ' . $e->getMessage());
+        }
+    }
 }; ?>
 
 <div class="space-y-8 font-sans">
@@ -136,6 +161,12 @@ new class extends Component {
                             </span>
                         </div>
                     @endif
+
+                    <div class="pt-2">
+                        <button wire:click="generateNoticeLetter('{{ $defect->id }}')" class="w-full py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold text-xs rounded-lg border border-purple-200 transition flex items-center justify-center gap-1">
+                            📄 KI VOB/B Mängelrüge erzeugen
+                        </button>
+                    </div>
                 </div>
             </div>
         @empty
@@ -211,6 +242,35 @@ new class extends Component {
                         <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/10">Mangel erfassen</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- KI VOB/B Mängelrüge Modal -->
+    @if ($showNoticeModal)
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">📄</span>
+                        <h3 class="text-base font-extrabold text-white">Rechtssichere Mängelrüge nach VOB/B § 13</h3>
+                    </div>
+                    <button wire:click="$set('showNoticeModal', false)" class="text-slate-400 hover:text-white">✕</button>
+                </div>
+
+                <div class="p-6 space-y-4">
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs font-mono text-slate-800 leading-relaxed max-h-96 overflow-y-auto whitespace-pre-wrap selection:bg-purple-100">{{ $noticeText }}</div>
+
+                    <div class="flex justify-between items-center pt-2">
+                        <span class="text-xs text-slate-500">Formular inkl. Fristsetzung & Ersatzvornahme</span>
+                        <div class="flex space-x-3">
+                            <button type="button" wire:click="$set('showNoticeModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold">Schließen</button>
+                            <button type="button" onclick="navigator.clipboard.writeText(`{{ addslashes($noticeText) }}`); alert('Mängelrüge in Zwischenablage kopiert!');" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold shadow-md shadow-purple-500/20">
+                                📋 In Zwischenablage kopieren
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     @endif

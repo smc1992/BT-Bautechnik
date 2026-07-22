@@ -431,6 +431,46 @@ new class extends Component {
             $this->dispatch('notify', 'Fehler bei der KI-Analyse: ' . $e->getMessage());
         }
     }
+
+    // AI Cover Letter & Offer Audit Integration
+    public bool $showCoverLetterModal = false;
+    public string $coverLetterText = '';
+
+    public bool $showOfferAuditModal = false;
+    public array $offerAuditResults = [];
+
+    public function generateCoverLetter(\App\Services\OpenAiParserService $parser)
+    {
+        try {
+            $totals = $this->calculateTotals();
+            $this->coverLetterText = $parser->generateCoverLetter($this->mode, [
+                'client_name' => $this->client['name'] ?: 'Sehr geehrte Damen und Herren',
+                'number' => $this->docNumber,
+                'project' => $this->projectId ? (\App\Models\Project::find($this->projectId)?->name) : 'Baustelle',
+                'total' => number_format($totals['gross'], 2, ',', '.'),
+            ]);
+            $this->showCoverLetterModal = true;
+            $this->dispatch('notify', '✨ KI-E-Mail Anschreiben erfolgreich erzeugt!');
+        } catch (\Exception $e) {
+            $this->dispatch('notify', 'Fehler: ' . $e->getMessage());
+        }
+    }
+
+    public function auditOfferRisk(\App\Services\OpenAiParserService $parser)
+    {
+        if (empty($this->items)) {
+            $this->dispatch('notify', 'Keine Positionen im Angebot zum Prüfen vorhanden.');
+            return;
+        }
+
+        try {
+            $this->offerAuditResults = $parser->auditOfferItems($this->items, $this->mode === 'offer' ? 'Bauangebot ' . $this->docNumber : 'Rechnung ' . $this->docNumber);
+            $this->showOfferAuditModal = true;
+            $this->dispatch('notify', '✨ KI-Angebots-Check abgeschlossen!');
+        } catch (\Exception $e) {
+            $this->dispatch('notify', 'Fehler beim Angebots-Check: ' . $e->getMessage());
+        }
+    }
 }; ?>
 
 <div class="space-y-6">
@@ -446,15 +486,21 @@ new class extends Component {
                 📑 Angebots-Modus
             </button>
         </div>
-        <div class="flex space-x-2">
+        <div class="flex flex-wrap gap-2">
             <button wire:click="$set('showAiModal', true)" class="px-3.5 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl transition shadow-md shadow-purple-500/20 flex items-center gap-1.5">
-                ✨ KI-Textimport (OpenAI)
+                ✨ KI-Textimport
+            </button>
+            <button wire:click="generateCoverLetter" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition shadow-md shadow-indigo-500/20 flex items-center gap-1.5">
+                ✉️ KI-Anschreiben
+            </button>
+            <button wire:click="auditOfferRisk" class="px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl transition shadow-md shadow-amber-500/20 flex items-center gap-1.5">
+                🛡️ KI-Angebots-Check
             </button>
             <button wire:click="resetForm" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition border border-slate-200 shadow-2xs">
                 Formular leeren
             </button>
             <button onclick="window.print()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition shadow-md shadow-emerald-500/20">
-                🖨️ Drucken / PDF erzeugen
+                🖨️ Drucken / PDF
             </button>
         </div>
     </div>
@@ -917,6 +963,93 @@ new class extends Component {
                             <span wire:loading wire:target="parseWithAi">⌛ Analysiere mit OpenAI...</span>
                             <span wire:loading.remove wire:target="parseWithAi">✨ Per KI in Positionen umwandeln</span>
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- KI Cover Letter Modal -->
+    @if ($showCoverLetterModal)
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-indigo-950 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">✉️</span>
+                        <h3 class="text-base font-extrabold text-white">KI-E-Mail Anschreiben & Begleitschreiben</h3>
+                    </div>
+                    <button wire:click="$set('showCoverLetterModal', false)" class="text-slate-400 hover:text-white">✕</button>
+                </div>
+
+                <div class="p-6 space-y-4">
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs font-sans text-slate-800 leading-relaxed max-h-96 overflow-y-auto whitespace-pre-wrap selection:bg-indigo-100">{{ $coverLetterText }}</div>
+
+                    <div class="flex justify-between items-center pt-2">
+                        <span class="text-xs text-slate-500">Formular inkl. Betreff & Höflichkeitsformeln</span>
+                        <div class="flex space-x-3">
+                            <button type="button" wire:click="$set('showCoverLetterModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">Schließen</button>
+                            <button type="button" onclick="navigator.clipboard.writeText(`{{ addslashes($coverLetterText) }}`); alert('E-Mail Anschreiben in Zwischenablage kopiert!');" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-500/20">
+                                📋 In Zwischenablage kopieren
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- KI Offer Audit Modal -->
+    @if ($showOfferAuditModal)
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-amber-950 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">🛡️</span>
+                        <h3 class="text-base font-extrabold text-white">KI-Angebots-Check & Vollständigkeits-Prüfung</h3>
+                    </div>
+                    <button wire:click="$set('showOfferAuditModal', false)" class="text-slate-400 hover:text-white">✕</button>
+                </div>
+
+                <div class="p-6 space-y-5">
+                    <div class="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-2xl p-4">
+                        <div>
+                            <span class="text-xs font-bold text-amber-800 uppercase tracking-wider">Vollständigkeits-Score</span>
+                            <h4 class="text-2xl font-black text-amber-950">{{ $offerAuditResults['score'] ?? 100 }}/100 Punkte</h4>
+                        </div>
+                        <div class="text-3xl">
+                            @if (($offerAuditResults['score'] ?? 100) >= 80) 🟢 @elseif (($offerAuditResults['score'] ?? 100) >= 50) 🟡 @else 🔴 @endif
+                        </div>
+                    </div>
+
+                    @if (!empty($offerAuditResults['missing_positions']))
+                        <div class="space-y-1">
+                            <h4 class="text-xs font-extrabold text-slate-800 uppercase">Möglicherweise fehlende Baupositionen:</h4>
+                            <ul class="list-disc list-inside text-xs text-rose-700 space-y-1 bg-rose-50 p-3 rounded-xl border border-rose-200">
+                                @foreach ($offerAuditResults['missing_positions'] as $m)
+                                    <li>{{ $m }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    @if (!empty($offerAuditResults['pricing_warnings']))
+                        <div class="space-y-1">
+                            <h4 class="text-xs font-extrabold text-slate-800 uppercase">Preis- & Einheiten-Hinweise:</h4>
+                            <ul class="list-disc list-inside text-xs text-amber-800 space-y-1 bg-amber-50 p-3 rounded-xl border border-amber-200">
+                                @foreach ($offerAuditResults['pricing_warnings'] as $pw)
+                                    <li>{{ $pw }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-700 leading-relaxed">
+                        <strong>Einschätzung für die Geschäftsführung:</strong><br>
+                        {{ $offerAuditResults['summary'] ?? 'Keine besonderen Auffälligkeiten im Angebot.' }}
+                    </div>
+
+                    <div class="flex justify-end pt-2">
+                        <button type="button" wire:click="$set('showOfferAuditModal', false)" class="px-5 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold">Verstanden</button>
                     </div>
                 </div>
             </div>

@@ -68,6 +68,34 @@ new class extends Component {
         $this->showModal = false;
         $this->dispatch('notify', 'Bautagebuch-Eintrag erfolgreich gespeichert!');
     }
+
+    // AI Bautagebuch Integration
+    public bool $showAiModal = false;
+    public string $aiDraftText = '';
+
+    public function generateLogWithAi(\App\Services\OpenAiParserService $parser)
+    {
+        if (empty(trim($this->aiDraftText))) {
+            $this->dispatch('notify', 'Bitte geben Sie zuerst Stichpunkte ein.');
+            return;
+        }
+
+        try {
+            $res = $parser->generateDailyLogFromDraft($this->aiDraftText);
+            $this->weather = $res['weather'] ?? 'Sonnig';
+            $this->temperature = $res['temperature'] ?? '20°C';
+            $this->workersCount = intval($res['workers_count'] ?? 2);
+            $this->workPerformed = $res['work_performed'] ?? '';
+            $this->specialOccurrences = $res['special_occurrences'] ?? '';
+
+            $this->showAiModal = false;
+            $this->aiDraftText = '';
+            $this->showModal = true;
+            $this->dispatch('notify', '✨ Bautagebuch-Eintrag erfolgreich per KI ausformuliert!');
+        } catch (\Exception $e) {
+            $this->dispatch('notify', 'KI-Fehler: ' . $e->getMessage());
+        }
+    }
 }; ?>
 
 <div class="space-y-8 font-sans">
@@ -85,6 +113,10 @@ new class extends Component {
                     <option value="{{ $p->id }}">{{ $p->name }}</option>
                 @endforeach
             </select>
+
+            <button wire:click="$set('showAiModal', true)" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl shadow-md shadow-purple-500/20 whitespace-nowrap flex items-center gap-1.5">
+                🎙️ KI-Bautagebuch
+            </button>
 
             <button wire:click="openCreateModal" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/10 whitespace-nowrap">
                 + Tagebucheintrag
@@ -186,6 +218,40 @@ new class extends Component {
                         <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/10">Eintrag speichern</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- KI Bautagebuch Modal -->
+    @if ($showAiModal)
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-xl shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-purple-950 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">🎙️</span>
+                        <h3 class="text-base font-extrabold text-white">KI-Bautagebuch Assistent (Stichpunkte & Diktat)</h3>
+                    </div>
+                    <button wire:click="$set('showAiModal', false)" class="text-slate-400 hover:text-white">✕</button>
+                </div>
+
+                <div class="p-6 space-y-4">
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Geben Sie Stichpunkte vom Tag ein (z. B. <i>"3 Mann auf Baustelle Berching, 40m² Abdichtung verlegt, 21 Grad sonnig, Materiallieferung verspätet"</i>). Die KI formuliert daraus automatisch einen fachlich perfekten DIN-Bautagebucheintrag!
+                    </p>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Stichpunkte / Diktat-Text</label>
+                        <textarea wire:model="aiDraftText" rows="5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:bg-white focus:border-purple-600 focus:outline-none" placeholder="3 Mann vor Ort, Flachdach Schweißbahn aufgebracht, Abnahme Dachgully durch Bauleiter..."></textarea>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-2">
+                        <button type="button" wire:click="$set('showAiModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold">Abbrechen</button>
+                        <button type="button" wire:click="generateLogWithAi" wire:loading.attr="disabled" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold shadow-md shadow-purple-500/20 flex items-center gap-2">
+                            <span wire:loading wire:target="generateLogWithAi">⌛ KI strukturiert Bautagebuch...</span>
+                            <span wire:loading.remove wire:target="generateLogWithAi">✨ In Bautagebuch umwandeln</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     @endif

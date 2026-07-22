@@ -280,6 +280,44 @@ new class extends Component {
             $this->isParsing = false;
         }
     }
+
+    // AI Weekly Report Integration
+    public bool $showWeeklyReportModal = false;
+    public string $weeklyReportText = '';
+
+    public function generateWeeklyReport(OpenAiParserService $parser)
+    {
+        $project = $this->selectedProjectId ? Project::find($this->selectedProjectId) : Project::first();
+        if (!$project) {
+            $this->dispatch('notify', 'Keine Baustelle ausgewählt.');
+            return;
+        }
+
+        $logs = \App\Models\DailyLog::where('project_id', $project->id)
+            ->orderBy('date', 'desc')
+            ->take(7)
+            ->get()
+            ->map(fn($l) => [
+                'date' => $l->date,
+                'weather' => $l->weather,
+                'work' => $l->work_performed,
+                'special' => $l->special_occurrences
+            ])
+            ->toArray();
+
+        if (empty($logs)) {
+            $this->dispatch('notify', 'Keine Bautagebuch-Einträge für diese Baustelle vorhanden.');
+            return;
+        }
+
+        try {
+            $this->weeklyReportText = $parser->generateWeeklyReportFromLogs($logs);
+            $this->showWeeklyReportModal = true;
+            $this->dispatch('notify', '✨ KI-Wochenbericht erfolgreich generiert!');
+        } catch (\Exception $e) {
+            $this->dispatch('notify', 'Fehler beim Wochenbericht: ' . $e->getMessage());
+        }
+    }
 }; ?>
 
 <div class="space-y-8 font-sans">
@@ -475,18 +513,22 @@ new class extends Component {
                         </div>
                     </div>
 
-                    <!-- AI Parser Launch Card -->
-                    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 p-4 rounded-xl space-y-2">
+                    <!-- AI Parser & Weekly Report Card -->
+                    <div class="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border border-indigo-200 p-4 rounded-xl space-y-2">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-blue-900 flex items-center gap-1.5">
-                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                KI Angebots-Erfassung
+                            <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                                🤖 KI-Assistent Baustelle
                             </span>
-                            <button wire:click="openParseOffer" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-sm transition">
-                                KI-Einlesen
-                            </button>
+                            <div class="flex space-x-2">
+                                <button wire:click="generateWeeklyReport" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-lg shadow-xs transition flex items-center gap-1">
+                                    📊 KI-Wochenbericht
+                                </button>
+                                <button wire:click="openParseOffer" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg shadow-xs transition">
+                                    KI-Einlesen
+                                </button>
+                            </div>
                         </div>
-                        <p class="text-[11px] text-slate-600 leading-relaxed">Subunternehmer-LV oder Textkopie per OpenAI analysieren & Budget automatisch aktualisieren.</p>
+                        <p class="text-[11px] text-slate-600 leading-relaxed">Erzeugen Sie per Klick einen Wochenbericht für Hausverwaltungen & Eigentümer oder analysieren Sie Subunternehmer-LVs.</p>
                     </div>
 
                     <!-- Offers & Items list -->
@@ -663,6 +705,35 @@ new class extends Component {
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- 4. KI Weekly Report Modal -->
+    @if ($showWeeklyReportModal)
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-purple-950 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">📊</span>
+                        <h3 class="text-base font-extrabold text-white">KI-Wochenbericht für Hausverwaltungen & Eigentümer</h3>
+                    </div>
+                    <button wire:click="$set('showWeeklyReportModal', false)" class="text-slate-400 hover:text-white">✕</button>
+                </div>
+
+                <div class="p-6 space-y-4">
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs font-sans text-slate-800 leading-relaxed max-h-96 overflow-y-auto whitespace-pre-wrap selection:bg-purple-100">{{ $weeklyReportText }}</div>
+
+                    <div class="flex justify-between items-center pt-2">
+                        <span class="text-xs text-slate-500">Zusammenfassung der letzten 7 Tage Bautagebuch</span>
+                        <div class="flex space-x-3">
+                            <button type="button" wire:click="$set('showWeeklyReportModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">Schließen</button>
+                            <button type="button" onclick="navigator.clipboard.writeText(`{{ addslashes($weeklyReportText) }}`); alert('Wochenbericht in Zwischenablage kopiert!');" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold shadow-md shadow-purple-500/20">
+                                📋 In Zwischenablage kopieren
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     @endif

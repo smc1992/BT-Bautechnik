@@ -129,6 +129,26 @@ new class extends Component {
         $this->showModal = false;
         $this->dispatch('notify', 'Eingangsrechnung erfolgreich erfasst!');
     }
+
+    // AI §13b Audit Integration
+    public bool $showAuditModal = false;
+    public string $auditRawText = '';
+    public array $auditResults = [];
+
+    public function auditSubcontractorInvoice(\App\Services\OpenAiParserService $parser)
+    {
+        if (empty(trim($this->auditRawText))) {
+            $this->dispatch('notify', 'Bitte geben Sie den Rechnungstext oder Pflichtangaben ein.');
+            return;
+        }
+
+        try {
+            $this->auditResults = $parser->auditSubcontractorInvoiceText($this->auditRawText);
+            $this->dispatch('notify', '✨ §13b UStG KI-Rechnungsprüfung abgeschlossen!');
+        } catch (\Exception $e) {
+            $this->dispatch('notify', 'Fehler bei der KI-Prüfung: ' . $e->getMessage());
+        }
+    }
 }; ?>
 
 <div class="space-y-8 font-sans">
@@ -140,6 +160,9 @@ new class extends Component {
         </div>
 
         <div class="flex items-center gap-3">
+            <button wire:click="$set('showAuditModal', true)" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl shadow-md shadow-purple-500/20 transition flex items-center gap-1.5">
+                🔍 KI §13b-Prüfung
+            </button>
             <button wire:click="exportCsv" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl transition flex items-center gap-2 border border-slate-200 shadow-2xs">
                 📊 DATEV / Excel Export
             </button>
@@ -275,6 +298,70 @@ new class extends Component {
                         <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/10">Beleg buchen</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- KI §13b Audit Modal -->
+    @if ($showAuditModal)
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-xl shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-purple-950 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">🔍</span>
+                        <h3 class="text-base font-extrabold text-white">KI-Eingangsrechnungs-Prüfer (§ 13b UStG & § 14 UStG)</h3>
+                    </div>
+                    <button wire:click="$set('showAuditModal', false)" class="text-slate-400 hover:text-white">✕</button>
+                </div>
+
+                <div class="p-6 space-y-4">
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Fügen Sie hier den Rechnungstext oder wesentliche Angaben der Subunternehmer-Rechnung ein. Die KI prüft die Steuerschuldnerschaft nach §13b UStG sowie gesetzliche Pflichtangaben nach §14 UStG!
+                    </p>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Rechnungstext / Angaben des Subunternehmers</label>
+                        <textarea wire:model="auditRawText" rows="4" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:bg-white focus:border-purple-600 focus:outline-none" placeholder="Rechnung Nr. 2026-44, Subunternehmer Müller Bedachung GmbH, Steuernummer 112/334, Bitumenbahn verlegt..."></textarea>
+                    </div>
+
+                    <div class="flex justify-end pt-1">
+                        <button type="button" wire:click="auditSubcontractorInvoice" wire:loading.attr="disabled" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold shadow-md shadow-purple-500/20 flex items-center gap-2">
+                            <span wire:loading wire:target="auditSubcontractorInvoice">⌛ KI prüft Steuer- & Pflichtangaben...</span>
+                            <span wire:loading.remove wire:target="auditSubcontractorInvoice">🔍 Auf §13b & §14 UStG prüfen</span>
+                        </button>
+                    </div>
+
+                    @if (!empty($auditResults))
+                        <div class="border-t border-slate-200 pt-4 space-y-3">
+                            <div class="flex items-center justify-between p-3 rounded-xl {{ ($auditResults['is_13b_mentioned'] ?? false) ? 'bg-emerald-50 text-emerald-900 border border-emerald-200' : 'bg-rose-50 text-rose-900 border border-rose-200' }}">
+                                <div class="flex items-center gap-2 text-xs font-bold">
+                                    <span>{{ ($auditResults['is_13b_mentioned'] ?? false) ? '✅' : '⚠️' }}</span>
+                                    <span>§ 13b UStG Vermerk: {{ ($auditResults['is_13b_mentioned'] ?? false) ? 'Vorhanden' : 'Fehlt oder unvollständig!' }}</span>
+                                </div>
+                                <span class="px-2 py-0.5 text-3xs font-extrabold uppercase rounded-md bg-white border border-current">Risiko: {{ $auditResults['risk_level'] ?? 'mittel' }}</span>
+                            </div>
+
+                            @if (!empty($auditResults['missing_elements']))
+                                <div class="space-y-1">
+                                    <h4 class="text-xs font-bold text-slate-800 uppercase">Fehlende Pflichtangaben:</h4>
+                                    <ul class="list-disc list-inside text-xs text-rose-700 space-y-1 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                                        @foreach ($auditResults['missing_elements'] as $me)
+                                            <li>{{ $me }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+
+                            <div class="bg-purple-50 border border-purple-200 rounded-xl p-3 text-xs text-purple-950">
+                                <strong>Handlungsempfehlung:</strong> {{ $auditResults['advice'] ?? '' }}
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="flex justify-end pt-2">
+                        <button type="button" wire:click="$set('showAuditModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold">Schließen</button>
+                    </div>
+                </div>
             </div>
         </div>
     @endif

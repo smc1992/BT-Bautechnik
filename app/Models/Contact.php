@@ -37,6 +37,16 @@ class Contact extends Model
         return $this->hasMany(Invoice::class);
     }
 
+    public function offers(): HasMany
+    {
+        return $this->hasMany(Offer::class);
+    }
+
+    public function actualCosts(): HasMany
+    {
+        return $this->hasMany(ActualCost::class);
+    }
+
     public function getDisplayNameAttribute(): string
     {
         if (!empty($this->company_name)) {

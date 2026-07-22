@@ -286,61 +286,57 @@ new class extends Component {
     <!-- Header Summary Stats -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <!-- Stat Card 1 -->
-        <div class="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-6 shadow-xl backdrop-blur-md relative overflow-hidden group hover:border-cyan-500/40 transition duration-300">
-            <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-cyan-500/5 rounded-full blur-xl group-hover:bg-cyan-500/10 transition"></div>
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-200">
             <div class="flex items-center justify-between">
-                <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Aktive Baustellen</p>
-                <span class="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Aktive Baustellen</p>
+                <span class="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-200/60 shadow-xs">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 </span>
             </div>
-            <p class="text-4xl font-extrabold text-white mt-3 tracking-tight">{{ $this->stats['active_projects'] }}</p>
-            <span class="inline-flex items-center text-xs font-semibold text-cyan-400/90 mt-2">
+            <p class="text-3xl font-extrabold text-slate-900 mt-3 tracking-tight">{{ $this->stats['active_projects'] }}</p>
+            <span class="inline-flex items-center text-xs font-semibold text-blue-600 mt-2">
                 In laufender Betreuung
             </span>
         </div>
 
         <!-- Stat Card 2 -->
-        <div class="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-6 shadow-xl backdrop-blur-md relative overflow-hidden group hover:border-blue-500/40 transition duration-300">
-            <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-blue-500/5 rounded-full blur-xl group-hover:bg-blue-500/10 transition"></div>
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-200">
             <div class="flex items-center justify-between">
-                <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Gesamtes Budget (Soll)</p>
-                <span class="p-2 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Gesamtes Budget (Soll)</p>
+                <span class="p-2.5 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 shadow-xs">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </span>
             </div>
-            <p class="text-3xl font-extrabold text-white mt-3 tracking-tight">{{ number_format($this->stats['total_budget'], 2, ',', '.') }} €</p>
-            <span class="inline-flex items-center text-xs font-semibold text-slate-400 mt-2">
+            <p class="text-3xl font-extrabold text-slate-900 mt-3 tracking-tight">{{ number_format($this->stats['total_budget'], 2, ',', '.') }} €</p>
+            <span class="inline-flex items-center text-xs font-semibold text-slate-500 mt-2">
                 Kalkuliert inkl. 15% Puffer
             </span>
         </div>
 
         <!-- Stat Card 3 -->
-        <div class="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-6 shadow-xl backdrop-blur-md relative overflow-hidden group hover:border-rose-500/40 transition duration-300">
-            <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-rose-500/5 rounded-full blur-xl group-hover:bg-rose-500/10 transition"></div>
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-200">
             <div class="flex items-center justify-between">
-                <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Gesamte Ist-Kosten</p>
-                <span class="p-2 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Gesamte Ist-Kosten</p>
+                <span class="p-2.5 rounded-xl bg-rose-50 text-rose-600 border border-rose-200/60 shadow-xs">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                 </span>
             </div>
-            <p class="text-3xl font-extrabold text-rose-400 mt-3 tracking-tight">{{ number_format($this->stats['total_costs'], 2, ',', '.') }} €</p>
-            <span class="inline-flex items-center text-xs font-semibold text-slate-400 mt-2">
+            <p class="text-3xl font-extrabold text-rose-600 mt-3 tracking-tight">{{ number_format($this->stats['total_costs'], 2, ',', '.') }} €</p>
+            <span class="inline-flex items-center text-xs font-semibold text-slate-500 mt-2">
                 Material & Subunternehmer
             </span>
         </div>
 
         <!-- Stat Card 4 -->
-        <div class="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-6 shadow-xl backdrop-blur-md relative overflow-hidden group hover:border-emerald-500/40 transition duration-300">
-            <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-xl group-hover:bg-emerald-500/10 transition"></div>
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-200">
             <div class="flex items-center justify-between">
-                <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Verbleibende Marge</p>
-                <span class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Verbleibende Marge</p>
+                <span class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/60 shadow-xs">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </span>
             </div>
-            <p class="text-3xl font-extrabold text-emerald-400 mt-3 tracking-tight">{{ number_format($this->stats['margin'], 1, ',', '.') }} %</p>
-            <span class="inline-flex items-center text-xs font-semibold text-slate-400 mt-2">
+            <p class="text-3xl font-extrabold text-emerald-600 mt-3 tracking-tight">{{ number_format($this->stats['margin'], 1, ',', '.') }} %</p>
+            <span class="inline-flex items-center text-xs font-semibold text-slate-500 mt-2">
                 Restbudget: {{ number_format($this->stats['remaining_budget'], 0, ',', '.') }} €
             </span>
         </div>
@@ -350,34 +346,32 @@ new class extends Component {
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         <!-- Projects Directory List (Left Column) -->
-        <div class="lg:col-span-7 bg-slate-900/90 border border-slate-800/90 rounded-2xl shadow-xl overflow-hidden backdrop-blur-md">
-            <div class="p-6 border-b border-slate-800/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-950/40">
+        <div class="lg:col-span-7 bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/60">
                 <div>
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
                         Baustellenübersicht (Excel-Pipeline)
                     </h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Projektübersicht nach Bauabschnitten & KW-Planung</p>
+                    <p class="text-xs text-slate-500 mt-0.5">Projektübersicht nach Bauabschnitten & KW-Planung</p>
                 </div>
-                <button wire:click="openCreateProject" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold text-xs rounded-xl shadow-lg shadow-blue-500/20 transition duration-200">
+                <button wire:click="openCreateProject" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl shadow-md shadow-blue-500/10 transition duration-150">
                     + Neue Baustelle anlegen
                 </button>
             </div>
 
-            <div class="divide-y divide-slate-800/60">
+            <div class="divide-y divide-slate-200/80">
                 @foreach ($this->projects as $proj)
                     <div wire:key="{{ $proj->id }}" wire:click="selectProject('{{ $proj->id }}')" 
-                         class="p-6 cursor-pointer hover:bg-slate-800/40 transition duration-150 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 {{ $this->selectedProjectId === $proj->id ? 'bg-gradient-to-r from-blue-900/20 to-cyan-900/10 border-l-4 border-cyan-400' : '' }}">
+                         class="p-6 cursor-pointer hover:bg-slate-50/80 transition duration-150 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 {{ $this->selectedProjectId === $proj->id ? 'bg-blue-50/60 border-l-4 border-blue-600' : '' }}">
                         
                         <!-- Project Info -->
                         <div class="space-y-1.5 max-w-md">
-                            <div class="flex items-center space-x-2">
-                                <h4 class="font-bold text-white text-base tracking-tight hover:text-cyan-300 transition">{{ $proj->name }}</h4>
-                            </div>
-                            <p class="text-xs text-slate-300 font-medium leading-relaxed">{{ $proj->work_type }} <span class="text-slate-500">•</span> {{ $proj->city_street }}</p>
+                            <h4 class="font-bold text-slate-900 text-base tracking-tight hover:text-blue-600 transition">{{ $proj->name }}</h4>
+                            <p class="text-xs text-slate-600 font-medium leading-relaxed">{{ $proj->work_type }} <span class="text-slate-300">•</span> {{ $proj->city_street }}</p>
                             
                             <div class="pt-1">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs">
                                     KW {{ $proj->start_week }} — KW {{ $proj->end_week }}
                                 </span>
                             </div>
@@ -392,20 +386,20 @@ new class extends Component {
                             @endphp
 
                             <div class="flex justify-between sm:justify-end items-center space-x-2">
-                                <span class="text-xs text-slate-400 uppercase font-semibold">Ist / Soll:</span>
-                                <span class="text-sm font-bold text-slate-100">
-                                    <span class="{{ $costSum > $budgetTotal ? 'text-rose-400' : 'text-cyan-300' }}">{{ number_format($costSum, 2, ',', '.') }} €</span> 
-                                    <span class="text-slate-500">/</span> 
-                                    <span class="text-slate-300">{{ number_format($budgetTotal, 2, ',', '.') }} €</span>
+                                <span class="text-xs text-slate-500 uppercase font-semibold">Ist / Soll:</span>
+                                <span class="text-sm font-bold text-slate-900">
+                                    <span class="{{ $costSum > $budgetTotal ? 'text-rose-600' : 'text-blue-600' }}">{{ number_format($costSum, 2, ',', '.') }} €</span> 
+                                    <span class="text-slate-400">/</span> 
+                                    <span class="text-slate-700">{{ number_format($budgetTotal, 2, ',', '.') }} €</span>
                                 </span>
                             </div>
 
                             <!-- High Visibility Bar -->
                             <div class="space-y-1">
-                                <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700/50 p-0.5">
-                                    <div class="h-full rounded-full transition-all duration-500 {{ $percent > 90 ? 'bg-gradient-to-r from-amber-500 to-rose-500' : 'bg-gradient-to-r from-cyan-500 to-blue-500' }}" style="width: {{ max($percent, 2) }}%"></div>
+                                <div class="w-full bg-slate-200/80 rounded-full h-3 overflow-hidden border border-slate-300/60 p-0.5 shadow-inner">
+                                    <div class="h-full rounded-full transition-all duration-500 {{ $percent > 90 ? 'bg-gradient-to-r from-amber-500 to-rose-600' : 'bg-gradient-to-r from-blue-600 to-cyan-500' }}" style="width: {{ max($percent, 2) }}%"></div>
                                 </div>
-                                <div class="flex justify-end text-[10px] font-bold text-slate-400">
+                                <div class="flex justify-end text-[11px] font-bold text-slate-600">
                                     {{ number_format($percent, 1, ',', '.') }}% ausgeschöpft
                                 </div>
                             </div>
@@ -416,42 +410,42 @@ new class extends Component {
         </div>
 
         <!-- Project Detail Panel (Right Column) -->
-        <div class="lg:col-span-5 bg-slate-900/90 border border-slate-800/90 rounded-2xl shadow-xl p-6 backdrop-blur-md sticky top-6">
+        <div class="lg:col-span-5 bg-white border border-slate-200/80 rounded-2xl shadow-sm p-6 sticky top-6">
             @if ($this->selectedProject)
                 <div class="space-y-6">
                     <!-- Title & Header -->
-                    <div class="flex justify-between items-start border-b border-slate-800/80 pb-4">
+                    <div class="flex justify-between items-start border-b border-slate-200/80 pb-4">
                         <div>
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-cyan-400">Ausgewählte Baustelle</span>
-                            <h3 class="text-xl font-bold text-white tracking-tight mt-0.5">{{ $this->selectedProject->name }}</h3>
-                            <p class="text-xs text-slate-400 mt-1">{{ $this->selectedProject->contact_address ?: $this->selectedProject->city_street }}</p>
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-blue-600">Ausgewählte Baustelle</span>
+                            <h3 class="text-xl font-bold text-slate-900 tracking-tight mt-0.5">{{ $this->selectedProject->name }}</h3>
+                            <p class="text-xs text-slate-600 mt-1">{{ $this->selectedProject->contact_address ?: $this->selectedProject->city_street }}</p>
                         </div>
-                        <button wire:click="closeProjectDetails" class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition">
+                        <button wire:click="closeProjectDetails" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                         </button>
                     </div>
 
                     <!-- Budget Detail Box -->
                     <div class="space-y-3">
-                        <h4 class="font-bold text-slate-200 text-xs uppercase tracking-wider">Budget-Detailaufschlüsselung</h4>
-                        <div class="bg-slate-950/60 p-4 rounded-xl space-y-4 border border-slate-800/80">
+                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Budget-Detailaufschlüsselung</h4>
+                        <div class="bg-slate-50/80 p-4 rounded-xl space-y-4 border border-slate-200/80">
                             <!-- Material Budget -->
                             <div>
                                 <div class="flex justify-between text-xs font-semibold mb-1">
-                                    <span class="text-amber-300 flex items-center gap-1.5">
-                                        <span class="w-2 h-2 rounded-full bg-amber-400"></span> Materialbudget
+                                    <span class="text-amber-900 flex items-center gap-1.5 font-bold">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Materialbudget
                                     </span>
-                                    <span class="text-slate-200">{{ number_format($this->selectedProject->budget?->material_budget, 2, ',', '.') }} €</span>
+                                    <span class="text-slate-900 font-bold">{{ number_format($this->selectedProject->budget?->material_budget, 2, ',', '.') }} €</span>
                                 </div>
                                 @php
                                     $matCosts = $this->selectedProject->actualCosts->where('type', 'material')->sum('cost_amount');
                                     $matBudget = $this->selectedProject->budget?->material_budget ?: 1;
                                     $matPercent = min(($matCosts / $matBudget) * 100, 100);
                                 @endphp
-                                <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700/40">
-                                    <div class="bg-amber-400 h-2 rounded-full transition-all" style="width: {{ $matPercent }}%"></div>
+                                <div class="w-full bg-slate-200/80 rounded-full h-2.5 overflow-hidden border border-slate-300/60 p-0.5">
+                                    <div class="bg-amber-500 h-full rounded-full transition-all" style="width: {{ $matPercent }}%"></div>
                                 </div>
-                                <div class="flex justify-between text-[10px] text-slate-400 mt-1 font-medium">
+                                <div class="flex justify-between text-[11px] text-slate-600 mt-1 font-semibold">
                                     <span>Verbraucht: {{ number_format($matCosts, 2, ',', '.') }} €</span>
                                     <span>{{ number_format($matPercent, 1) }}%</span>
                                 </div>
@@ -460,20 +454,20 @@ new class extends Component {
                             <!-- Wage / Subcontractor Budget -->
                             <div>
                                 <div class="flex justify-between text-xs font-semibold mb-1">
-                                    <span class="text-blue-300 flex items-center gap-1.5">
-                                        <span class="w-2 h-2 rounded-full bg-blue-400"></span> Lohn- & Fremdleistung
+                                    <span class="text-blue-900 flex items-center gap-1.5 font-bold">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span> Lohn- & Fremdleistung
                                     </span>
-                                    <span class="text-slate-200">{{ number_format($this->selectedProject->budget?->wage_budget, 2, ',', '.') }} €</span>
+                                    <span class="text-slate-900 font-bold">{{ number_format($this->selectedProject->budget?->wage_budget, 2, ',', '.') }} €</span>
                                 </div>
                                 @php
                                     $wageCosts = $this->selectedProject->actualCosts->whereIn('type', ['subcontractor', 'internal_wage'])->sum('cost_amount');
                                     $wageBudget = $this->selectedProject->budget?->wage_budget ?: 1;
                                     $wagePercent = min(($wageCosts / $wageBudget) * 100, 100);
                                 @endphp
-                                <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700/40">
-                                    <div class="bg-blue-400 h-2 rounded-full transition-all" style="width: {{ $wagePercent }}%"></div>
+                                <div class="w-full bg-slate-200/80 rounded-full h-2.5 overflow-hidden border border-slate-300/60 p-0.5">
+                                    <div class="bg-blue-600 h-full rounded-full transition-all" style="width: {{ $wagePercent }}%"></div>
                                 </div>
-                                <div class="flex justify-between text-[10px] text-slate-400 mt-1 font-medium">
+                                <div class="flex justify-between text-[11px] text-slate-600 mt-1 font-semibold">
                                     <span>Verbraucht: {{ number_format($wageCosts, 2, ',', '.') }} €</span>
                                     <span>{{ number_format($wagePercent, 1) }}%</span>
                                 </div>
@@ -482,67 +476,67 @@ new class extends Component {
                     </div>
 
                     <!-- AI Parser Launch Card -->
-                    <div class="bg-gradient-to-r from-blue-950/60 to-cyan-950/40 border border-cyan-500/30 p-4 rounded-xl space-y-2">
+                    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 p-4 rounded-xl space-y-2">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
-                                <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            <span class="text-xs font-bold text-blue-900 flex items-center gap-1.5">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                                 KI Angebots-Erfassung
                             </span>
-                            <button wire:click="openParseOffer" class="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold text-xs rounded-lg shadow transition">
+                            <button wire:click="openParseOffer" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-sm transition">
                                 KI-Einlesen
                             </button>
                         </div>
-                        <p class="text-[11px] text-slate-300">Subunternehmer-LV oder Textkopie per OpenAI analysieren & Budget automatisch aktualisieren.</p>
+                        <p class="text-[11px] text-slate-600 leading-relaxed">Subunternehmer-LV oder Textkopie per OpenAI analysieren & Budget automatisch aktualisieren.</p>
                     </div>
 
                     <!-- Offers & Items list -->
                     <div class="space-y-3">
-                        <h4 class="font-bold text-slate-200 text-xs uppercase tracking-wider">Erstellte Angebote</h4>
+                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Erstellte Angebote</h4>
                         <div class="space-y-2">
                             @forelse ($this->selectedProject->offers as $offer)
-                                <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-800/80 flex justify-between items-center">
+                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80 flex justify-between items-center">
                                     <div>
-                                        <p class="text-xs font-bold text-white">Nr: {{ $offer->offer_number }}</p>
-                                        <p class="text-[10px] text-slate-400">{{ date('d.m.Y', strtotime($offer->date)) }} | {{ $offer->sections->count() }} Abschnitte</p>
+                                        <p class="text-xs font-bold text-slate-900">Nr: {{ $offer->offer_number }}</p>
+                                        <p class="text-[10px] text-slate-500 font-medium">{{ date('d.m.Y', strtotime($offer->date)) }} | {{ $offer->sections->count() }} Abschnitte</p>
                                     </div>
-                                    <p class="text-xs font-bold text-cyan-400">{{ number_format($offer->total_net, 2, ',', '.') }} €</p>
+                                    <p class="text-xs font-bold text-blue-700">{{ number_format($offer->total_net, 2, ',', '.') }} €</p>
                                 </div>
                             @empty
-                                <p class="text-xs text-slate-400 italic">Noch keine Angebote erfasst.</p>
+                                <p class="text-xs text-slate-500 italic">Noch keine Angebote erfasst.</p>
                             @endforelse
                         </div>
                     </div>
 
                     <!-- Actual Costs Form Trigger & List -->
-                    <div class="space-y-3 pt-4 border-t border-slate-800/80">
+                    <div class="space-y-3 pt-4 border-t border-slate-200/80">
                         <div class="flex justify-between items-center">
-                            <h4 class="font-bold text-slate-200 text-xs uppercase tracking-wider">Ist-Kosten Belege</h4>
-                            <button wire:click="openAddCost" class="text-xs font-bold text-cyan-400 hover:text-cyan-300 transition">+ Beleg erfassen</button>
+                            <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Ist-Kosten Belege</h4>
+                            <button wire:click="openAddCost" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition">+ Beleg erfassen</button>
                         </div>
                         <div class="space-y-2 max-h-48 overflow-y-auto pr-1">
                             @forelse ($this->selectedProject->actualCosts as $cost)
-                                <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-800/80 flex justify-between items-center text-xs">
+                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80 flex justify-between items-center text-xs">
                                     <div>
-                                        <p class="font-bold text-white">{{ $cost->description }}</p>
-                                        <p class="text-[10px] text-slate-400">{{ date('d.m.Y', strtotime($cost->date)) }} • {{ ucfirst($cost->type) }}</p>
+                                        <p class="font-bold text-slate-900">{{ $cost->description }}</p>
+                                        <p class="text-[10px] text-slate-500 font-medium">{{ date('d.m.Y', strtotime($cost->date)) }} • {{ ucfirst($cost->type) }}</p>
                                     </div>
-                                    <p class="font-bold text-rose-400">-{{ number_format($cost->cost_amount, 2, ',', '.') }} €</p>
+                                    <p class="font-bold text-rose-600">-{{ number_format($cost->cost_amount, 2, ',', '.') }} €</p>
                                 </div>
                             @empty
-                                <p class="text-xs text-slate-400 italic">Keine Belege vorhanden.</p>
+                                <p class="text-xs text-slate-500 italic">Keine Belege vorhanden.</p>
                             @endforelse
                         </div>
                     </div>
                 </div>
             @else
                 <!-- Empty Selection Placeholder -->
-                <div class="py-16 flex flex-col items-center justify-center text-center space-y-3 text-slate-400">
-                    <div class="w-16 h-16 rounded-2xl bg-slate-800/60 border border-slate-700/50 flex items-center justify-center text-slate-400 shadow-inner">
-                        <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                <div class="py-16 flex flex-col items-center justify-center text-center space-y-3 text-slate-500">
+                    <div class="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 shadow-inner">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                     </div>
                     <div class="max-w-xs space-y-1">
-                        <p class="text-sm font-bold text-white">Keine Baustelle ausgewählt</p>
-                        <p class="text-xs text-slate-400">Klicken Sie in der Liste links auf ein Projekt, um das kalkulierte Budget und die Belege einzusehen.</p>
+                        <p class="text-sm font-bold text-slate-900">Keine Baustelle ausgewählt</p>
+                        <p class="text-xs text-slate-500">Klicken Sie in der Liste links auf ein Projekt, um das kalkulierte Budget und die Belege einzusehen.</p>
                     </div>
                 </div>
             @endif
@@ -553,44 +547,44 @@ new class extends Component {
 
     <!-- 1. Create Project Modal -->
     @if($showCreateProjectModal)
-        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
-                <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex justify-between items-center">
-                    <h3 class="text-base font-bold text-white">Neue Baustelle anlegen</h3>
-                    <button wire:click="$set('showCreateProjectModal', false)" class="text-slate-400 hover:text-white">✕</button>
+        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                    <h3 class="text-base font-bold text-slate-900">Neue Baustelle anlegen</h3>
+                    <button wire:click="$set('showCreateProjectModal', false)" class="text-slate-400 hover:text-slate-700">✕</button>
                 </div>
                 <form wire:submit="saveProject" class="p-6 space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Baustellen-Bezeichnung</label>
-                        <input wire:model="projectName" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500" placeholder="z. B. WEG Ingolstädter Str. 11" required>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Baustellen-Bezeichnung</label>
+                        <input wire:model="projectName" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white" placeholder="z. B. WEG Ingolstädter Str. 11" required>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Art der Arbeiten</label>
-                        <input wire:model="projectWorkType" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500" placeholder="z. B. Flachdachsanierung" required>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Art der Arbeiten</label>
+                        <input wire:model="projectWorkType" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white" placeholder="z. B. Flachdachsanierung" required>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-300 uppercase mb-1">PLZ</label>
-                            <input wire:model="projectZip" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500" placeholder="85092">
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">PLZ</label>
+                            <input wire:model="projectZip" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white" placeholder="85092">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Ort & Straße</label>
-                            <input wire:model="projectCityStreet" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500" placeholder="Kösching">
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ort & Straße</label>
+                            <input wire:model="projectCityStreet" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white" placeholder="Kösching">
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-300 uppercase mb-1">KW Beginn</label>
-                            <input wire:model="projectStartWeek" type="number" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500">
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">KW Beginn</label>
+                            <input wire:model="projectStartWeek" type="number" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-300 uppercase mb-1">KW Ende</label>
-                            <input wire:model="projectEndWeek" type="number" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500">
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">KW Ende</label>
+                            <input wire:model="projectEndWeek" type="number" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white">
                         </div>
                     </div>
-                    <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
-                        <button type="button" wire:click="$set('showCreateProjectModal', false)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">Abbrechen</button>
-                        <button type="submit" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-blue-500/20">Projekt speichern</button>
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200">
+                        <button type="button" wire:click="$set('showCreateProjectModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold">Abbrechen</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/10">Projekt speichern</button>
                     </div>
                 </form>
             </div>
@@ -599,16 +593,16 @@ new class extends Component {
 
     <!-- 2. Add Cost Modal -->
     @if($showAddCostModal)
-        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
-                <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex justify-between items-center">
-                    <h3 class="text-base font-bold text-white">Ist-Kosten Beleg erfassen</h3>
-                    <button wire:click="$set('showAddCostModal', false)" class="text-slate-400 hover:text-white">✕</button>
+        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                    <h3 class="text-base font-bold text-slate-900">Ist-Kosten Beleg erfassen</h3>
+                    <button wire:click="$set('showAddCostModal', false)" class="text-slate-400 hover:text-slate-700">✕</button>
                 </div>
                 <form wire:submit="saveCost" class="p-6 space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Kategorie</label>
-                        <select wire:model.live="costType" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500">
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kategorie</label>
+                        <select wire:model.live="costType" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-600">
                             <option value="material">Materialeinkauf</option>
                             <option value="subcontractor">Subunternehmer / Fremdleistung</option>
                             <option value="internal_wage">Eigene Lohnstunden</option>
@@ -617,25 +611,25 @@ new class extends Component {
                     </div>
                     @if($costType === 'subcontractor')
                         <div>
-                            <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Subunternehmer Name</label>
-                            <input wire:model="costSubcontractor" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500" placeholder="z. B. Harry, Hofbauer, Samir" required>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Subunternehmer Name</label>
+                            <input wire:model="costSubcontractor" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-600" placeholder="z. B. Harry, Hofbauer, Samir" required>
                         </div>
                     @endif
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Netto-Betrag (€)</label>
-                        <input wire:model="costAmount" type="number" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500" required>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Netto-Betrag (€)</label>
+                        <input wire:model="costAmount" type="number" step="0.01" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-600" required>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Beschreibung / Beleg-Nr</label>
-                        <input wire:model="costDescription" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500" required>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Beschreibung / Beleg-Nr</label>
+                        <input wire:model="costDescription" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-600" required>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Datum</label>
-                        <input wire:model="costDate" type="date" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-cyan-500" required>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Datum</label>
+                        <input wire:model="costDate" type="date" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-600" required>
                     </div>
-                    <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
-                        <button type="button" wire:click="$set('showAddCostModal', false)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">Abbrechen</button>
-                        <button type="submit" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-blue-500/20">Beleg buchen</button>
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200">
+                        <button type="button" wire:click="$set('showAddCostModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold">Abbrechen</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/10">Beleg buchen</button>
                     </div>
                 </form>
             </div>
@@ -644,26 +638,26 @@ new class extends Component {
 
     <!-- 3. Parse Offer Modal -->
     @if($showParseOfferModal)
-        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden">
-                <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex justify-between items-center">
-                    <h3 class="text-base font-bold text-white flex items-center gap-2">
-                        <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                         KI Angebote / LVs analysieren
                     </h3>
-                    <button wire:click="$set('showParseOfferModal', false)" class="text-slate-400 hover:text-white">✕</button>
+                    <button wire:click="$set('showParseOfferModal', false)" class="text-slate-400 hover:text-slate-700">✕</button>
                 </div>
                 <form wire:submit="parseOfferDirectly" class="p-6 space-y-4">
-                    <p class="text-xs text-slate-300 leading-relaxed">
+                    <p class="text-xs text-slate-600 leading-relaxed">
                         Fügen Sie hier unstrukturierten Text aus einer LV-E-Mail oder Kopie einer PDF ein. OpenAI extrahiert automatisch Positionen, Mengen & Preise und passt das Budget an.
                     </p>
                     <div>
-                        <textarea wire:model="offerText" rows="10" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 font-mono focus:outline-none focus:border-cyan-500" placeholder="Kopieren Sie den Text hier hinein..." required></textarea>
-                        @error('offerText') <span class="text-rose-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        <textarea wire:model="offerText" rows="10" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 font-mono focus:outline-none focus:border-blue-600" placeholder="Kopieren Sie den Text hier hinein..." required></textarea>
+                        @error('offerText') <span class="text-rose-600 text-xs mt-1 block">{{ $message }}</span> @enderror
                     </div>
-                    <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
-                        <button type="button" wire:click="$set('showParseOfferModal', false)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">Abbrechen</button>
-                        <button type="submit" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-xl text-xs font-bold flex items-center shadow-lg shadow-blue-500/20" wire:loading.attr="disabled">
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200">
+                        <button type="button" wire:click="$set('showParseOfferModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold">Abbrechen</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center shadow-md shadow-blue-500/10" wire:loading.attr="disabled">
                             <span wire:loading class="border-2 border-t-transparent border-white rounded-full w-4 h-4 animate-spin mr-2"></span>
                             KI-Strukturierung starten
                         </button>

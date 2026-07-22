@@ -18,6 +18,11 @@ class Invoice extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function contact(): BelongsTo
+    {
+        return $this->belongsTo(Contact::class);
+    }
+
     public function items(): HasMany
     {
         return $this->hasMany(InvoiceItem::class);

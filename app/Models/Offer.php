@@ -18,6 +18,11 @@ class Offer extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function contact(): BelongsTo
+    {
+        return $this->belongsTo(Contact::class);
+    }
+
     public function sections(): HasMany
     {
         return $this->hasMany(OfferSection::class)->orderBy('sort_order');

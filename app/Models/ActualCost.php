@@ -16,4 +16,9 @@ class ActualCost extends Model
     {
         return $this->belongsTo(Project::class);
     }
+
+    public function contact(): BelongsTo
+    {
+        return $this->belongsTo(Contact::class);
+    }
 }

@@ -1,0 +1,30 @@
+plugins = []
+headers = []
+redirects = []
+
+[build]
+edge_functions = "/Users/smc/Webprojekte/Rechnungstool Gumpert/netlify/edge-functions"
+publish = "/Users/smc/Webprojekte/Rechnungstool Gumpert"
+publishOrigin = "default"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[[edge_functions]]
+path = "/*"
+function = "auth"
+
+[functions]
+
+[functions."*"]

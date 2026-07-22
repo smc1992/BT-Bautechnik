@@ -1,0 +1,948 @@
+/* ==========================================================================
+   BT BAUTECHNIK RECHNUNGSTOOL - CORE DESIGN SYSTEM & STYLESHEET
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  /* Brand Colors */
+  --brand-navy-raw: 215, 68%, 15%; /* #0c2340 */
+  --brand-navy: hsl(var(--brand-navy-raw));
+  --brand-blue-raw: 215, 100%, 35%; /* #0056b3 */
+  --brand-blue: hsl(var(--brand-blue-raw));
+  --brand-accent-raw: 210, 100%, 50%; /* #0080ff */
+  --brand-accent: hsl(var(--brand-accent-raw));
+
+  /* Light Theme (Default for Editor UI) */
+  --bg-color: #f3f4f6;
+  --panel-bg: rgba(255, 255, 255, 0.75);
+  --panel-border: rgba(0, 0, 0, 0.08);
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --glass-blur: blur(16px);
+  --scrollbar-thumb: #9ca3af;
+  --scrollbar-track: #f3f4f6;
+
+  /* Paper Preview (Always Light for standard print representation) */
+  --paper-bg: #ffffff;
+  --paper-text: #111827;
+  --paper-text-muted: #555555;
+  --paper-border: #e5e7eb;
+}
+
+/* Dark Mode Overrides (Only applies to Editor UI) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #0b0f19;
+    --panel-bg: rgba(17, 24, 39, 0.7);
+    --panel-border: rgba(255, 255, 255, 0.08);
+    --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+    --input-bg: #1f2937;
+    --input-border: #374151;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+    --scrollbar-thumb: #4b5563;
+    --scrollbar-track: #111827;
+  }
+}
+
+/* Explicit class-based override (pins user preference) */
+[data-theme="light"] {
+  --bg-color: #f3f4f6;
+  --panel-bg: rgba(255, 255, 255, 0.75);
+  --panel-border: rgba(0, 0, 0, 0.08);
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --scrollbar-thumb: #9ca3af;
+  --scrollbar-track: #f3f4f6;
+}
+
+[data-theme="dark"] {
+  --bg-color: #0b0f19;
+  --panel-bg: rgba(17, 24, 39, 0.7);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --input-bg: #1f2937;
+  --input-border: #374151;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --scrollbar-thumb: #4b5563;
+  --scrollbar-track: #111827;
+}
+
+/* ==========================================================================
+   RESET & SYSTEM BASICS
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+}
+
+/* Scrollbar customization for WebKit */
+@supports not (scrollbar-color: auto) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+  }
+}
+
+/* ==========================================================================
+   APP LAYOUT (WORKSPACE GRID)
+   ========================================================================== */
+
+.app-container {
+  display: grid;
+  grid-template-columns: 480px 1fr;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* Left Panel: Editor & Controls */
+.editor-panel {
+  background: var(--panel-bg);
+  border-right: 1px solid var(--panel-border);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  z-index: 10;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.editor-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--panel-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  background: inherit;
+  z-index: 5;
+}
+
+.app-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  background: linear-gradient(135deg, var(--brand-blue), var(--brand-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.editor-sections {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+/* Right Panel: Preview viewport */
+.preview-panel {
+  background-color: var(--bg-color);
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2.5rem;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+/* ==========================================================================
+   FORM COMPONENTS & INPUTS
+   ========================================================================== */
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group-triple {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75rem;
+}
+
+label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 0.375rem;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--brand-accent);
+  box-shadow: 0 0 0 3px hsla(var(--brand-accent-raw), 0.15);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Card layout inside Editor */
+.editor-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--panel-border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--panel-border);
+  padding-bottom: 0.5rem;
+}
+
+/* Item List Table Editor */
+.items-editor-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.items-editor-table th {
+  text-align: left;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding: 0.25rem 0.5rem;
+}
+
+.items-editor-table td {
+  padding: 0.375rem 0.25rem;
+}
+
+.items-editor-row input {
+  padding: 0.5rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--brand-blue);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: hsl(215, 100%, 30%);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 1px solid var(--input-border);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(156, 163, 175, 0.1);
+}
+
+.btn-danger {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+}
+
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  border-radius: 0.375rem;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.btn-group {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+/* Toggle Switch */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--input-border);
+  transition: .3s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--brand-accent);
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* ==========================================================================
+   BRIEFBOGEN PREVIEW (DIN A4 SHEET)
+   ========================================================================== */
+
+.paper-container {
+  width: 210mm;
+  min-height: 297mm;
+  background-color: var(--paper-bg);
+  color: var(--paper-text);
+  box-shadow: var(--shadow-lg);
+  padding: 20mm 20mm 15mm 20mm; /* Standard letter margins */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-size: 10pt;
+  line-height: 1.5;
+  transform-origin: top center;
+  transition: transform 0.2s ease;
+}
+
+/* Falt- und Lochmarken für den Briefbogen */
+.paper-container::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 87mm; /* Faltmarke 1 */
+  width: 5mm;
+  height: 0.5px;
+  background-color: #cccccc;
+  pointer-events: none;
+}
+
+.paper-container::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 148.5mm; /* Lochmarke */
+  width: 8mm;
+  height: 0.5px;
+  background-color: #999999;
+  pointer-events: none;
+}
+
+.fold-mark-2 {
+  position: absolute;
+  left: 0;
+  top: 192mm; /* Faltmarke 2 */
+  width: 5mm;
+  height: 0.5px;
+  background-color: #cccccc;
+  pointer-events: none;
+}
+
+/* Briefkopf Header */
+.letterhead-header {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: flex-start;
+  margin-bottom: 12mm;
+}
+
+.logo-column {
+  padding-top: 5px;
+}
+
+.contact-column {
+  border-left: 1px solid var(--brand-blue);
+  padding-left: 5mm;
+  margin-left: 2mm;
+  font-size: 8.5pt;
+  color: var(--paper-text);
+}
+
+.contact-column .company-name {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 11pt;
+  margin-bottom: 2mm;
+  color: var(--brand-navy);
+}
+
+.contact-label {
+  font-size: 7.5pt;
+  color: var(--paper-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 1.5mm;
+  margin-bottom: 0.5mm;
+  font-weight: 600;
+}
+
+/* Info Area (Side-by-side Recipient & Metadata) */
+.address-meta-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8mm;
+  width: 100%;
+}
+
+/* Sender & Recipient Blocks */
+.recipient-block {
+  margin-top: 0;
+  margin-bottom: 0;
+  width: 85mm; /* Standard envelope window size */
+  font-size: 9.5pt;
+}
+
+.sender-line {
+  font-size: 7.5pt;
+  color: var(--paper-text-muted);
+  text-decoration: underline;
+  margin-bottom: 2.5mm;
+  display: block;
+}
+
+.recipient-address {
+  white-space: pre-line;
+  line-height: 1.4;
+  min-height: 25mm;
+}
+
+/* Metadata Block (Invoice No., Date, etc.) */
+.meta-block {
+  width: 75mm;
+  margin-top: 0;
+  margin-bottom: 0;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1mm 3mm;
+  font-size: 8.5pt;
+}
+
+.meta-label {
+  font-weight: 600;
+  color: var(--paper-text-muted);
+}
+
+.meta-value {
+  text-align: right;
+  font-family: monospace;
+  font-size: 9pt;
+}
+
+/* Invoice Title & Intro */
+.invoice-title-area {
+  margin-bottom: 4mm;
+}
+
+.invoice-title {
+  font-size: 18pt;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--brand-navy);
+  margin-bottom: 2mm;
+}
+
+.invoice-intro {
+  font-size: 9.5pt;
+  margin-bottom: 4mm;
+}
+
+/* Items Table inside Preview */
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 5mm;
+  font-size: 9pt;
+}
+
+.preview-table th {
+  border-bottom: 2px solid var(--brand-navy);
+  padding: 6px 4px;
+  font-weight: 700;
+  text-align: left;
+  color: var(--brand-navy);
+  font-size: 8.5pt;
+}
+
+.preview-table td {
+  border-bottom: 1px solid var(--paper-border);
+  padding: 8px 4px;
+  vertical-align: top;
+}
+
+.preview-table .col-pos { width: 6%; text-align: center; }
+.preview-table .col-desc { width: 54%; }
+.preview-table .col-qty { width: 12%; text-align: right; }
+.preview-table .col-price { width: 14%; text-align: right; }
+.preview-table .col-total { width: 14%; text-align: right; }
+
+.item-description-text {
+  white-space: pre-line;
+  color: var(--paper-text);
+}
+
+/* Totals Summary */
+.totals-section {
+  margin-left: auto;
+  width: 80mm;
+  margin-bottom: 6mm;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2px 4px;
+  font-size: 9.5pt;
+  border-top: 1px solid var(--paper-border);
+  padding-top: 4px;
+}
+
+.totals-label {
+  padding: 3px 0;
+  color: var(--paper-text-muted);
+}
+
+.totals-value {
+  text-align: right;
+  padding: 3px 0;
+}
+
+.totals-bold {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 11pt;
+  color: var(--brand-navy);
+  border-top: 1px solid var(--brand-navy);
+  border-bottom: 3px double var(--brand-navy);
+  padding: 6px 0;
+}
+
+/* Legal texts & notes */
+.legal-notice {
+  font-size: 8.5pt;
+  color: var(--paper-text-muted);
+  margin-bottom: 4mm;
+  line-height: 1.4;
+}
+
+.payment-note {
+  font-size: 9.5pt;
+  font-weight: 500;
+  margin-bottom: 4mm;
+}
+
+.signature-area {
+  font-size: 9.5pt;
+  padding-top: 2mm;
+  margin-bottom: 6mm;
+}
+
+/* Footer Section */
+.letterhead-footer {
+  border-top: 1.5px solid var(--brand-blue);
+  padding-top: 4mm;
+  margin-top: auto; /* Pushes the footer to the bottom of the flex container (A4 page) */
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1.2fr;
+  gap: 6mm;
+  font-size: 7.5pt;
+  color: var(--paper-text-muted);
+  line-height: 1.4;
+}
+
+.footer-col-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  color: var(--brand-navy);
+  text-transform: uppercase;
+  margin-bottom: 1.5mm;
+  letter-spacing: 0.02em;
+}
+
+.footer-icon-text {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.footer-icon-text svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   DASHBOARD OVERLAY & MODALS
+   ========================================================================== */
+
+.dashboard-btn-container {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(11, 15, 25, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 1rem;
+  width: 90%;
+  max-width: 900px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 2rem;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.overlay.active .modal-content {
+  transform: translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--panel-border);
+  padding-bottom: 0.75rem;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--panel-border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.stat-val {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--brand-accent);
+  margin-top: 0.25rem;
+  font-family: 'Outfit', sans-serif;
+}
+
+.invoice-list-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.invoice-list-table th, .invoice-list-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.invoice-list-table th {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.invoice-list-table tr:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Theme Switcher Button styling */
+.theme-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  border-radius: 0.5rem;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  background-color: rgba(156, 163, 175, 0.1);
+  border-color: var(--brand-accent);
+}
+
+/* ==========================================================================
+   PRINT LAYOUT STYLESHEET (@media print)
+   ========================================================================== */
+
+@media print {
+  /* Hide all editor UI, dashboard, overlay, buttons */
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    overflow: visible !important;
+    height: auto !important;
+    width: auto !important;
+  }
+
+  .app-container {
+    display: block !important;
+    height: auto !important;
+    width: auto !important;
+    overflow: visible !important;
+  }
+
+  .editor-panel,
+  .preview-panel::before,
+  .dashboard-btn-container,
+  .overlay,
+  .theme-toggle-btn {
+    display: none !important;
+  }
+
+  .preview-panel {
+    padding: 0 !important;
+    background: transparent !important;
+    overflow: visible !important;
+    display: block !important;
+    height: auto !important;
+    width: auto !important;
+  }
+
+  .paper-container {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    padding: 12mm 15mm 10mm 15mm !important; /* Tightened padding to fit printable area */
+    box-shadow: none !important;
+    border: none !important;
+    transform: none !important; /* Disable all scaling transforms for print */
+    page-break-after: always;
+    page-break-inside: avoid;
+    box-sizing: border-box !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Force background colors to print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure footer stays at bottom naturally, avoiding overlaps and splits */
+  .letterhead-footer {
+    position: static !important;
+    margin-top: auto !important;
+    border-top: 1.5px solid #0056b3 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .footer-col {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Set page margins */
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}
+
+/* Responsive adjustment for desktop monitors - Screen only */
+@media screen and (max-width: 1200px) {
+  .app-container {
+    grid-template-columns: 400px 1fr;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .app-container {
+    grid-template-columns: 1fr;
+    height: auto;
+    overflow: auto;
+  }
+  .editor-panel {
+    height: auto;
+    max-height: 600px;
+    border-right: none;
+    border-bottom: 1px solid var(--panel-border);
+  }
+  .preview-panel {
+    padding: 1.5rem;
+  }
+  .paper-container {
+    transform: scale(0.8);
+    transform-origin: top center;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .paper-container {
+    transform: scale(0.6);
+  }
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .paper-container {
+    transform: scale(0.4);
+  }
+}

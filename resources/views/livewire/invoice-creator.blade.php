@@ -394,21 +394,21 @@ new class extends Component {
     <!-- Load custom legacy CSS styles dynamically -->
     <link rel="stylesheet" href="{{ asset('css/invoice-style.css') }}">
 
-    <div class="flex justify-between items-center bg-gray-800 p-4 rounded-xl border border-gray-700/50 dashboard-btn-container">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm backdrop-blur-md dashboard-btn-container">
         <div class="flex space-x-2">
-            <button wire:click="setMode('invoice')" class="px-4 py-2 text-sm font-semibold rounded-lg transition {{ $mode === 'invoice' ? 'bg-red-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-650' }}">
-                Rechnungs-Modus
+            <button wire:click="setMode('invoice')" class="px-4 py-2 text-xs font-bold rounded-xl transition shadow-xs {{ $mode === 'invoice' ? 'bg-blue-600 text-white shadow-blue-500/20' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}">
+                📄 Rechnungs-Modus
             </button>
-            <button wire:click="setMode('offer')" class="px-4 py-2 text-sm font-semibold rounded-lg transition {{ $mode === 'offer' ? 'bg-red-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-650' }}">
-                Angebots-Modus
+            <button wire:click="setMode('offer')" class="px-4 py-2 text-xs font-bold rounded-xl transition shadow-xs {{ $mode === 'offer' ? 'bg-blue-600 text-white shadow-blue-500/20' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}">
+                📑 Angebots-Modus
             </button>
         </div>
         <div class="flex space-x-2">
-            <button wire:click="resetForm" class="px-3 py-1.5 bg-gray-700 hover:bg-gray-650 text-white font-medium text-xs rounded-lg transition">
+            <button wire:click="resetForm" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition border border-slate-200 shadow-2xs">
                 Formular leeren
             </button>
-            <button onclick="window.print()" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white font-semibold text-xs rounded-lg transition shadow">
-                Drucken / PDF erzeugen
+            <button onclick="window.print()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition shadow-md shadow-emerald-500/20">
+                🖨️ Drucken / PDF erzeugen
             </button>
         </div>
     </div>
@@ -420,11 +420,11 @@ new class extends Component {
         <div class="lg:col-span-5 space-y-6 editor-panel">
             
             <!-- Quick select project / Import details -->
-            <div class="bg-gray-800 border border-gray-700/50 rounded-xl p-5 shadow-sm space-y-4">
-                <h3 class="text-sm font-bold text-white uppercase tracking-wider">Baustellen-Schnellwahl & Vorlagen</h3>
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm space-y-4">
+                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Baustellen-Schnellwahl & Vorlagen</h3>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1">Projekt auswählen</label>
-                    <select wire:model.live="projectId" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Projekt auswählen</label>
+                    <select wire:model.live="projectId" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:bg-white focus:border-blue-600 focus:outline-none">
                         <option value="">-- Freie Erstellung (keine Baustelle) --</option>
                         @foreach (\App\Models\Project::all() as $p)
                             <option value="{{ $p->id }}">{{ $p->name }}</option>
@@ -438,8 +438,8 @@ new class extends Component {
                     @endphp
                     @if ($projectOffers && $projectOffers->count() > 0)
                         <div>
-                            <label class="block text-xs font-semibold text-gray-400 mb-1">Posten aus Angebot übernehmen</label>
-                            <select onchange="ConfirmImport(this)" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500">
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Posten aus Angebot übernehmen</label>
+                            <select onchange="ConfirmImport(this)" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:bg-white focus:border-blue-600 focus:outline-none">
                                 <option value="">-- Angebot wählen --</option>
                                 @foreach ($projectOffers as $o)
                                     <option value="{{ $o->id }}">Nr: {{ $o->offer_number }} ({{ number_format($o->total_net, 2, ',', '.') }} €)</option>
@@ -459,119 +459,119 @@ new class extends Component {
             </div>
 
             <!-- Profile Settings -->
-            <details class="bg-gray-800 border border-gray-700/50 rounded-xl p-5 shadow-sm space-y-4" open>
-                <summary class="text-sm font-bold text-white uppercase tracking-wider cursor-pointer select-none">Firmenprofil (Absender)</summary>
+            <details class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm space-y-4" open>
+                <summary class="text-sm font-bold text-slate-900 uppercase tracking-wider cursor-pointer select-none">Firmenprofil (Absender)</summary>
                 <div class="space-y-3 pt-3">
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">Firma / Name</label>
-                            <input wire:model.live="profile.company" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">Firma / Name</label>
+                            <input wire:model.live="profile.company" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">Geschäftsführung</label>
-                            <input wire:model.live="profile.managing" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">Geschäftsführung</label>
+                            <input wire:model.live="profile.managing" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-400 mb-1">Straße & Nr</label>
-                        <input wire:model.live="profile.address" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Straße & Nr</label>
+                        <input wire:model.live="profile.address" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                     </div>
                     <div class="grid grid-cols-3 gap-3">
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">PLZ</label>
-                            <input wire:model.live="profile.zip" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">PLZ</label>
+                            <input wire:model.live="profile.zip" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                         </div>
                         <div class="col-span-2">
-                            <label class="block text-xs text-gray-400 mb-1">Ort</label>
-                            <input wire:model.live="profile.city" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">Ort</label>
+                            <input wire:model.live="profile.city" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">Steuernummer</label>
-                            <input wire:model.live="profile.taxId" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">Steuernummer</label>
+                            <input wire:model.live="profile.taxId" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">USt-IdNr.</label>
-                            <input wire:model.live="profile.vatId" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">USt-IdNr.</label>
+                            <input wire:model.live="profile.vatId" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">IBAN</label>
-                            <input wire:model.live="profile.iban" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">IBAN</label>
+                            <input wire:model.live="profile.iban" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">BIC</label>
-                            <input wire:model.live="profile.bic" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">BIC</label>
+                            <input wire:model.live="profile.bic" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                         </div>
                     </div>
                 </div>
             </details>
 
             <!-- Recipient Address details -->
-            <div class="bg-gray-800 border border-gray-700/50 rounded-xl p-5 shadow-sm space-y-4">
-                <h3 class="text-sm font-bold text-white uppercase tracking-wider">Empfänger (Kunde)</h3>
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm space-y-4">
+                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Empfänger (Kunde)</h3>
                 <div class="space-y-3">
                     <div>
-                        <label class="block text-xs text-gray-400 mb-1">Name / Firma des Kunden</label>
-                        <input wire:model.live="client.name" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Name / Firma des Kunden</label>
+                        <input wire:model.live="client.name" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-400 mb-1">Straße & Hausnummer</label>
-                        <input wire:model.live="client.street" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Straße & Hausnummer</label>
+                        <input wire:model.live="client.street" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                     </div>
                     <div class="grid grid-cols-3 gap-3">
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">PLZ</label>
-                            <input wire:model.live="client.zip" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">PLZ</label>
+                            <input wire:model.live="client.zip" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                         </div>
                         <div class="col-span-2">
-                            <label class="block text-xs text-gray-400 mb-1">Ort</label>
-                            <input wire:model.live="client.city" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">Ort</label>
+                            <input wire:model.live="client.city" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Document Meta Details -->
-            <div class="bg-gray-800 border border-gray-700/50 rounded-xl p-5 shadow-sm space-y-4">
-                <h3 class="text-sm font-bold text-white uppercase tracking-wider">Dokumenten-Metadaten</h3>
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm space-y-4">
+                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Dokumenten-Metadaten</h3>
                 <div class="space-y-3">
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">{{ $mode === 'invoice' ? 'Rechnungsnummer' : 'Angebotsnummer' }}</label>
-                            <input wire:model.live="docNumber" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">{{ $mode === 'invoice' ? 'Rechnungsnummer' : 'Angebotsnummer' }}</label>
+                            <input wire:model.live="docNumber" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">Kundennummer</label>
-                            <input wire:model.live="client.clientNumber" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">Kundennummer</label>
+                            <input wire:model.live="client.clientNumber" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">Datum</label>
-                            <input wire:model.live="docDate" type="date" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">Datum</label>
+                            <input wire:model.live="docDate" type="date" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">Leistungszeitraum</label>
-                            <input wire:model.live="deliveryDate" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">Leistungszeitraum</label>
+                            <input wire:model.live="deliveryDate" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                         </div>
                     </div>
                     @if ($mode === 'invoice')
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1">Zahlungsziel (Tage)</label>
-                                <input wire:model.live="dueDays" type="number" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Zahlungsziel (Tage)</label>
+                                <input wire:model.live="dueDays" type="number" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1">Rabatt / Skonto (%)</label>
-                                <input wire:model.live="discountRate" type="number" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Rabatt / Skonto (%)</label>
+                                <input wire:model.live="discountRate" type="number" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">Umsatzsteuer-Modus</label>
-                            <select wire:model.live="taxMode" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white">
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">Umsatzsteuer-Modus</label>
+                            <select wire:model.live="taxMode" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600">
                                 <option value="standard">Standardbesteuerung (19% USt.)</option>
                                 <option value="reverse">Reverse Charge § 13b UStG (Bauleistung)</option>
                                 <option value="small">Kleinunternehmer § 19 UStG</option>
@@ -580,8 +580,8 @@ new class extends Component {
                         </div>
                         @if ($taxMode === 'custom' || $taxMode === 'reverse')
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1">Begründung für 0% USt.</label>
-                                <input wire:model.live="taxReasonText" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white" placeholder="z. B. Steuerschuldnerschaft des Leistungsempfängers nach § 13b UStG">
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Begründung für 0% USt.</label>
+                                <input wire:model.live="taxReasonText" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600" placeholder="z. B. Steuerschuldnerschaft des Leistungsempfängers nach § 13b UStG">
                             </div>
                         @endif
                     @endif
@@ -589,41 +589,41 @@ new class extends Component {
             </div>
 
             <!-- Items Editor Table -->
-            <div class="bg-gray-800 border border-gray-700/50 rounded-xl p-5 shadow-sm space-y-4">
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm space-y-4">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">Positionen</h3>
-                    <button wire:click="addItem" class="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded transition">+ Posten</button>
+                    <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Positionen</h3>
+                    <button wire:click="addItem" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-xs transition">+ Posten</button>
                 </div>
                 <div class="space-y-3">
                     @foreach ($items as $idx => $item)
-                        <div wire:key="{{ $item['id'] }}" class="bg-gray-900/40 p-3 rounded-lg border border-gray-700/40 space-y-2 relative">
-                            <button wire:click="removeItem('{{ $item['id'] }}')" class="absolute top-2 right-2 text-red-500 hover:text-red-400 text-xs">✕</button>
+                        <div wire:key="{{ $item['id'] }}" class="bg-slate-50 p-3 rounded-xl border border-slate-200/80 space-y-2 relative">
+                            <button wire:click="removeItem('{{ $item['id'] }}')" class="absolute top-2 right-2 text-rose-500 hover:text-rose-700 text-xs font-bold">✕</button>
                             <div class="grid grid-cols-6 gap-2">
                                 <div class="col-span-1">
-                                    <label class="block text-[10px] text-gray-400 mb-0.5">Pos</label>
-                                    <input wire:model.live="items.{{ $idx }}.pos_number" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-1.5 py-1 text-xs text-white">
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Pos</label>
+                                    <input wire:model.live="items.{{ $idx }}.pos_number" type="text" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs text-slate-900">
                                 </div>
                                 <div class="col-span-5">
-                                    <label class="block text-[10px] text-gray-400 mb-0.5">Beschreibung</label>
-                                    <textarea wire:model.live="items.{{ $idx }}.description" rows="2" class="w-full bg-gray-900 border border-gray-700 rounded px-1.5 py-1 text-xs text-white font-sans"></textarea>
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Beschreibung</label>
+                                    <textarea wire:model.live="items.{{ $idx }}.description" rows="2" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs text-slate-900 font-sans"></textarea>
                                 </div>
                             </div>
                             <div class="grid grid-cols-4 gap-2">
                                 <div>
-                                    <label class="block text-[10px] text-gray-400 mb-0.5">Menge</label>
-                                    <input wire:model.live="items.{{ $idx }}.quantity" type="number" step="0.001" class="w-full bg-gray-900 border border-gray-700 rounded px-1.5 py-1 text-xs text-white">
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Menge</label>
+                                    <input wire:model.live="items.{{ $idx }}.quantity" type="number" step="0.001" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs text-slate-900">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] text-gray-400 mb-0.5">Einheit</label>
-                                    <input wire:model.live="items.{{ $idx }}.unit" type="text" class="w-full bg-gray-900 border border-gray-700 rounded px-1.5 py-1 text-xs text-white">
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Einheit</label>
+                                    <input wire:model.live="items.{{ $idx }}.unit" type="text" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs text-slate-900">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] text-gray-400 mb-0.5">Einzel (€)</label>
-                                    <input wire:model.live="items.{{ $idx }}.price" type="number" step="0.01" class="w-full bg-gray-900 border border-gray-700 rounded px-1.5 py-1 text-xs text-white">
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Einzel (€)</label>
+                                    <input wire:model.live="items.{{ $idx }}.price" type="number" step="0.01" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs text-slate-900">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] text-gray-400 mb-0.5">USt. (%)</label>
-                                    <input wire:model.live="items.{{ $idx }}.vatRate" type="number" class="w-full bg-gray-900 border border-gray-700 rounded px-1.5 py-1 text-xs text-white">
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-0.5">USt. (%)</label>
+                                    <input wire:model.live="items.{{ $idx }}.vatRate" type="number" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs text-slate-900">
                                 </div>
                             </div>
                         </div>
@@ -632,39 +632,39 @@ new class extends Component {
             </div>
 
             <!-- Footnotes & Paynotes -->
-            <div class="bg-gray-800 border border-gray-700/50 rounded-xl p-5 shadow-sm space-y-4">
-                <h3 class="text-sm font-bold text-white uppercase tracking-wider">Zahlungskonditionen & Notizen</h3>
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm space-y-4">
+                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Zahlungskonditionen & Notizen</h3>
                 <div class="space-y-3">
                     <div>
-                        <label class="block text-xs text-gray-400 mb-1">Individueller Zahlungshinweis</label>
-                        <textarea wire:model.live="customPaymentNote" rows="2" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white" placeholder="Bitte überweisen Sie den Betrag..."></textarea>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Individueller Zahlungshinweis</label>
+                        <textarea wire:model.live="customPaymentNote" rows="2" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600" placeholder="Bitte überweisen Sie den Betrag..."></textarea>
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-400 mb-1">Gesetzlicher Hinweistext (Zusatz)</label>
-                        <textarea wire:model.live="customLegalText" rows="2" class="w-full bg-gray-900 border border-gray-700 rounded px-2.5 py-1.5 text-xs text-white" placeholder="z. B. Freistellungsbescheinigung nach § 48b EStG liegt vor."></textarea>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Gesetzlicher Hinweistext (Zusatz)</label>
+                        <textarea wire:model.live="customLegalText" rows="2" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 focus:bg-white focus:border-blue-600" placeholder="z. B. Freistellungsbescheinigung nach § 48b EStG liegt vor."></textarea>
                     </div>
                 </div>
             </div>
 
             <!-- Save Action Button -->
-            <button wire:click="saveDocument" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-lg transition">
-                Archivieren / In Datenbank speichern
+            <button wire:click="saveDocument" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md shadow-blue-500/10 transition">
+                💾 Archivieren / In Datenbank speichern
             </button>
 
             <!-- Documents Archive list -->
-            <div class="bg-gray-800 border border-gray-700/50 rounded-xl p-5 shadow-sm space-y-4">
-                <h3 class="text-sm font-bold text-white uppercase tracking-wider">Vorhandene {{ $mode === 'invoice' ? 'Rechnungen' : 'Angebote' }}</h3>
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm space-y-4">
+                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Vorhandene {{ $mode === 'invoice' ? 'Rechnungen' : 'Angebote' }}</h3>
                 <div class="space-y-2 max-h-48 overflow-y-auto">
                     @forelse ($savedDocs as $doc)
-                        <div wire:click="loadSavedDoc('{{ $doc['id'] }}')" class="p-2.5 bg-gray-900/40 border border-gray-700/30 rounded cursor-pointer hover:bg-gray-750 transition flex justify-between items-center text-xs">
+                        <div wire:click="loadSavedDoc('{{ $doc['id'] }}')" class="p-3 bg-slate-50 border border-slate-200/80 rounded-xl cursor-pointer hover:bg-slate-100 transition flex justify-between items-center text-xs">
                             <div>
-                                <p class="font-bold text-white">{{ $doc['invoice_number'] ?? $doc['offer_number'] }}</p>
-                                <p class="text-gray-400">{{ date('d.m.Y', strtotime($doc['invoice_date'] ?? $doc['date'])) }}</p>
+                                <p class="font-bold text-slate-900">{{ $doc['invoice_number'] ?? $doc['offer_number'] }}</p>
+                                <p class="text-slate-500 font-medium">{{ date('d.m.Y', strtotime($doc['invoice_date'] ?? $doc['date'])) }}</p>
                             </div>
-                            <p class="font-bold text-red-500">{{ number_format($doc['total_net'] ?? $doc['total_net'], 2, ',', '.') }} €</p>
+                            <p class="font-bold text-blue-700">{{ number_format($doc['total_net'] ?? $doc['total_net'], 2, ',', '.') }} €</p>
                         </div>
                     @empty
-                        <p class="text-xs text-gray-500">Keine Dokumente gefunden.</p>
+                        <p class="text-xs text-slate-500 italic">Keine Dokumente gefunden.</p>
                     @endforelse
                 </div>
             </div>

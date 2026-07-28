@@ -12,6 +12,7 @@ class Contact extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
+        'customer_number',
         'type',
         'company_name',
         'salutation',
@@ -26,6 +27,32 @@ class Contact extends Model
         'vat_id',
         'notes',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Contact $contact) {
+            if (empty($contact->customer_number)) {
+                $contact->customer_number = static::generateNextCustomerNumber();
+            }
+        });
+    }
+
+    public static function generateNextCustomerNumber(): string
+    {
+        $year = date('Y');
+        $prefix = "KD-{$year}-";
+        $last = static::where('customer_number', 'like', "{$prefix}%")
+            ->orderBy('customer_number', 'desc')
+            ->first();
+
+        if ($last && preg_match('/KD-\d{4}-(\d+)/', $last->customer_number, $matches)) {
+            $nextNum = intval($matches[1]) + 1;
+        } else {
+            $nextNum = 1;
+        }
+
+        return $prefix . str_pad((string) $nextNum, 4, '0', STR_PAD_LEFT);
+    }
 
     public function projects(): HasMany
     {

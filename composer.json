@@ -7,11 +7,15 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "barryvdh/laravel-dompdf": "^3.1",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^3.6.4",
         "livewire/volt": "^1.7.0",
-        "openai-php/client": "^0.20.1"
+        "openai-php/client": "^0.20.1",
+        "smalot/pdfparser": "^2.12",
+        "spatie/browsershot": "^5.4",
+        "spatie/laravel-pdf": "^2.12"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

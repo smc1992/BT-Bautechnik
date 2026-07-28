@@ -40,4 +40,23 @@ Route::view('ki-agent', 'ki-agent')
     ->middleware(['auth', 'verified'])
     ->name('ai-agent');
 
+Route::view('wissen', 'wissen')
+    ->middleware(['auth', 'verified'])
+    ->name('knowledge-base');
+
+Route::view('analytics', 'analytics')
+    ->middleware(['auth', 'verified'])
+    ->name('analytics');
+
+Route::view('planung', 'planung')
+    ->middleware(['auth', 'verified'])
+    ->name('planning');
+
+Route::view('materialien', 'materialien')
+    ->middleware(['auth', 'verified'])
+    ->name('materials');
+
+Route::get('/bautagebuch/freigabe/{token}', App\Livewire\PublicDailyLogApproval::class)
+    ->name('daily-log.public-approval');
+
 require __DIR__.'/auth.php';

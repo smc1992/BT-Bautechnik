@@ -27,4 +27,14 @@ class Invoice extends Model
     {
         return $this->hasMany(InvoiceItem::class);
     }
+
+    public function originalInvoice(): BelongsTo
+    {
+        return $this->belongsTo(Invoice::class, 'original_invoice_id');
+    }
+
+    public function stornoInvoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class, 'original_invoice_id');
+    }
 }

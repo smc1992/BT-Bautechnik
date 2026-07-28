@@ -1,17 +1,47 @@
 <?php
 
 use Livewire\Volt\Component;
+use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use App\Models\Contact;
 use App\Models\Project;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 new class extends Component {
+    use WithFileUploads, WithPagination;
+
     public string $search = '';
     public string $activeTypeFilter = 'all'; // all, kunde, hausverwaltung, bautraeger, subunternehmer
+    public string $cityFilter = 'all';
+    public string $sortBy = 'latest'; // latest, oldest, name_asc, name_desc, projects_desc
+    public int $perPage = 12;
+
+    public function updatedSearch() { $this->resetPage(); }
+    public function updatedActiveTypeFilter() { $this->resetPage(); }
+    public function updatedCityFilter() { $this->resetPage(); }
+    public function updatedSortBy() { $this->resetPage(); }
+    public function updatedPerPage() { $this->resetPage(); }
+
+    public function resetFilters()
+    {
+        $this->search = '';
+        $this->activeTypeFilter = 'all';
+        $this->cityFilter = 'all';
+        $this->sortBy = 'latest';
+        $this->perPage = 12;
+        $this->resetPage();
+    }
     
     // Create/Edit Modal states
     public bool $showContactModal = false;
     public ?string $editingContactId = null;
+
+    // CSV / Excel Import Modal states
+    public bool $showImportModal = false;
+    public $importFile = null;
+    public array $parsedImportRows = [];
+    public bool $hasHeader = true;
 
     // Detail Modal states
     public bool $showDetailModal = false;
@@ -50,22 +80,206 @@ new class extends Component {
     public string $vatId = '';
     public string $notes = '';
 
+    // CSV Import Actions
+    public function openImportModal()
+    {
+        $this->importFile = null;
+        $this->parsedImportRows = [];
+        $this->showImportModal = true;
+    }
+
+    public function closeImportModal()
+    {
+        $this->importFile = null;
+        $this->parsedImportRows = [];
+        $this->showImportModal = false;
+    }
+
+    public function updatedImportFile()
+    {
+        $this->validate([
+            'importFile' => 'required|file|max:5120',
+        ]);
+
+        $path = $this->importFile->getRealPath();
+        $content = file_get_contents($path);
+
+        if (!mb_check_encoding($content, 'UTF-8')) {
+            $content = mb_convert_encoding($content, 'UTF-8', 'ISO-8859-1');
+        }
+
+        $lines = array_filter(preg_split('/\r\n|\r|\n/', trim($content)));
+        if (empty($lines)) {
+            $this->dispatch('notify', 'Die hochgeladene Datei ist leer.');
+            return;
+        }
+
+        $firstLine = reset($lines);
+        $delimiter = ';';
+        if (substr_count($firstLine, ',') > substr_count($firstLine, ';')) {
+            $delimiter = ',';
+        } elseif (substr_count($firstLine, "\t") > substr_count($firstLine, ';')) {
+            $delimiter = "\t";
+        }
+
+        $rows = array_map(fn($line) => str_getcsv($line, $delimiter), $lines);
+        if (empty($rows)) return;
+
+        $headers = [];
+        $dataRows = $rows;
+
+        if ($this->hasHeader) {
+            $headers = array_map('mb_strtolower', array_map('trim', array_shift($dataRows)));
+        }
+
+        $parsed = [];
+        foreach ($dataRows as $row) {
+            if (empty(array_filter($row))) continue;
+
+            $contact = [
+                'type' => 'kunde',
+                'company_name' => '',
+                'salutation' => 'Herr',
+                'first_name' => '',
+                'last_name' => '',
+                'email' => '',
+                'phone' => '',
+                'mobile' => '',
+                'street' => '',
+                'zip' => '',
+                'city' => '',
+                'vat_id' => '',
+                'notes' => 'Importiert am ' . date('d.m.Y H:i'),
+            ];
+
+            if ($this->hasHeader && !empty($headers)) {
+                foreach ($headers as $colIdx => $colName) {
+                    $val = trim($row[$colIdx] ?? '');
+                    if (empty($val)) continue;
+
+                    if (Str::contains($colName, ['firma', 'company', 'unternehmen', 'betrieb'])) {
+                        $contact['company_name'] = $val;
+                    } elseif (Str::contains($colName, ['typ', 'kategorie', 'type'])) {
+                        $valLower = mb_strtolower($val);
+                        if (Str::contains($valLower, ['hausverwa', 'weg'])) $contact['type'] = 'hausverwaltung';
+                        elseif (Str::contains($valLower, ['bauträg', 'bautraeg'])) $contact['type'] = 'bautraeger';
+                        elseif (Str::contains($valLower, ['sub', 'nachun', 'partner'])) $contact['type'] = 'subunternehmer';
+                        else $contact['type'] = 'kunde';
+                    } elseif (Str::contains($colName, ['anrede', 'salutation'])) {
+                        $contact['salutation'] = (mb_strtolower($val) === 'frau') ? 'Frau' : 'Herr';
+                    } elseif (Str::contains($colName, ['vorname', 'first'])) {
+                        $contact['first_name'] = $val;
+                    } elseif (Str::contains($colName, ['nachname', 'name', 'last']) && !Str::contains($colName, ['firma', 'unternehmen'])) {
+                        $contact['last_name'] = $val;
+                    } elseif (Str::contains($colName, ['mail', 'e-mail'])) {
+                        $contact['email'] = $val;
+                    } elseif (Str::contains($colName, ['telefon', 'phone', 'tel']) && !Str::contains($colName, ['mobil', 'handy'])) {
+                        $contact['phone'] = $val;
+                    } elseif (Str::contains($colName, ['mobil', 'handy', 'cell'])) {
+                        $contact['mobile'] = $val;
+                    } elseif (Str::contains($colName, ['strasse', 'straße', 'street', 'adresse'])) {
+                        $contact['street'] = $val;
+                    } elseif (Str::contains($colName, ['plz', 'zip', 'postleitzahl'])) {
+                        $contact['zip'] = $val;
+                    } elseif (Str::contains($colName, ['ort', 'stadt', 'city'])) {
+                        $contact['city'] = $val;
+                    } elseif (Str::contains($colName, ['ust', 'vat', 'steuer'])) {
+                        $contact['vat_id'] = $val;
+                    } elseif (Str::contains($colName, ['notiz', 'note', 'bemerkung'])) {
+                        $contact['notes'] = $val;
+                    }
+                }
+            } else {
+                $contact['company_name'] = trim($row[0] ?? '');
+                $contact['first_name'] = trim($row[1] ?? '');
+                $contact['last_name'] = trim($row[2] ?? '');
+                $contact['email'] = trim($row[3] ?? '');
+                $contact['phone'] = trim($row[4] ?? '');
+                $contact['street'] = trim($row[5] ?? '');
+                $contact['zip'] = trim($row[6] ?? '');
+                $contact['city'] = trim($row[7] ?? '');
+            }
+
+            if (empty($contact['company_name']) && empty($contact['last_name']) && empty($contact['first_name'])) {
+                continue;
+            }
+
+            $parsed[] = $contact;
+        }
+
+        $this->parsedImportRows = $parsed;
+    }
+
+    public function executeImport()
+    {
+        if (empty($this->parsedImportRows)) {
+            $this->dispatch('notify', 'Keine Daten zum Importieren vorhanden.');
+            return;
+        }
+
+        DB::transaction(function () {
+            foreach ($this->parsedImportRows as $row) {
+                Contact::create($row);
+            }
+        });
+
+        $count = count($this->parsedImportRows);
+        $this->closeImportModal();
+        $this->dispatch('notify', "✨ Erfolgreich {$count} Kontakte aus CSV/Excel importiert!");
+    }
+
+    public function downloadSampleCsv()
+    {
+        $header = "Firma;Typ;Anrede;Vorname;Nachname;Email;Telefon;Mobil;Strasse;PLZ;Ort;USt-ID;Notizen\n";
+        $sample1 = "Hausverwaltung Müller GmbH;hausverwaltung;Frau;Sabine;Müller;info@mueller-hv.de;0911 123456;0171 987654;Hauptstraße 12;90402;Nürnberg;DE123456789;Betreut 14 Objektanlagen\n";
+        $sample2 = "Mayer Bau GmbH;bautraeger;Herr;Markus;Mayer;mayer@mayerbau.de;089 554433;;Industriestraße 8;80331;München;DE987654321;Neubauprojekt Schwabing\n";
+        $sample3 = "Elektro Schmidt & Co;subunternehmer;Herr;Thomas;Schmidt;schmidt@elektroschmidt.de;09181 442211;;Gewerbepark 3;92318;Neumarkt;DE554433221;Subunternehmer Elektrotechnik\n";
+
+        return response()->streamDownload(function () use ($header, $sample1, $sample2, $sample3) {
+            echo "\xEF\xBB\xBF";
+            echo $header . $sample1 . $sample2 . $sample3;
+        }, 'Kontakte_Import_Vorlage.csv', [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    public function getCitiesProperty()
+    {
+        return Contact::whereNotNull('city')
+            ->where('city', '!=', '')
+            ->distinct()
+            ->pluck('city')
+            ->sort()
+            ->values();
+    }
+
     public function getContactsProperty()
     {
-        return Contact::with(['projects', 'invoices', 'offers', 'actualCosts'])
+        $query = Contact::with(['projects', 'invoices', 'offers', 'actualCosts'])
             ->when($this->activeTypeFilter !== 'all', fn($q) => $q->where('type', $this->activeTypeFilter))
-            ->when(!empty($this->search), function($q) {
-                $term = '%' . $this->search . '%';
+            ->when($this->cityFilter !== 'all', fn($q) => $q->where('city', $this->cityFilter))
+            ->when(!empty(trim($this->search)), function($q) {
+                $term = '%' . trim($this->search) . '%';
                 $q->where(function($sub) use ($term) {
                     $sub->where('company_name', 'LIKE', $term)
                         ->orWhere('first_name', 'LIKE', $term)
                         ->orWhere('last_name', 'LIKE', $term)
                         ->orWhere('city', 'LIKE', $term)
-                        ->orWhere('email', 'LIKE', $term);
+                        ->orWhere('zip', 'LIKE', $term)
+                        ->orWhere('email', 'LIKE', $term)
+                        ->orWhere('phone', 'LIKE', $term);
                 });
-            })
-            ->latest()
-            ->get();
+            });
+
+        match ($this->sortBy) {
+            'oldest' => $query->oldest(),
+            'name_asc' => $query->orderBy(DB::raw('COALESCE(NULLIF(company_name, ""), last_name)'), 'asc'),
+            'name_desc' => $query->orderBy(DB::raw('COALESCE(NULLIF(company_name, ""), last_name)'), 'desc'),
+            'projects_desc' => $query->withCount('projects')->orderBy('projects_count', 'desc'),
+            default => $query->latest(),
+        };
+
+        return $query->paginate($this->perPage);
     }
 
     public function getSelectedContactProperty()
@@ -272,71 +486,151 @@ new class extends Component {
     }
 }; ?>
 
-<div class="space-y-8 font-sans">
-    <!-- Header Actions & Search Bar -->
-    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div class="space-y-1">
-            <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Kunden, Hausverwaltungen & Partner</h2>
-            <p class="text-xs text-slate-500">Zentrale Verwaltung aller Auftraggeber, Bauträger, Subunternehmer und Betriebe mit Baustellenverknüpfung.</p>
+<div class="space-y-8 font-sans max-w-full overflow-x-hidden">
+    <!-- Header Command Center Banner & Search Bar -->
+    <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 text-white rounded-2xl p-6 shadow-xl border border-blue-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="space-y-1 relative z-10">
+            <h2 class="text-xl font-black text-white tracking-tight flex items-center gap-2.5">
+                <span>🎇️ Kunden, Hausverwaltungen & Partner</span>
+            </h2>
+            <p class="text-xs text-slate-300 font-medium">Zentrale CRM-Verwaltung aller Auftraggeber, Bauträger, Subunternehmer & Ansprechpartner</p>
         </div>
 
-        <div class="flex items-center gap-3 w-full md:w-auto">
-            <div class="relative w-full md:w-64">
+        <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto relative z-10">
+            <div class="relative w-full sm:w-72">
                 <input wire:model.live.debounce.250ms="search" type="text" 
-                       class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-600 focus:outline-none"
-                       placeholder="Suchen nach Name, Firma, Ort...">
-                <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                       class="w-full bg-slate-900/90 border border-slate-700 rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none transition shadow-inner"
+                       placeholder="Suchen nach Name, Firma, Ort, Mail...">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">🔍</span>
             </div>
-            <button wire:click="openCreateModal" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/10 whitespace-nowrap">
+            
+            <button wire:click="openImportModal" class="w-full sm:w-auto px-3.5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">
+                <span>📥 CSV / Excel Import</span>
+            </button>
+
+            <button wire:click="openCreateModal" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/20 whitespace-nowrap cursor-pointer transition">
                 + Neu anlegen
             </button>
         </div>
     </div>
 
-    <!-- Category Filter Chips -->
-    <div class="flex flex-wrap items-center gap-2">
-        <button wire:click="setFilter('all')" 
-                class="px-4 py-2 rounded-xl text-xs font-bold transition shadow-2xs flex items-center gap-2 {{ $activeTypeFilter === 'all' ? 'bg-slate-900 text-white' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50' }}">
-            Alle Kontakte
-            <span class="px-2 py-0.5 rounded-full text-[10px] {{ $activeTypeFilter === 'all' ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-600' }}">{{ $this->counts['all'] }}</span>
-        </button>
+    <!-- Category Filter Chips & Multi-Filter Bar (Mobile-First Optimization) -->
+    <div class="space-y-3">
+        <!-- Category Chips (Horizontal Scrollable on Mobile) -->
+        <div class="overflow-x-auto pb-1.5 scrollbar-none max-w-full">
+            <div class="flex items-center gap-2 whitespace-nowrap min-w-max">
+                <button wire:click="setFilter('all')" 
+                        class="px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-2xs flex items-center gap-2 cursor-pointer shrink-0 {{ $activeTypeFilter === 'all' ? 'bg-slate-950 text-white shadow-md' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50' }}">
+                    <span>Alle Kontakte</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] {{ $activeTypeFilter === 'all' ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-600' }}">{{ $this->counts['all'] }}</span>
+                </button>
 
-        <button wire:click="setFilter('hausverwaltung')" 
-                class="px-4 py-2 rounded-xl text-xs font-bold transition shadow-2xs flex items-center gap-2 {{ $activeTypeFilter === 'hausverwaltung' ? 'bg-indigo-600 text-white' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50' }}">
-            🏢 Hausverwaltungen
-            <span class="px-2 py-0.5 rounded-full text-[10px] {{ $activeTypeFilter === 'hausverwaltung' ? 'bg-indigo-700 text-indigo-100' : 'bg-indigo-50 text-indigo-700' }}">{{ $this->counts['hausverwaltung'] }}</span>
-        </button>
+                <button wire:click="setFilter('hausverwaltung')" 
+                        class="px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-2xs flex items-center gap-2 cursor-pointer shrink-0 {{ $activeTypeFilter === 'hausverwaltung' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50' }}">
+                    <span>🏢 Hausverwaltungen</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] {{ $activeTypeFilter === 'hausverwaltung' ? 'bg-indigo-700 text-indigo-100' : 'bg-indigo-50 text-indigo-700' }}">{{ $this->counts['hausverwaltung'] }}</span>
+                </button>
 
-        <button wire:click="setFilter('bautraeger')" 
-                class="px-4 py-2 rounded-xl text-xs font-bold transition shadow-2xs flex items-center gap-2 {{ $activeTypeFilter === 'bautraeger' ? 'bg-cyan-600 text-white' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50' }}">
-            🏗️ Bauträger
-            <span class="px-2 py-0.5 rounded-full text-[10px] {{ $activeTypeFilter === 'bautraeger' ? 'bg-cyan-700 text-cyan-100' : 'bg-cyan-50 text-cyan-700' }}">{{ $this->counts['bautraeger'] }}</span>
-        </button>
+                <button wire:click="setFilter('bautraeger')" 
+                        class="px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-2xs flex items-center gap-2 cursor-pointer shrink-0 {{ $activeTypeFilter === 'bautraeger' ? 'bg-cyan-600 text-white shadow-md' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50' }}">
+                    <span>🏗️ Bauträger</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] {{ $activeTypeFilter === 'bautraeger' ? 'bg-cyan-700 text-cyan-100' : 'bg-cyan-50 text-cyan-700' }}">{{ $this->counts['bautraeger'] }}</span>
+                </button>
 
-        <button wire:click="setFilter('kunde')" 
-                class="px-4 py-2 rounded-xl text-xs font-bold transition shadow-2xs flex items-center gap-2 {{ $activeTypeFilter === 'kunde' ? 'bg-blue-600 text-white' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50' }}">
-            👤 Privatkunden
-            <span class="px-2 py-0.5 rounded-full text-[10px] {{ $activeTypeFilter === 'kunde' ? 'bg-blue-700 text-blue-100' : 'bg-blue-50 text-blue-700' }}">{{ $this->counts['kunde'] }}</span>
-        </button>
+                <button wire:click="setFilter('kunde')" 
+                        class="px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-2xs flex items-center gap-2 cursor-pointer shrink-0 {{ $activeTypeFilter === 'kunde' ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50' }}">
+                    <span>👤 Privatkunden</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] {{ $activeTypeFilter === 'kunde' ? 'bg-blue-700 text-blue-100' : 'bg-blue-50 text-blue-700' }}">{{ $this->counts['kunde'] }}</span>
+                </button>
 
-        <button wire:click="setFilter('subunternehmer')" 
-                class="px-4 py-2 rounded-xl text-xs font-bold transition shadow-2xs flex items-center gap-2 {{ $activeTypeFilter === 'subunternehmer' ? 'bg-purple-600 text-white' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50' }}">
-            🛠️ Subunternehmer
-            <span class="px-2 py-0.5 rounded-full text-[10px] {{ $activeTypeFilter === 'subunternehmer' ? 'bg-purple-700 text-purple-100' : 'bg-purple-50 text-purple-700' }}">{{ $this->counts['subunternehmer'] }}</span>
-        </button>
+                <button wire:click="setFilter('subunternehmer')" 
+                        class="px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-2xs flex items-center gap-2 cursor-pointer shrink-0 {{ $activeTypeFilter === 'subunternehmer' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50' }}">
+                    <span>🏗️ Subunternehmer</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] {{ $activeTypeFilter === 'subunternehmer' ? 'bg-indigo-700 text-indigo-100' : 'bg-indigo-50 text-indigo-700' }}">{{ $this->counts['subunternehmer'] }}</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Secondary Filter Controls Strip (Responsive Grid) -->
+        <div class="bg-white border border-slate-200/80 p-3 sm:p-3.5 rounded-2xl shadow-2xs grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+            <!-- City Filter -->
+            <div class="flex items-center justify-between sm:justify-start gap-2 bg-slate-50 p-2 sm:p-0 rounded-xl sm:bg-transparent">
+                <span class="text-slate-500 font-bold whitespace-nowrap">📍 Ort:</span>
+                <select wire:model.live="cityFilter" class="w-full bg-white sm:bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 font-medium focus:border-blue-500 focus:outline-none cursor-pointer">
+                    <option value="all">Alle Orte ({{ count($this->cities) }})</option>
+                    @foreach ($this->cities as $cty)
+                        <option value="{{ $cty }}">{{ $cty }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Sort By -->
+            <div class="flex items-center justify-between sm:justify-start gap-2 bg-slate-50 p-2 sm:p-0 rounded-xl sm:bg-transparent">
+                <span class="text-slate-500 font-bold whitespace-nowrap">🔃 Sortierung:</span>
+                <select wire:model.live="sortBy" class="w-full bg-white sm:bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 font-medium focus:border-blue-500 focus:outline-none cursor-pointer">
+                    <option value="latest">Neueste zuerst</option>
+                    <option value="oldest">Älteste zuerst</option>
+                    <option value="name_asc">Name (A – Z)</option>
+                    <option value="name_desc">Name (Z – A)</option>
+                    <option value="projects_desc">Meiste Baustellen</option>
+                </select>
+            </div>
+
+            <!-- Per Page -->
+            <div class="flex items-center justify-between sm:justify-start gap-2 bg-slate-50 p-2 sm:p-0 rounded-xl sm:bg-transparent">
+                <span class="text-slate-500 font-bold whitespace-nowrap">Zeigen:</span>
+                <select wire:model.live="perPage" class="w-full bg-white sm:bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 font-medium focus:border-blue-500 focus:outline-none cursor-pointer">
+                    <option value="9">9 pro Seite</option>
+                    <option value="12">12 pro Seite</option>
+                    <option value="24">24 pro Seite</option>
+                    <option value="48">48 pro Seite</option>
+                </select>
+            </div>
+
+            <!-- Reset Filters button -->
+            <div class="flex items-center justify-end">
+                @if ($search || $activeTypeFilter !== 'all' || $cityFilter !== 'all' || $sortBy !== 'latest' || $perPage !== 12)
+                    <button wire:click="resetFilters" class="w-full sm:w-auto px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl border border-rose-200 transition flex items-center justify-center gap-1 cursor-pointer">
+                        <span>↺ Filter zurücksetzen</span>
+                    </button>
+                @endif
+            </div>
+        </div>
     </div>
 
     <!-- Contacts Cards Directory -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse ($this->contacts as $contact)
-            <div wire:key="{{ $contact->id }}" class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between space-y-4">
+            <div wire:key="{{ $contact->id }}" 
+                 class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between space-y-4 relative overflow-hidden group">
+                
+                <!-- Category Color Top Accent Line -->
+                @php
+                    $accentGradient = match($contact->type) {
+                        'hausverwaltung' => 'from-indigo-600 to-blue-600',
+                        'bautraeger' => 'from-cyan-600 to-teal-600',
+                        'subunternehmer' => 'from-indigo-600 to-blue-600',
+                        default => 'from-blue-600 to-indigo-600',
+                    };
+                @endphp
+                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r {{ $accentGradient }}"></div>
+
                 <div class="space-y-3">
                     <div class="flex justify-between items-start gap-2">
                         <div>
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase border shadow-2xs {{ $contact->type_badge_class }}">
-                                {{ $contact->type_label }}
-                            </span>
-                            <h3 wire:click="openDetailModal('{{ $contact->id }}')" class="text-base font-bold text-slate-900 mt-2 tracking-tight hover:text-blue-600 cursor-pointer line-clamp-1">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase border shadow-2xs {{ $contact->type_badge_class }}">
+                                    {{ $contact->type_label }}
+                                </span>
+                                @if ($contact->customer_number)
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-200">
+                                        {{ $contact->customer_number }}
+                                    </span>
+                                @endif
+                            </div>
+                            <h3 wire:click="openDetailModal('{{ $contact->id }}')" class="text-base font-extrabold text-slate-900 mt-2 tracking-tight hover:text-blue-600 cursor-pointer line-clamp-1">
                                 {{ $contact->display_name }}
                             </h3>
                         </div>
@@ -345,29 +639,29 @@ new class extends Component {
                     <div class="space-y-1.5 text-xs text-slate-600 font-medium">
                         @if ($contact->first_name || $contact->last_name)
                             <p class="flex items-center gap-2">
-                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                {{ $contact->salutation }} {{ $contact->first_name }} {{ $contact->last_name }}
+                                <span class="text-slate-400">👤</span>
+                                <span class="font-semibold text-slate-800">{{ $contact->salutation }} {{ $contact->first_name }} {{ $contact->last_name }}</span>
                             </p>
                         @endif
 
                         @if ($contact->email)
                             <p class="flex items-center gap-2">
-                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                <a href="mailto:{{ $contact->email }}" class="text-blue-600 hover:underline">{{ $contact->email }}</a>
+                                <span class="text-slate-400">✉️</span>
+                                <a href="mailto:{{ $contact->email }}" class="text-blue-600 hover:underline font-semibold truncate">{{ $contact->email }}</a>
                             </p>
                         @endif
 
                         @if ($contact->phone || $contact->mobile)
                             <p class="flex items-center gap-2">
-                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                                {{ $contact->phone ?: $contact->mobile }}
+                                <span class="text-slate-400">📞</span>
+                                <a href="tel:{{ $contact->phone ?: $contact->mobile }}" class="text-slate-800 font-semibold hover:underline">{{ $contact->phone ?: $contact->mobile }}</a>
                             </p>
                         @endif
 
                         @if ($contact->street || $contact->city)
                             <p class="flex items-center gap-2 text-slate-500">
-                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                {{ $contact->street }} {{ $contact->zip }} {{ $contact->city }}
+                                <span class="text-slate-400">📍</span>
+                                <span>{{ $contact->street }} {{ $contact->zip }} {{ $contact->city }}</span>
                             </p>
                         @endif
                     </div>
@@ -376,7 +670,7 @@ new class extends Component {
                     <div class="pt-2 border-t border-slate-100">
                         <div class="flex items-center justify-between text-xs">
                             <span class="text-slate-500 font-semibold">Baustellen:</span>
-                            <span class="font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md">
+                            <span class="font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60">
                                 {{ $contact->projects->count() }} Verknüpft
                             </span>
                         </div>
@@ -385,47 +679,90 @@ new class extends Component {
 
                 <!-- Footer Actions -->
                 <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-                    <button wire:click="openDetailModal('{{ $contact->id }}')" class="px-3 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition border border-blue-200/60 flex items-center gap-1">
-                        🔍 Details & Notizen
+                    <button wire:click="openDetailModal('{{ $contact->id }}')" class="px-3 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition border border-blue-200/60 flex items-center gap-1 cursor-pointer">
+                        <span>🔍 Details & Notizen</span>
                     </button>
 
                     <div class="flex items-center gap-2">
-                        <button wire:click="openEditModal('{{ $contact->id }}')" class="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
+                        <button wire:click="openEditModal('{{ $contact->id }}')" class="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition cursor-pointer">
                             Bearbeiten
                         </button>
-                        <button wire:click="deleteContact('{{ $contact->id }}')" wire:confirm="Kontakt wirklich löschen?" class="px-2.5 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-lg transition">
+                        <button wire:click="deleteContact('{{ $contact->id }}')" wire:confirm="Kontakt wirklich löschen?" class="px-2 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition cursor-pointer">
                             Löschen
                         </button>
                     </div>
                 </div>
             </div>
         @empty
-            <div class="col-span-full py-16 bg-white border border-slate-200/80 rounded-2xl text-center space-y-3">
-                <p class="text-base font-bold text-slate-900">Keine Kontakte gefunden</p>
-                <p class="text-xs text-slate-500">Legen Sie über den Button "+ Neu anlegen" Ihren ersten Kunden oder Hausverwaltung an.</p>
+            <div class="col-span-full py-16 bg-white border border-slate-200/80 rounded-2xl text-center space-y-3 shadow-xs">
+                <div class="text-3xl">🎇️</div>
+                <p class="text-base font-bold text-slate-900">Keine Kontakte für Ihre Filterkriterien gefunden</p>
+            <p class="text-xs text-slate-500">Versuchen Sie Ihre Suche oder Ortsfilter anzupassen.</p>
             </div>
         @endforelse
     </div>
 
-    <!-- CONTACT DETAIL VIEW MODAL (DETAILANSICHT MIT INLINE-EDIT & NOTIZ-SYSTEM) -->
+    <!-- Pagination Links Footer -->
+    <div class="pt-2">
+        {{ $this->contacts->links() }}
+    </div>
+
+    <!-- CONTACT DETAIL VIEW MODAL (MOBILE ALWAYS FULLSCREEN, DESKTOP MAXIMIZABLE) -->
     @if ($showDetailModal && $this->selectedContact)
         @php $c = $this->selectedContact; @endphp
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div x-data="{ isMaximized: false }" 
+             x-init="document.body.style.overflow = 'hidden'; document.documentElement.style.overflowX = 'hidden';"
+             x-on:unmount.window="document.body.style.overflow = ''; document.documentElement.style.overflowX = '';"
+             class="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center z-50 transition-all duration-300 overflow-x-hidden p-0 sm:p-4"
+             :class="isMaximized ? 'sm:p-0' : 'sm:p-4'">
+            <div class="bg-white border-0 sm:border border-slate-200 shadow-2xl overflow-hidden flex flex-col transition-all duration-300 min-w-0 max-w-full w-screen h-screen max-w-none max-h-none rounded-none sm:w-full sm:max-w-4xl sm:max-h-[90vh] sm:rounded-3xl"
+                 :class="isMaximized ? 'sm:w-screen sm:h-screen sm:max-w-none sm:max-h-none sm:rounded-none sm:border-0' : ''">
                 
-                <!-- Modal Header -->
-                <div class="p-6 bg-slate-900 text-white flex justify-between items-start relative overflow-hidden">
-                    <div class="space-y-2 relative z-10">
-                        <div class="flex items-center gap-3">
-                            <span class="px-3 py-1 rounded-full text-xs font-extrabold uppercase bg-white/10 text-white backdrop-blur-md border border-white/20">
+                <!-- Modal Header (Rich Dark Gradient, Sticky Top & Shrink-0) -->
+                <div class="shrink-0 p-4 sm:p-6 bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 text-white relative overflow-hidden space-y-3">
+                    <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-blue-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <!-- Top Bar: Badge + USt-ID + Action Buttons -->
+                    <div class="flex items-center justify-between gap-2 relative z-10">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-extrabold uppercase bg-blue-500/30 text-blue-200 border border-blue-400/30">
                                 {{ $c->type_label }}
                             </span>
                             @if ($c->vat_id)
-                                <span class="text-xs font-mono text-slate-300">USt-ID: {{ $c->vat_id }}</span>
+                                <span class="text-[10px] sm:text-xs font-mono text-slate-300">USt-ID: {{ $c->vat_id }}</span>
                             @endif
                         </div>
-                        <h2 class="text-2xl font-black text-white tracking-tight">{{ $c->display_name }}</h2>
-                        <p class="text-xs text-slate-300 flex items-center gap-3">
+
+                        <!-- Top Right Controls (Edit, Fullscreen & Close) -->
+                        <div class="flex items-center gap-2">
+                            <button wire:click="toggleDetailEdit" class="px-3 py-1 sm:py-1.5 {{ $isDetailEditing ? 'bg-amber-500 hover:bg-amber-600 text-slate-900 font-extrabold' : 'bg-white/10 hover:bg-white/20 text-white font-bold' }} text-xs rounded-xl transition border border-white/20 flex items-center gap-1.5 cursor-pointer">
+                                {{ $isDetailEditing ? '👁️ Fertig' : '✏️ Bearbeiten' }}
+                            </button>
+
+                            <!-- Desktop-only Fullscreen / Maximize Toggle Button -->
+                            <button @click="isMaximized = !isMaximized" 
+                                    class="hidden sm:flex px-2.5 py-1 sm:py-1.5 bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs rounded-xl transition border border-white/20 items-center gap-1.5 cursor-pointer"
+                                    :title="isMaximized ? 'Normalansicht wiederherstellen' : 'Vollbild maximieren'">
+                                <span x-show="!isMaximized" class="flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg>
+                                    <span class="text-[11px]">Vollbild</span>
+                                </span>
+                                <span x-show="isMaximized" class="flex items-center gap-1" x-cloak>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 3v3a2 2 0 01-2 2H3m18 0h-3a2 2 0 01-2-2V3m0 18v-3a2 2 0 012-2h3M3 16h3a2 2 0 012 2v3"/></svg>
+                                    <span class="text-[11px]">Verkleinern</span>
+                                </span>
+                            </button>
+
+                            <button wire:click="closeDetailModal" onclick="document.body.style.overflow = ''; document.documentElement.style.overflowX = '';" class="p-1.5 sm:p-2 text-slate-300 hover:text-white rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer" title="Schließen">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Title & Ansprechpartner/Address -->
+                    <div class="space-y-1 relative z-10">
+                        <h2 class="text-lg sm:text-2xl font-black text-white tracking-tight leading-snug">{{ $c->display_name }}</h2>
+                        <p class="text-xs text-slate-300 flex flex-wrap items-center gap-2 sm:gap-3">
                             @if ($c->first_name || $c->last_name)
                                 <span>👤 {{ $c->salutation }} {{ $c->first_name }} {{ $c->last_name }}</span>
                             @endif
@@ -434,81 +771,77 @@ new class extends Component {
                             @endif
                         </p>
                     </div>
+                </div>
 
-                    <!-- Action buttons & Close -->
-                    <div class="flex items-center gap-2 relative z-10">
-                        <button wire:click="toggleDetailEdit" class="px-3.5 py-1.5 {{ $isDetailEditing ? 'bg-amber-500 hover:bg-amber-600 text-slate-900 font-extrabold' : 'bg-white/10 hover:bg-white/20 text-white font-bold' }} text-xs rounded-xl transition border border-white/20 flex items-center gap-1.5">
-                            {{ $isDetailEditing ? '👁️ Direkt-Bearbeitung beenden' : '✏️ Stammdaten im Popup anpassen' }}
-                        </button>
-                        <button wire:click="closeDetailModal" class="p-2 text-slate-400 hover:text-white rounded-full bg-white/10 hover:bg-white/20 transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
+                <!-- Quick KPI Summary Strip (Responsive Grid) -->
+                <div class="shrink-0 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 p-3 bg-slate-50 border-b border-slate-200">
+                    <div class="bg-white p-2.5 rounded-xl border border-slate-200/80 shadow-2xs">
+                        <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">Baustellen</span>
+                        <p class="text-sm sm:text-lg font-black text-slate-900 mt-0.5">{{ $c->projects->count() }}</p>
+                    </div>
+                    <div class="bg-white p-2.5 rounded-xl border border-slate-200/80 shadow-2xs">
+                        <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">Rechnungen</span>
+                        <p class="text-sm sm:text-lg font-black text-blue-600 mt-0.5">{{ number_format($c->invoices->sum('total_net'), 2, ',', '.') }} €</p>
+                    </div>
+                    <div class="bg-white p-2.5 rounded-xl border border-slate-200/80 shadow-2xs">
+                        <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">Angebote</span>
+                        <p class="text-sm sm:text-lg font-black text-slate-900 mt-0.5">{{ $c->offers->count() }}</p>
+                    </div>
+                    <div class="bg-white p-2.5 rounded-xl border border-slate-200/80 shadow-2xs">
+                        <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">Fremdleistung</span>
+                        <p class="text-sm sm:text-lg font-black text-indigo-600 mt-0.5">{{ number_format($c->actualCosts->sum('amount'), 2, ',', '.') }} €</p>
                     </div>
                 </div>
 
-                <!-- Quick KPI Summary Strip -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-slate-50 border-b border-slate-200">
-                    <div class="bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Verknüpfte Baustellen</span>
-                        <p class="text-lg font-black text-slate-900 mt-0.5">{{ $c->projects->count() }}</p>
-                    </div>
-                    <div class="bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Rechnungen (Gesamt)</span>
-                        <p class="text-lg font-black text-blue-600 mt-0.5">{{ number_format($c->invoices->sum('total_net'), 2, ',', '.') }} €</p>
-                    </div>
-                    <div class="bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Angebote</span>
-                        <p class="text-lg font-black text-slate-900 mt-0.5">{{ $c->offers->count() }}</p>
-                    </div>
-                    <div class="bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Fremdleistung / Baukosten</span>
-                        <p class="text-lg font-black text-purple-600 mt-0.5">{{ number_format($c->actualCosts->sum('amount'), 2, ',', '.') }} €</p>
-                    </div>
-                </div>
-
-                <!-- Detail Tabs Navigation -->
-                <div class="flex border-b border-slate-200 bg-white px-6">
-                    <button wire:click="$set('activeDetailTab', 'overview')" class="py-3.5 px-4 text-xs font-bold border-b-2 transition {{ $activeDetailTab === 'overview' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600 hover:text-slate-900' }}">
-                        📋 Stammdaten & Notizbuch
-                    </button>
-                    <button wire:click="$set('activeDetailTab', 'projects')" class="py-3.5 px-4 text-xs font-bold border-b-2 transition flex items-center gap-1.5 {{ $activeDetailTab === 'projects' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600 hover:text-slate-900' }}">
-                        🏢 Baustellen & Projekte <span class="px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700">{{ $c->projects->count() }}</span>
-                    </button>
-                    <button wire:click="$set('activeDetailTab', 'invoices')" class="py-3.5 px-4 text-xs font-bold border-b-2 transition flex items-center gap-1.5 {{ $activeDetailTab === 'invoices' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600 hover:text-slate-900' }}">
-                        📄 Rechnungen <span class="px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700">{{ $c->invoices->count() }}</span>
-                    </button>
-                    <button wire:click="$set('activeDetailTab', 'offers')" class="py-3.5 px-4 text-xs font-bold border-b-2 transition flex items-center gap-1.5 {{ $activeDetailTab === 'offers' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600 hover:text-slate-900' }}">
-                        📑 Angebote <span class="px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700">{{ $c->offers->count() }}</span>
-                    </button>
-                    @if ($c->type === 'subunternehmer')
-                        <button wire:click="$set('activeDetailTab', 'baukosten')" class="py-3.5 px-4 text-xs font-bold border-b-2 transition flex items-center gap-1.5 {{ $activeDetailTab === 'baukosten' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-600 hover:text-slate-900' }}">
-                            🛠️ Baukosten (§13b) <span class="px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700">{{ $c->actualCosts->count() }}</span>
+                <!-- Detail Tabs Navigation (Starts at 0 scroll left, touch-friendly) -->
+                <div class="shrink-0 overflow-x-auto whitespace-nowrap scrollbar-none border-b border-slate-200 bg-white px-2 sm:px-4 max-w-full">
+                    <div class="flex items-center gap-1 min-w-max py-1">
+                        <button wire:click="$set('activeDetailTab', 'overview')" class="py-2.5 px-3 text-xs font-bold border-b-2 transition flex items-center gap-1.5 cursor-pointer {{ $activeDetailTab === 'overview' ? 'border-blue-600 text-blue-600 font-black' : 'border-transparent text-slate-600 hover:text-slate-900' }}">
+                            <span>📋 Stammdaten & Notizen</span>
                         </button>
-                    @endif
+                        <button wire:click="$set('activeDetailTab', 'projects')" class="py-2.5 px-3 text-xs font-bold border-b-2 transition flex items-center gap-1.5 cursor-pointer {{ $activeDetailTab === 'projects' ? 'border-blue-600 text-blue-600 font-black' : 'border-transparent text-slate-600 hover:text-slate-900' }}">
+                            <span>🏢 Baustellen</span>
+                            <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-100 text-slate-700 font-bold">{{ $c->projects->count() }}</span>
+                        </button>
+                        <button wire:click="$set('activeDetailTab', 'invoices')" class="py-2.5 px-3 text-xs font-bold border-b-2 transition flex items-center gap-1.5 cursor-pointer {{ $activeDetailTab === 'invoices' ? 'border-blue-600 text-blue-600 font-black' : 'border-transparent text-slate-600 hover:text-slate-900' }}">
+                            <span>📄 Rechnungen</span>
+                            <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-100 text-slate-700 font-bold">{{ $c->invoices->count() }}</span>
+                        </button>
+                        <button wire:click="$set('activeDetailTab', 'offers')" class="py-2.5 px-3 text-xs font-bold border-b-2 transition flex items-center gap-1.5 cursor-pointer {{ $activeDetailTab === 'offers' ? 'border-blue-600 text-blue-600 font-black' : 'border-transparent text-slate-600 hover:text-slate-900' }}">
+                            <span>📑 Angebote</span>
+                            <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-100 text-slate-700 font-bold">{{ $c->offers->count() }}</span>
+                        </button>
+                        @if ($c->type === 'subunternehmer')
+                            <button wire:click="$set('activeDetailTab', 'baukosten')" class="py-2.5 px-3 text-xs font-bold border-b-2 transition flex items-center gap-1.5 cursor-pointer {{ $activeDetailTab === 'baukosten' ? 'border-blue-600 text-blue-600 font-black' : 'border-transparent text-slate-600 hover:text-slate-900' }}">
+                                <span>🛠️ Baukosten (§13b)</span>
+                                <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-100 text-slate-700 font-bold">{{ $c->actualCosts->count() }}</span>
+                            </button>
+                        @endif
+                    </div>
                 </div>
 
-                <!-- Tab Contents Container -->
-                <div class="p-6 overflow-y-auto flex-1 space-y-6">
+                <!-- Tab Contents Container (Scrollable Body) -->
+                <div class="p-3.5 sm:p-6 overflow-y-auto overflow-x-hidden flex-1 space-y-5 max-w-full">
 
                     <!-- TAB 1: STAMMDATEN & NOTIZEN (MIT INLINE-BEARBEITUNG) -->
                     @if ($activeDetailTab === 'overview')
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
                             
-                            <!-- Master Data Box (8 cols or 6 cols) -->
-                            <div class="lg:col-span-7 bg-slate-50 border border-slate-200/80 rounded-2xl p-5 space-y-4">
-                                <div class="flex justify-between items-center">
-                                    <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Kontaktdaten & Stammdaten</h4>
+                            <!-- Master Data Box -->
+                            <div class="lg:col-span-7 bg-slate-50 border border-slate-200/80 rounded-2xl p-4 sm:p-5 space-y-4">
+                                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/60 pb-3">
+                                    <h4 class="text-xs font-black text-slate-900 uppercase tracking-wider">Kontaktdaten & Stammdaten</h4>
                                     @if (!$isDetailEditing)
-                                        <button wire:click="toggleDetailEdit" class="text-xs font-bold text-blue-600 hover:underline">
-                                            ✏️ Direkt im Popup bearbeiten
+                                        <button wire:click="toggleDetailEdit" class="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1 cursor-pointer">
+                                            <span>✏️ Bearbeiten</span>
                                         </button>
                                     @endif
                                 </div>
                                 
                                 @if ($isDetailEditing)
                                     <!-- INLINE EDITING FORM INSIDE POPUP -->
-                                    <div class="space-y-3 text-xs bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
-                                        <div class="grid grid-cols-2 gap-3">
+                                    <div class="space-y-3 text-xs bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-2xs">
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <div>
                                                 <label class="block font-bold text-slate-700 mb-1">Kategorie / Typ</label>
                                                 <select wire:model="detailForm.type" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs font-semibold">
@@ -524,7 +857,7 @@ new class extends Component {
                                             </div>
                                         </div>
 
-                                        <div class="grid grid-cols-3 gap-2">
+                                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                                             <div>
                                                 <label class="block font-bold text-slate-700 mb-1">Anrede</label>
                                                 <select wire:model="detailForm.salutation" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
@@ -543,7 +876,7 @@ new class extends Component {
                                             </div>
                                         </div>
 
-                                        <div class="grid grid-cols-2 gap-3">
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <div>
                                                 <label class="block font-bold text-slate-700 mb-1">E-Mail</label>
                                                 <input wire:model="detailForm.email" type="email" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
@@ -554,7 +887,7 @@ new class extends Component {
                                             </div>
                                         </div>
 
-                                        <div class="grid grid-cols-2 gap-3">
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <div>
                                                 <label class="block font-bold text-slate-700 mb-1">Mobil</label>
                                                 <input wire:model="detailForm.mobile" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
@@ -583,15 +916,15 @@ new class extends Component {
 
                                         <div class="flex justify-end gap-2 pt-2">
                                             <button type="button" wire:click="toggleDetailEdit" class="px-3 py-1.5 bg-slate-100 text-slate-700 font-bold rounded-lg text-xs">Abbrechen</button>
-                                            <button type="button" wire:click="saveDetailStammdaten" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-xs shadow-xs">💾 Stammdaten Speichern</button>
+                                            <button type="button" wire:click="saveDetailStammdaten" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-xs shadow-xs">💾 Speichern</button>
                                         </div>
                                     </div>
                                 @else
-                                    <!-- READ-ONLY STAMMDATEN VIEW -->
+                                    <!-- READ-ONLY STAMMDATEN VIEW (MOBILE 1-COL GRID FOR LONG CONTACT DETAILS) -->
                                     <div class="space-y-3 text-xs">
                                         <div>
                                             <span class="text-slate-400 font-medium block">Firma / Unternehmen:</span>
-                                            <span class="font-bold text-slate-900 text-sm">{{ $c->company_name ?: '— (Privatperson)' }}</span>
+                                            <span class="font-black text-slate-900 text-sm">{{ $c->company_name ?: '— (Privatperson)' }}</span>
                                         </div>
 
                                         <div>
@@ -599,7 +932,7 @@ new class extends Component {
                                             <span class="font-bold text-slate-900">{{ $c->salutation }} {{ $c->first_name }} {{ $c->last_name }}</span>
                                         </div>
 
-                                        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200/60">
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-200/60">
                                             <div>
                                                 <span class="text-slate-400 font-medium block">E-Mail:</span>
                                                 @if ($c->email)
@@ -619,7 +952,7 @@ new class extends Component {
                                             </div>
                                         </div>
 
-                                        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200/60">
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-200/60">
                                             <div>
                                                 <span class="text-slate-400 font-medium block">Mobiltelefon:</span>
                                                 @if ($c->mobile)
@@ -642,7 +975,7 @@ new class extends Component {
                                                 {{ $c->zip }} {{ $c->city }}
                                             </p>
                                             @if ($c->street && $c->city)
-                                                <a href="https://maps.google.com/?q={{ urlencode($c->street . ', ' . $c->zip . ' ' . $c->city) }}" target="_blank" class="inline-flex items-center gap-1 text-[11px] text-blue-600 font-bold hover:underline mt-1">
+                                                <a href="https://maps.google.com/?q={{ urlencode($c->street . ', ' . $c->zip . ' ' . $c->city) }}" target="_blank" class="inline-flex items-center gap-1 text-[11px] text-blue-600 font-bold hover:underline mt-1.5">
                                                     🗺️ In Google Maps öffnen ↗
                                                 </a>
                                             @endif
@@ -722,7 +1055,7 @@ new class extends Component {
                                 <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Ausgangsrechnungen an {{ $c->display_name }}</h4>
                             </div>
 
-                            <div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
+                            <div class="bg-white border border-slate-200/80 rounded-2xl overflow-x-auto shadow-2xs">
                                 <table class="w-full text-left border-collapse">
                                     <thead>
                                         <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
@@ -772,7 +1105,7 @@ new class extends Component {
                                 <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Erstellte Angebote</h4>
                             </div>
 
-                            <div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
+                            <div class="bg-white border border-slate-200/80 rounded-2xl overflow-x-auto shadow-2xs">
                                 <table class="w-full text-left border-collapse">
                                     <thead>
                                         <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
@@ -814,7 +1147,7 @@ new class extends Component {
                                 <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Eingangsrechnungen & Baukosten (§13b)</h4>
                             </div>
 
-                            <div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
+                            <div class="bg-white border border-slate-200/80 rounded-2xl overflow-x-auto shadow-2xs">
                                 <table class="w-full text-left border-collapse">
                                     <thead>
                                         <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
@@ -831,9 +1164,9 @@ new class extends Component {
                                                 <td class="py-3 px-4 font-bold text-slate-900">{{ $cost->invoice_number ?? '—' }}</td>
                                                 <td class="py-3 px-4 text-slate-600">{{ date('d.m.Y', strtotime($cost->cost_date)) }}</td>
                                                 <td class="py-3 px-4 text-slate-800 font-medium">{{ $cost->description }}</td>
-                                                <td class="py-3 px-4 text-right font-extrabold text-purple-700">{{ number_format($cost->amount, 2, ',', '.') }} €</td>
+                                                <td class="py-3 px-4 text-right font-extrabold text-indigo-700">{{ number_format($cost->amount, 2, ',', '.') }} €</td>
                                                 <td class="py-3 px-4 text-center">
-                                                    <span class="px-2 py-0.5 text-[10px] font-bold rounded-md {{ $cost->is_reverse_charge ? 'bg-purple-100 text-purple-800' : 'bg-slate-100 text-slate-600' }}">
+                                                    <span class="px-2 py-0.5 text-[10px] font-bold rounded-md {{ $cost->is_reverse_charge ? 'bg-indigo-100 text-indigo-800' : 'bg-slate-100 text-slate-600' }}">
                                                         {{ $cost->is_reverse_charge ? 'Ja (§13b)' : 'Nein' }}
                                                     </span>
                                                 </td>
@@ -953,6 +1286,118 @@ new class extends Component {
                         <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/10">Speichern</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- CSV / EXCEL IMPORT MODAL -->
+    @if ($showImportModal)
+        <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                
+                <!-- Modal Header -->
+                <div class="p-6 bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 text-white flex justify-between items-start relative overflow-hidden">
+                    <div class="space-y-1 relative z-10">
+                        <h3 class="text-xl font-black text-white tracking-tight flex items-center gap-2">
+                            <span>📥 Kontakte aus CSV / Excel importieren</span>
+                        </h3>
+                        <p class="text-xs text-slate-300">Laden Sie eine CSV-Datei hoch, um Kunden, Hausverwaltungen oder Subunternehmer gesammelt zu importieren.</p>
+                    </div>
+                    <button wire:click="closeImportModal" class="p-2 text-slate-400 hover:text-white rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer relative z-10">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+
+                <div class="p-6 overflow-y-auto space-y-6">
+                    <!-- Step 1: File Dropzone & Template Download -->
+                    <div class="space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+                            <div>
+                                <span class="text-xs font-bold text-slate-900 block">💡 Benötigen Sie eine Mustervorlage?</span>
+                                <span class="text-[11px] text-slate-500">Laden Sie unsere fertige CSV-Struktur mit Beispielzeilen herunter.</span>
+                            </div>
+                            <button wire:click="downloadSampleCsv" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer whitespace-nowrap">
+                                <span>📑 Muster-CSV herunterladen</span>
+                            </button>
+                        </div>
+
+                        <!-- Dropzone area -->
+                        <div class="border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-2xl p-8 text-center bg-slate-50/50 hover:bg-blue-50/30 transition cursor-pointer relative">
+                            <input type="file" wire:model="importFile" accept=".csv,.txt" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                            
+                            <div class="space-y-2 pointer-events-none">
+                                <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mx-auto text-xl font-bold">
+                                    📂
+                                </div>
+                                <p class="text-sm font-bold text-slate-800">Klicken oder CSV-Datei hierhin ziehen</p>
+                                <p class="text-xs text-slate-500">Unterstützt `.csv` und `.txt` (Semikolon `;` oder Komma `,` getrennt)</p>
+                            </div>
+
+                            <div wire:loading wire:target="importFile" class="mt-3 text-xs text-blue-600 font-bold animate-pulse">
+                                ⏳ Datei wird analysiert...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Parsed Preview Table -->
+                    @if (count($parsedImportRows) > 0)
+                        <div class="space-y-3 pt-2">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-xs font-extrabold uppercase text-slate-900 tracking-wider flex items-center gap-2">
+                                    <span>Vorschau der erkannten Kontakte</span>
+                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-800 border border-blue-200">
+                                        {{ count($parsedImportRows) }} Datensätze
+                                    </span>
+                                </h4>
+                                <span class="text-[11px] text-slate-500">Automatische Spaltenzuordnung aktiv</span>
+                            </div>
+
+                            <div class="border border-slate-200 rounded-2xl overflow-hidden max-h-64 overflow-y-auto">
+                                <table class="w-full text-left border-collapse text-xs">
+                                    <thead>
+                                        <tr class="bg-slate-900 text-slate-200 text-[11px] font-bold uppercase tracking-wider">
+                                            <th class="p-3">Typ</th>
+                                            <th class="p-3">Firma / Name</th>
+                                            <th class="p-3">E-Mail</th>
+                                            <th class="p-3">Telefon</th>
+                                            <th class="p-3">Ort</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+                                        @foreach ($parsedImportRows as $row)
+                                            <tr class="hover:bg-slate-50">
+                                                <td class="p-3">
+                                                    <span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase bg-slate-100 text-slate-800 border border-slate-200">
+                                                        {{ $row['type'] }}
+                                                    </span>
+                                                </td>
+                                                <td class="p-3 font-bold text-slate-900">
+                                                    {{ $row['company_name'] ?: ($row['first_name'] . ' ' . $row['last_name']) }}
+                                                </td>
+                                                <td class="p-3 text-blue-600 truncate max-w-[150px]">{{ $row['email'] ?: '—' }}</td>
+                                                <td class="p-3">{{ $row['phone'] ?: ($row['mobile'] ?: '—') }}</td>
+                                                <td class="p-3">{{ $row['zip'] }} {{ $row['city'] }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="p-5 bg-slate-50 border-t border-slate-200 flex justify-between items-center">
+                    <button type="button" wire:click="closeImportModal" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl text-xs font-bold cursor-pointer">
+                        Abbrechen
+                    </button>
+
+                    @if (count($parsedImportRows) > 0)
+                        <button type="button" wire:click="executeImport" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 cursor-pointer flex items-center gap-1.5">
+                            <span>🚀 {{ count($parsedImportRows) }} Kontakte jetzt importieren</span>
+                        </button>
+                    @endif
+                </div>
             </div>
         </div>
     @endif

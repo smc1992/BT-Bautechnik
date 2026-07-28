@@ -135,8 +135,9 @@ new class extends Component {
     public string $auditRawText = '';
     public array $auditResults = [];
 
-    public function auditSubcontractorInvoice(\App\Services\OpenAiParserService $parser)
+    public function auditSubcontractorInvoice(?\App\Services\OpenAiParserService $parser = null)
     {
+        $parser = $parser ?? app(\App\Services\OpenAiParserService::class);
         if (empty(trim($this->auditRawText))) {
             $this->dispatch('notify', 'Bitte geben Sie den Rechnungstext oder Pflichtangaben ein.');
             return;
@@ -160,7 +161,7 @@ new class extends Component {
         </div>
 
         <div class="flex items-center gap-3">
-            <button wire:click="$set('showAuditModal', true)" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl shadow-md shadow-purple-500/20 transition flex items-center gap-1.5">
+            <button wire:click="$set('showAuditModal', true)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/20 transition flex items-center gap-1.5">
                 🔍 KI §13b-Prüfung
             </button>
             <button wire:click="exportCsv" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl transition flex items-center gap-2 border border-slate-200 shadow-2xs">
@@ -202,7 +203,7 @@ new class extends Component {
                             </td>
                             <td class="p-4">
                                 @if ($inv->tax_mode === '13b')
-                                    <span class="px-2.5 py-1 bg-purple-50 text-purple-700 border border-purple-200 rounded-full font-bold text-[10px]">
+                                    <span class="px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-full font-bold text-[10px]">
                                         §13b Reverse Charge
                                     </span>
                                 @else
@@ -306,7 +307,7 @@ new class extends Component {
     @if ($showAuditModal)
         <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-xl shadow-2xl overflow-hidden">
-                <div class="px-6 py-4 bg-purple-950 text-white flex justify-between items-center">
+                <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
                     <div class="flex items-center gap-2">
                         <span class="text-xl">🔍</span>
                         <h3 class="text-base font-extrabold text-white">KI-Eingangsrechnungs-Prüfer (§ 13b UStG & § 14 UStG)</h3>
@@ -321,11 +322,11 @@ new class extends Component {
 
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Rechnungstext / Angaben des Subunternehmers</label>
-                        <textarea wire:model="auditRawText" rows="4" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:bg-white focus:border-purple-600 focus:outline-none" placeholder="Rechnung Nr. 2026-44, Subunternehmer Müller Bedachung GmbH, Steuernummer 112/334, Bitumenbahn verlegt..."></textarea>
+                        <textarea wire:model="auditRawText" rows="4" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder="Rechnung Nr. 2026-44, Subunternehmer Müller Bedachung GmbH, Steuernummer 112/334, Bitumenbahn verlegt..."></textarea>
                     </div>
 
                     <div class="flex justify-end pt-1">
-                        <button type="button" wire:click="auditSubcontractorInvoice" wire:loading.attr="disabled" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold shadow-md shadow-purple-500/20 flex items-center gap-2">
+                        <button type="button" wire:click="auditSubcontractorInvoice" wire:loading.attr="disabled" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 flex items-center gap-2">
                             <span wire:loading wire:target="auditSubcontractorInvoice">⌛ KI prüft Steuer- & Pflichtangaben...</span>
                             <span wire:loading.remove wire:target="auditSubcontractorInvoice">🔍 Auf §13b & §14 UStG prüfen</span>
                         </button>
@@ -352,7 +353,7 @@ new class extends Component {
                                 </div>
                             @endif
 
-                            <div class="bg-purple-50 border border-purple-200 rounded-xl p-3 text-xs text-purple-950">
+                            <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 text-xs text-blue-950">
                                 <strong>Handlungsempfehlung:</strong> {{ $auditResults['advice'] ?? '' }}
                             </div>
                         </div>

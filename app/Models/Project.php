@@ -38,4 +38,19 @@ class Project extends Model
     {
         return $this->hasMany(Invoice::class);
     }
+
+    public function photos(): HasMany
+    {
+        return $this->hasMany(ProjectPhoto::class)->orderBy('created_at', 'desc');
+    }
+
+    public function dailyLogs(): HasMany
+    {
+        return $this->hasMany(DailyLog::class)->orderBy('date', 'asc');
+    }
+
+    public function defects(): HasMany
+    {
+        return $this->hasMany(Defect::class)->orderBy('created_at', 'desc');
+    }
 }

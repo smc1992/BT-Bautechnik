@@ -594,27 +594,37 @@ input:checked + .slider:before {
 /* Totals Summary */
 .totals-section {
   margin-left: auto;
-  width: 80mm;
+  width: 85mm;
+  max-width: 100%;
   margin-bottom: 6mm;
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 2px 4px;
-  font-size: 9.5pt;
-  border-top: 1px solid var(--paper-border);
-  padding-top: 4px;
+  display: block;
 }
 
-.totals-label {
-  padding: 3px 0;
-  color: var(--paper-text-muted);
-}
-
-.totals-value {
+.totals-section table {
+  width: 100%;
+  border-collapse: collapse;
   text-align: right;
-  padding: 3px 0;
+  font-size: 9.5pt;
 }
 
-.totals-bold {
+.totals-section table td {
+  padding: 4px 0;
+}
+
+.totals-section table td.label {
+  text-align: left;
+  color: var(--paper-text-muted);
+  font-weight: 500;
+}
+
+.totals-section table td.amount {
+  text-align: right;
+  font-weight: 700;
+  color: var(--paper-text);
+  white-space: nowrap;
+}
+
+.totals-section table tr.grand-total-row td {
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
   font-size: 11pt;
@@ -644,17 +654,18 @@ input:checked + .slider:before {
   margin-bottom: 6mm;
 }
 
-/* Footer Section */
+/* Footer Section (DIN 5008 4-Spaltig am Seitenende) */
 .letterhead-footer {
   border-top: 1.5px solid var(--brand-blue);
   padding-top: 4mm;
   margin-top: auto; /* Pushes the footer to the bottom of the flex container (A4 page) */
   display: grid;
-  grid-template-columns: 1fr 1.2fr 1.2fr;
-  gap: 6mm;
-  font-size: 7.5pt;
+  grid-template-columns: 0.9fr 0.85fr 1.45fr 1fr;
+  gap: 2mm;
+  font-size: 7.2pt;
   color: var(--paper-text-muted);
   line-height: 1.4;
+  width: 100%;
 }
 
 .footer-col-title {
@@ -811,62 +822,65 @@ input:checked + .slider:before {
    ========================================================================== */
 
 @media print {
-  /* Hide all editor UI, dashboard, overlay, buttons */
+  /* Completely remove all app navigation, headers, footers, editor inputs and non-printable UI from document flow */
+  nav,
+  header,
+  .no-print,
+  .editor-panel,
+  .dashboard-btn-container,
+  .overlay,
+  .theme-toggle-btn,
+  .modal {
+    display: none !important;
+  }
+
   body {
     background-color: #ffffff !important;
     color: #000000 !important;
-    overflow: visible !important;
-    height: auto !important;
-    width: auto !important;
-  }
-
-  .app-container {
-    display: block !important;
-    height: auto !important;
-    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
     overflow: visible !important;
   }
 
-  .editor-panel,
-  .preview-panel::before,
-  .dashboard-btn-container,
-  .overlay,
-  .theme-toggle-btn {
-    display: none !important;
+  .min-h-screen,
+  main,
+  .space-y-6 {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   .preview-panel {
     padding: 0 !important;
+    margin: 0 !important;
     background: transparent !important;
-    overflow: visible !important;
     display: block !important;
-    height: auto !important;
-    width: auto !important;
+    width: 100% !important;
   }
 
-  .paper-container {
+  /* Position paper container at top left of A4 page without offset */
+  .paper-container,
+  #paperContainer {
+    display: block !important;
+    position: relative !important;
     width: 210mm !important;
     min-height: 297mm !important;
-    height: 297mm !important;
-    margin: 0 !important;
-    padding: 12mm 15mm 10mm 15mm !important; /* Tightened padding to fit printable area */
+    margin: 0 auto !important;
+    padding: 12mm 15mm 10mm 15mm !important;
     box-shadow: none !important;
     border: none !important;
-    transform: none !important; /* Disable all scaling transforms for print */
-    page-break-after: always;
-    page-break-inside: avoid;
-    box-sizing: border-box !important;
     background-color: #ffffff !important;
     color: #000000 !important;
+    transform: none !important;
+    box-sizing: border-box !important;
   }
 
-  /* Force background colors to print */
+  /* Force background colors and crisp rendering */
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  /* Ensure footer stays at bottom naturally, avoiding overlaps and splits */
   .letterhead-footer {
     position: static !important;
     margin-top: auto !important;
@@ -875,14 +889,8 @@ input:checked + .slider:before {
     break-inside: avoid !important;
   }
 
-  .footer-col {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-
-  /* Set page margins */
   @page {
-    size: A4;
+    size: A4 portrait;
     margin: 0;
   }
 }
@@ -902,22 +910,46 @@ input:checked + .slider:before {
   }
   .editor-panel {
     height: auto;
-    max-height: 600px;
     border-right: none;
     border-bottom: 1px solid var(--panel-border);
   }
   .preview-panel {
-    padding: 1.5rem;
-  }
-  .paper-container {
-    transform: scale(0.8);
-    transform-origin: top center;
+    padding: 0.5rem;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
   }
 }
 
 @media screen and (max-width: 768px) {
+  .preview-panel {
+    padding: 0.25rem;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
   .paper-container {
-    transform: scale(0.6);
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    padding: 1rem !important;
+    font-size: 8.5pt !important;
+    transform: none !important;
+    box-shadow: none !important;
+    border: 1px solid var(--paper-border);
+    border-radius: 12px;
+  }
+  .address-meta-container {
+    flex-direction: column !alignment;
+    align-items: stretch !important;
+    gap: 1rem !important;
+  }
+  .recipient-block, .meta-block {
+    width: 100% !important;
+  }
+  .totals-section {
+    width: 100% !important;
+    margin-left: 0 !important;
   }
   .stats-grid {
     grid-template-columns: 1fr;
@@ -925,8 +957,3 @@ input:checked + .slider:before {
   }
 }
 
-@media screen and (max-width: 480px) {
-  .paper-container {
-    transform: scale(0.4);
-  }
-}

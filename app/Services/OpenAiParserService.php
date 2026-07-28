@@ -335,12 +335,79 @@ class OpenAiParserService
         $response = $this->client->chat()->create([
             'model' => $this->model,
             'messages' => [
-                ['role' => 'system', 'content' => 'Du bist Oberbauleiter der BT Bautechnik UG. Erstelle aus den Tagesberichten einer Baustelle einen prägnanten, professionellen Wochenbericht für die Hausverwaltung und Eigentümer.'],
+                ['role' => 'system', 'content' => 'Du bist Bauleiter der BT Bautechnik UG. Erstelle aus den Bautagebuch-Einträgen einen hochprofessionellen Wochenbericht für Hausverwaltungen und Eigentümer. WICHTIGE FORMATIERUNGS-REGEL: Verwende absolut KEINE Sternchen (** oder *), KEINE Markdown-Syntax und KEINE Rauten (#). Formatiere Abschnittsüberschriften in sauberen Großbuchstaben mit Doppelpunkt (z. B. BAUSTELLE:, BERICHTSZEITRAUM:, WETTERBEDINGUNGEN:, AUSGEFÜHRTE ARBEITEN:, BESONDERE VORKOMMNISSE:, ZUSAMMENFASSUNG:) und Aufzählungen mit einfachen Bindestrichen (-).'],
                 ['role' => 'user', 'content' => "Bautagebuch-Einträge der Woche:\n" . $logsJson]
             ]
         ]);
 
-        return $response->choices[0]->message->content;
+        $content = $response->choices[0]->message->content ?? '';
+        // Strip any lingering asterisks or markdown hashes
+        $content = preg_replace('/\*\*|\*/', '', $content);
+        $content = preg_replace('/^#+\s*/m', '', $content);
+
+        return trim($content);
+    }
+
+    /**
+     * 7. Adjust Material Catalog Prices based on Natural Language Prompt
+     */
+    public function adjustMaterialPricesWithAi(string $userPrompt, array $materialsList): array
+    {
+        if (!$this->client) {
+            throw new Exception("OpenAI API Key ist nicht konfiguriert.");
+        }
+
+        $materialsJson = json_encode($materialsList, JSON_UNESCAPED_UNICODE);
+
+        $response = $this->client->chat()->create([
+            'model' => $this->model,
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' => "Du bist ein KI-Preismanager für Baustoffe und Baumaterialien eines deutschen Bauunternehmens (BT Bautechnik UG). Der Benutzer gibt dir Anweisungen zur Preisanpassung (z.B. 'Erhöhe alle Zementpreise um 8%', 'Setze Säcke Zement 25kg auf 5,90 €', 'Passe Baustoffe von Lieferant Baustoff-Union an'). Berechne für alle betroffenen Materialien den exakten neuen Preis ('new_price'). Behalte unbetroffene Materialien unverändert oder schließe sie aus. Gib ein strukturierte JSON mit einer kurzen Zusammenfassung 'summary' und einer Liste 'updates' zurück."
+                ],
+                [
+                    'role' => 'user',
+                    'content' => "Preisanpassungs-Anweisung: {$userPrompt}\n\nAktueller Materialkatalog:\n{$materialsJson}"
+                ]
+            ],
+            'response_format' => [
+                'type' => 'json_schema',
+                'json_schema' => [
+                    'name' => 'material_price_update_schema',
+                    'schema' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'summary' => [
+                                'type' => 'string',
+                                'description' => 'Eine kurze, prägnante Zusammenfassung der vorgenommenen Preisänderungen (z. B. "3 Zement-Produkte um +8% erhöht").'
+                            ],
+                            'updates' => [
+                                'type' => 'array',
+                                'description' => 'Liste aller aktualisierten Materialien',
+                                'items' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'id' => ['type' => 'string', 'description' => 'Die ID des Materials'],
+                                        'name' => ['type' => 'string', 'description' => 'Name des Materials'],
+                                        'old_price' => ['type' => 'number', 'description' => 'Bisheriger Einzelpreis'],
+                                        'new_price' => ['type' => 'number', 'description' => 'Neuer berechneter Einzelpreis in EUR'],
+                                        'reason' => ['type' => 'string', 'description' => 'Kurzer Grund/Erklärung der Änderung']
+                                    ],
+                                    'required' => ['id', 'name', 'old_price', 'new_price', 'reason'],
+                                    'additionalProperties' => false
+                                ]
+                            ]
+                        ],
+                        'required' => ['summary', 'updates'],
+                        'additionalProperties' => false
+                    ],
+                    'strict' => true
+                ]
+            ]
+        ]);
+
+        return json_decode($response->choices[0]->message->content, true);
     }
 }
 

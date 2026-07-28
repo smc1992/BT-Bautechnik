@@ -30,10 +30,10 @@ new class extends Component {
         $paidInvoicesNet = (clone $invoicesQuery)->where('status', 'paid')->sum('total_net');
         $unpaidInvoicesNet = (clone $invoicesQuery)->whereIn('status', ['sent', 'draft', 'overdue'])->sum('total_net');
 
-        $costsQuery = ActualCost::whereBetween('cost_date', [$start, $end]);
+        $costsQuery = ActualCost::whereBetween('date', [$start, $end]);
         $totalCosts = (clone $costsQuery)->sum('cost_amount');
-        $materialCosts = (clone $costsQuery)->where('cost_type', 'material')->sum('cost_amount');
-        $subcontractorCosts = (clone $costsQuery)->whereIn('cost_type', ['subcontractor', 'internal_wage'])->sum('cost_amount');
+        $materialCosts = (clone $costsQuery)->where('type', 'material')->sum('cost_amount');
+        $subcontractorCosts = (clone $costsQuery)->whereIn('type', ['subcontractor', 'internal_wage'])->sum('cost_amount');
 
         $netProfit = $totalInvoicedNet - $totalCosts;
         $profitMargin = $totalInvoicedNet > 0 ? ($netProfit / $totalInvoicedNet) * 100 : 0;
@@ -68,7 +68,7 @@ new class extends Component {
             };
 
             $invoiced = Invoice::where('invoice_date', 'LIKE', $monthStr . '%')->sum('total_net');
-            $costs = ActualCost::where('cost_date', 'LIKE', $monthStr . '%')->sum('cost_amount');
+            $costs = ActualCost::where('date', 'LIKE', $monthStr . '%')->sum('cost_amount');
 
             if ($invoiced > $maxAmount) $maxAmount = $invoiced;
             if ($costs > $maxAmount) $maxAmount = $costs;

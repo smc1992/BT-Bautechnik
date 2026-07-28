@@ -789,7 +789,7 @@ new class extends Component {
                     </div>
                     <div class="bg-white p-2.5 rounded-xl border border-slate-200/80 shadow-2xs">
                         <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">Fremdleistung</span>
-                        <p class="text-sm sm:text-lg font-black text-indigo-600 mt-0.5">{{ number_format($c->actualCosts->sum('amount'), 2, ',', '.') }} €</p>
+                        <p class="text-sm sm:text-lg font-black text-indigo-600 mt-0.5">{{ number_format($c->actualCosts->sum('cost_amount'), 2, ',', '.') }} €</p>
                     </div>
                 </div>
 
@@ -1162,9 +1162,9 @@ new class extends Component {
                                         @forelse ($c->actualCosts as $cost)
                                             <tr class="hover:bg-slate-50 transition">
                                                 <td class="py-3 px-4 font-bold text-slate-900">{{ $cost->invoice_number ?? '—' }}</td>
-                                                <td class="py-3 px-4 text-slate-600">{{ date('d.m.Y', strtotime($cost->cost_date)) }}</td>
+                                                <td class="py-3 px-4 text-slate-600">{{ date('d.m.Y', strtotime($cost->date)) }}</td>
                                                 <td class="py-3 px-4 text-slate-800 font-medium">{{ $cost->description }}</td>
-                                                <td class="py-3 px-4 text-right font-extrabold text-indigo-700">{{ number_format($cost->amount, 2, ',', '.') }} €</td>
+                                                <td class="py-3 px-4 text-right font-extrabold text-indigo-700">{{ number_format($cost->cost_amount, 2, ',', '.') }} €</td>
                                                 <td class="py-3 px-4 text-center">
                                                     <span class="px-2 py-0.5 text-[10px] font-bold rounded-md {{ $cost->is_reverse_charge ? 'bg-indigo-100 text-indigo-800' : 'bg-slate-100 text-slate-600' }}">
                                                         {{ $cost->is_reverse_charge ? 'Ja (§13b)' : 'Nein' }}

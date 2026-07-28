@@ -73,8 +73,8 @@ new class extends Component {
         $wageBudget = Budget::sum('wage_budget');
 
         $totalCosts = ActualCost::sum('cost_amount');
-        $materialCosts = ActualCost::where('cost_type', 'material')->sum('cost_amount');
-        $wageCosts = ActualCost::whereIn('cost_type', ['subcontractor', 'internal_wage'])->sum('cost_amount');
+        $materialCosts = ActualCost::where('type', 'material')->sum('cost_amount');
+        $wageCosts = ActualCost::whereIn('type', ['subcontractor', 'internal_wage'])->sum('cost_amount');
 
         $remainingBudget = $totalBudget - $totalCosts;
         $margin = $totalBudget > 0 ? (($totalBudget - $totalCosts) / $totalBudget) * 100 : 0;

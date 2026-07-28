@@ -553,9 +553,9 @@ class OpenAiAgentService
 
                 ActualCost::create([
                     'project_id' => $project->id,
-                    'cost_type' => 'subcontractor',
+                    'type' => 'subcontractor',
                     'cost_amount' => $amount,
-                    'cost_date' => date('Y-m-d'),
+                    'date' => date('Y-m-d'),
                     'description' => ($args['subcontractor_name'] ?? 'Nachunternehmer') . ': ' . ($args['description'] ?? 'Gewerkleistung')
                 ]);
 

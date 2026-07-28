@@ -491,6 +491,12 @@ new class extends Component {
                 }">
                     <!-- Quick Action Pills -->
                     <div class="px-3 sm:px-4 pt-2.5 bg-slate-50 border-t border-slate-200/60 flex flex-wrap gap-1.5 sm:gap-2 text-[11px]">
+                        <button type="button" wire:click="$set('userMessage', 'Berechne Aufmaß: Kellerwand Süd 14,5m x 2,8m mit Fenster 1,20m x 1,00m nach VOB/B')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-indigo-50 text-indigo-700 hover:text-indigo-900 rounded-lg border border-indigo-200 hover:border-indigo-300 font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1">
+                            <span>📐</span> <span>Aufmaß berechnen</span>
+                        </button>
+                        <button type="button" wire:click="$set('userMessage', 'Zeige Baustoffpreise Juli 2026 für Bitumen, Injektionsharz und Dämmung')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-blue-50 text-blue-700 hover:text-blue-900 rounded-lg border border-blue-200 hover:border-blue-300 font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1">
+                            <span>📦</span> <span>Materialpreise</span>
+                        </button>
                         <button type="button" wire:click="$set('userMessage', 'Erstelle einen KI-Wochenbericht für Baustelle Berching')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 rounded-lg border border-slate-200 hover:border-blue-300 font-medium transition-all shadow-2xs cursor-pointer flex items-center gap-1">
                             <span>📊</span> <span>Wochenbericht</span>
                         </button>

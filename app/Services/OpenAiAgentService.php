@@ -119,9 +119,9 @@ class OpenAiAgentService
             [
                 'role' => 'system',
                 'content' => "Du bist der autonome KI-Betriebsassistent (Copilot) der BT Bautechnik UG. Deine Aufgabe ist es, Aufgaben für das Bauunternehmen selbstständig auszuführen.\n" .
-                    "Du kannst Bautagebuch-Einträge anlegen, Mängel erzeugen & aktualisieren, Baustellen-Risiken analysieren, Kontakte suchen, Rechnungs-Entwürfe erstellen, Baukosten erfassen und offene Zahlungen prüfen.\n" .
+                    "Du kannst Bautagebuch-Einträge anlegen, Mängel erzeugen & aktualisieren, Baustellen-Risiken analysieren, Kontakte suchen, Rechnungs-Entwürfe erstellen, Baukosten erfassen, VOB/B Aufmaße & Massenermittlungen berechnen, Juli 2026 Materialpreise prüfen, VOB-Bedenkenanmeldungen generieren und offene Zahlungen prüfen.\n" .
                     "Verwende deine Werkzeuge (Tools) wann immer eine Aktion ausgeführt werden soll, und bestätige die Ausführung anschließend höflich, präzise und übersichtlich.\n" .
-                    "Füge bei erstellten Objekten nützliche Markdown-Links ein (z.B. [Zu den Bautagebüchern](/bautagebuch), [Zu den Rechnungen](/rechnungen), [Zu den Mängeln](/maengel), [Zu den Baukosten](/baukosten))."
+                    "Füge bei erstellten Objekten nützliche Markdown-Links ein (z.B. [Zu den Bautagebüchern](/bautagebuch), [Zu den Rechnungen](/rechnungen), [Zu den Mängeln](/maengel), [Zu den Baukosten](/baukosten), [Zum Materialkatalog](/materialien), [Zur Wissensdatenbank](/wissen))."
             ]
         ];
 
@@ -420,6 +420,34 @@ class OpenAiAgentService
                             'project_name' => ['type' => 'string', 'description' => 'Name der zu löschenden Baustelle']
                         ],
                         'required' => ['project_name']
+                    ]
+                ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'calculate_aufmass',
+                    'description' => 'Berechnet ein VOB-konformes Aufmaß (Massenermittlung) aus einem Diktat, Freitext oder Maßangaben inklusive VOB DIN 18299 Übermessungen.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'text' => ['type' => 'string', 'description' => 'Diktierter Text, Freitext oder Maßangaben (z.B. "Kellerwand Süd 14,5m x 2,8m mit Fenster 1,2x1,0m")']
+                        ],
+                        'required' => ['text']
+                    ]
+                ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'search_materials',
+                    'description' => 'Durchsucht den Baustoffkatalog (Stand Juli 2026) nach Materialpreisen, Kategorien und Herstellern.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'query' => ['type' => 'string', 'description' => 'Name oder Gewerk des Baustoffs (z.B. Bitumen, Injektionsharz, Estrich, Dichtband, PSA)']
+                        ],
+                        'required' => ['query']
                     ]
                 ]
             ]
@@ -784,6 +812,74 @@ class OpenAiAgentService
                 return [
                     'success' => true,
                     'summary' => "🗑️ Baustelle **{$name}** wurde erfolgreich aus dem System gelöscht!"
+                ];
+
+            case 'calculate_aufmass':
+                $text = $args['text'] ?? '';
+                $parser = app(\App\Services\OpenAiParserService::class);
+                $aufmassData = $parser->parseAufmassText($text);
+
+                $unit = $aufmassData['unit'] ?? 'm²';
+                $rows = $aufmassData['rows'] ?? [];
+
+                $total = 0.0;
+                $rowSummaries = [];
+                foreach ($rows as $r) {
+                    $cnt = floatval($r['count'] ?? 1);
+                    $l = floatval($r['length'] ?? 1);
+                    $w = floatval($r['width'] ?? 1);
+                    $h = floatval($r['height'] ?? 1);
+                    $vol = $cnt * $l * $w * $h;
+
+                    $mode = $r['mode'] ?? 'add';
+                    if ($mode === 'overmeasure') {
+                        $rowSummaries[] = "• **" . ($r['label'] ?: 'Aussparung') . "**: Übermessen DIN 18299 (kein Abzug)";
+                    } elseif ($mode === 'subtract') {
+                        $total -= $vol;
+                        $rowSummaries[] = "• **" . ($r['label'] ?: 'Abzug') . "**: -" . number_format($vol, 2, ',', '.') . " {$unit}";
+                    } else {
+                        $total += $vol;
+                        $rowSummaries[] = "• **" . ($r['label'] ?: 'Teilaufmaß') . "**: +" . number_format($vol, 2, ',', '.') . " {$unit}";
+                    }
+                }
+
+                $total = max(0.0, round($total, 3));
+
+                return [
+                    'success' => true,
+                    'unit' => $unit,
+                    'total_quantity' => $total,
+                    'summary' => "📐 **VOB/B Massenermittlung berechnet:**\n\n" .
+                                 implode("\n", $rowSummaries) . "\n\n" .
+                                 "**Gesamte abrechenbare Menge:** " . number_format($total, 2, ',', '.') . " {$unit}\n\n" .
+                                 "[Zum Aufmaß-Rechner](/rechnungen)"
+                ];
+
+            case 'search_materials':
+                $query = $args['query'] ?? '';
+                $materials = \App\Models\Material::where('name', 'LIKE', "%{$query}%")
+                    ->orWhere('category', 'LIKE', "%{$query}%")
+                    ->orWhere('manufacturer', 'LIKE', "%{$query}%")
+                    ->take(8)
+                    ->get();
+
+                if ($materials->isEmpty()) {
+                    return [
+                        'success' => true,
+                        'count' => 0,
+                        'summary' => "Keine Baustoffe für '{$query}' im Juli 2026 Materialkatalog gefunden. [Zum Materialkatalog](/materialien)"
+                    ];
+                }
+
+                $list = [];
+                foreach ($materials as $m) {
+                    $list[] = "• **{$m->name}** ({$m->category}): " . number_format($m->unit_price, 2, ',', '.') . " € / {$m->unit} (Hersteller: " . ($m->manufacturer ?: 'Standard') . ")";
+                }
+
+                return [
+                    'success' => true,
+                    'count' => $materials->count(),
+                    'summary' => "📦 **Materialpreise (Stand Juli 2026):**\n\n" . implode("\n", $list) . "\n\n[Zum Materialkatalog](/materialien)"
                 ];
 
             default:

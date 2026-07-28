@@ -25,6 +25,9 @@ php artisan db:seed --force || true
 
 # 5. Optimize caches for production
 echo "⚡ Caching Laravel configuration & routes..."
+php artisan config:clear || true
+php artisan route:clear || true
+php artisan view:clear || true
 php artisan config:cache || true
 php artisan route:cache || true
 php artisan view:cache || true

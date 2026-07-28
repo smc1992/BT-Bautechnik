@@ -21,7 +21,7 @@ echo "🗄️ Running database migrations..."
 php artisan migrate --force
 
 echo "🌱 Seeding default data if needed..."
-php artisan db:seed --force
+php artisan db:seed --force || true
 
 # 5. Optimize caches for production
 echo "⚡ Caching Laravel configuration & routes..."

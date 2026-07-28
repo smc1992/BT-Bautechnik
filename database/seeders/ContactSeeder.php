@@ -151,10 +151,14 @@ class ContactSeeder extends Seeder
 
             if ($existing) {
                 $existing->update($cData);
-                $this->command->info("Kunde '{$cData['customer_number']} - {$cData['first_name']} {$cData['last_name']}' aktualisiert.");
+                if ($this->command) {
+                    $this->command->info("Kunde '{$cData['customer_number']} - {$cData['first_name']} {$cData['last_name']}' aktualisiert.");
+                }
             } else {
                 Contact::create($cData);
-                $this->command->info("✅ Kunde '{$cData['customer_number']} - {$cData['first_name']} {$cData['last_name']}' geseeded.");
+                if ($this->command) {
+                    $this->command->info("✅ Kunde '{$cData['customer_number']} - {$cData['first_name']} {$cData['last_name']}' geseeded.");
+                }
             }
         }
     }

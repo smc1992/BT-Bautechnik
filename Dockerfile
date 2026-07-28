@@ -15,6 +15,8 @@ RUN apk add --no-update --no-cache \
     nginx \
     supervisor \
     postgresql-dev \
+    sqlite-dev \
+    sqlite \
     libpng-dev \
     libzip-dev \
     zip \
@@ -23,7 +25,7 @@ RUN apk add --no-update --no-cache \
     curl
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_pgsql gd zip opcache
+RUN docker-php-ext-install pdo pdo_pgsql pdo_sqlite gd zip opcache
 
 # Copy Composer from official image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -40,9 +42,12 @@ COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisord.conf /etc/supervisord.conf
 COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Make entrypoint executable
+RUN chmod +x /var/www/html/docker/entrypoint.sh
+
+# Set initial permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
 
 EXPOSE 80
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+ENTRYPOINT ["/var/www/html/docker/entrypoint.sh"]

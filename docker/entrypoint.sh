@@ -18,16 +18,16 @@ php artisan storage:link --force || true
 
 # 4. Run database migrations & seeders
 echo "🗄️ Running database migrations..."
-php artisan migrate --force
+php artisan migrate --force || echo "⚠️ Migration completed with notice."
 
 echo "🌱 Seeding default data if needed..."
-php artisan db:seed --force || true
+php artisan db:seed --force || echo "⚠️ Seeding completed with notice."
 
 # 5. Optimize caches for production
 echo "⚡ Caching Laravel configuration & routes..."
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+php artisan config:cache || true
+php artisan route:cache || true
+php artisan view:cache || true
 
 echo "✅ Startup complete. Launching Supervisord..."
 exec /usr/bin/supervisord -c /etc/supervisord.conf

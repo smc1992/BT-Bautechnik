@@ -228,17 +228,19 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($projectsData as $data) {
-            $project = Project::create([
-                'name' => $data['name'],
-                'zip' => $data['zip'],
-                'city_street' => $data['city_street'],
-                'contact_address' => $data['contact_address'],
-                'phone' => $data['phone'],
-                'work_type' => $data['work_type'],
-                'start_week' => $data['start_week'],
-                'end_week' => $data['end_week'],
-                'status' => $data['status'],
-            ]);
+            $project = Project::firstOrCreate(
+                ['name' => $data['name']],
+                [
+                    'zip' => $data['zip'],
+                    'city_street' => $data['city_street'],
+                    'contact_address' => $data['contact_address'],
+                    'phone' => $data['phone'],
+                    'work_type' => $data['work_type'],
+                    'start_week' => $data['start_week'],
+                    'end_week' => $data['end_week'],
+                    'status' => $data['status'],
+                ]
+            );
 
             // Calculate Budget Buffers (15%)
             $matBudget = $data['budget']['material'];
@@ -248,31 +250,39 @@ class DatabaseSeeder extends Seeder
             $bufferAmount = $subtotal * ($bufferRate / 100);
             $totalWithBuffer = $subtotal + $bufferAmount;
 
-            Budget::create([
-                'project_id' => $project->id,
-                'material_budget' => $matBudget,
-                'wage_budget' => $wageBudget,
-                'buffer_rate' => $bufferRate,
-                'buffer_amount' => $bufferAmount,
-                'total_with_buffer' => $totalWithBuffer,
-            ]);
+            Budget::updateOrCreate(
+                ['project_id' => $project->id],
+                [
+                    'material_budget' => $matBudget,
+                    'wage_budget' => $wageBudget,
+                    'buffer_rate' => $bufferRate,
+                    'buffer_amount' => $bufferAmount,
+                    'total_with_buffer' => $totalWithBuffer,
+                ]
+            );
 
             // For Christian Dexl, also seed the Offer parsed from the PDF
             if ($data['name'] === 'Dexl Christian, Am Damm 12') {
-                $offer = Offer::create([
-                    'project_id' => $project->id,
-                    'offer_number' => '15262362',
-                    'date' => '2026-07-06',
-                    'status' => 'accepted',
-                    'total_net' => 3153.02,
-                    'total_gross' => 3752.09,
-                ]);
+                $offer = Offer::updateOrCreate(
+                    ['offer_number' => '15262362'],
+                    [
+                        'project_id' => $project->id,
+                        'date' => '2026-07-06',
+                        'status' => 'accepted',
+                        'total_net' => 3153.02,
+                        'total_gross' => 3752.09,
+                    ]
+                );
 
-                $section = OfferSection::create([
-                    'offer_id' => $offer->id,
-                    'title' => 'Kellertüre erneuern',
-                    'sort_order' => 1,
-                ]);
+                $section = OfferSection::firstOrCreate(
+                    [
+                        'offer_id' => $offer->id,
+                        'title' => 'Kellertüre erneuern',
+                    ],
+                    [
+                        'sort_order' => 1,
+                    ]
+                );
 
                 $items = [
                     [
@@ -334,15 +344,19 @@ class DatabaseSeeder extends Seeder
                 ];
 
                 foreach ($items as $item) {
-                    OfferItem::create([
-                        'section_id' => $section->id,
-                        'pos_number' => $item['pos_number'],
-                        'description' => $item['description'],
-                        'quantity' => $item['quantity'],
-                        'unit' => $item['unit'],
-                        'unit_price' => $item['unit_price'],
-                        'total_price' => $item['total_price'],
-                    ]);
+                    OfferItem::firstOrCreate(
+                        [
+                            'section_id' => $section->id,
+                            'pos_number' => $item['pos_number'],
+                        ],
+                        [
+                            'description' => $item['description'],
+                            'quantity' => $item['quantity'],
+                            'unit' => $item['unit'],
+                            'unit_price' => $item['unit_price'],
+                            'total_price' => $item['total_price'],
+                        ]
+                    );
                 }
             }
         }

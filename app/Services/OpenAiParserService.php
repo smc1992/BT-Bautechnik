@@ -409,5 +409,103 @@ class OpenAiParserService
 
         return json_decode($response->choices[0]->message->content, true);
     }
+
+    /**
+     * Parse unstructured natural text / speech dictation into structured VOB-compliant Aufmaß rows.
+     *
+     * @param string $rawText
+     * @return array
+     * @throws Exception
+     */
+    public function parseAufmassText(string $rawText): array
+    {
+        if (!$this->client) {
+            throw new Exception("OpenAI API Key ist nicht konfiguriert.");
+        }
+
+        try {
+            $response = $this->client->chat()->create([
+                'model' => $this->model,
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => "Du bist ein erfahrener Bauingenieur für Bauabrechnung und Aufmaße nach VOB/B (DIN 18299). Deine Aufgabe ist es, Diktate, Freitexte oder Notizen von Baustellen in ein strukturiertes Aufmaßblatt zu konvertieren.\n\n" .
+                                     "VOB-REGELN:\n" .
+                                     "1. Hinzurechnende Bauteile -> mode: 'add'\n" .
+                                     "2. Abzüge (Türen, Fenster, Aussparungen > 0,1 m² bei Flächen bzw. > 0,5 m³ bei Volumen) -> mode: 'subtract'\n" .
+                                     "3. Übermessungen (Aussparungen <= 0,1 m² bei Flächen bzw. <= 0,5 m³ bei Volumen) -> mode: 'overmeasure' (nicht abziehen)\n" .
+                                     "4. Einheiten: m², m³, m oder Stk"
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => "Bitte erstelle ein strukturiertes Aufmaß aus folgendem Notiztext:\n\n" . $rawText
+                    ]
+                ],
+                'response_format' => [
+                    'type' => 'json_schema',
+                    'json_schema' => [
+                        'name' => 'aufmass_schema',
+                        'schema' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'unit' => [
+                                    'type' => 'string',
+                                    'description' => 'Haupt-Einheit des Aufmaßes: m², m³, m oder Stk'
+                                ],
+                                'rows' => [
+                                    'type' => 'array',
+                                    'description' => 'Liste aller erfassten Teilaufmaße und Abzüge',
+                                    'items' => [
+                                        'type' => 'object',
+                                        'properties' => [
+                                            'label' => [
+                                                'type' => 'string',
+                                                'description' => 'Bauteil-, Wand- oder Raumbezeichnung'
+                                            ],
+                                            'count' => [
+                                                'type' => 'number',
+                                                'description' => 'Anzahl / Faktor (Standard 1)'
+                                            ],
+                                            'length' => [
+                                                'type' => 'number',
+                                                'description' => 'Länge in Metern'
+                                            ],
+                                            'width' => [
+                                                'type' => 'number',
+                                                'description' => 'Breite oder Höhe in Metern'
+                                            ],
+                                            'height' => [
+                                                'type' => 'number',
+                                                'description' => 'Dicke oder Tiefe in Metern (nur bei m³, sonst 1.0)'
+                                            ],
+                                            'mode' => [
+                                                'type' => 'string',
+                                                'description' => 'Berechnungsmodus: "add", "subtract", oder "overmeasure"'
+                                            ],
+                                            'note' => [
+                                                'type' => 'string',
+                                                'description' => 'Optionaler VOB-Hinweis'
+                                            ]
+                                        ],
+                                        'required' => ['label', 'count', 'length', 'width', 'height', 'mode'],
+                                        'additionalProperties' => false
+                                    ]
+                                ]
+                            ],
+                            'required' => ['unit', 'rows'],
+                            'additionalProperties' => false
+                        ],
+                        'strict' => true
+                    ]
+                ]
+            ]);
+
+            $jsonString = $response->choices[0]->message->content ?? '{}';
+            return json_decode($jsonString, true) ?: ['unit' => 'm²', 'rows' => []];
+        } catch (Exception $e) {
+            Log::error("Error parsing Aufmaß with OpenAI: " . $e->getMessage());
+            throw new Exception("Fehler bei der KI-Aufmaß-Analyse: " . $e->getMessage());
+        }
+    }
 }
 

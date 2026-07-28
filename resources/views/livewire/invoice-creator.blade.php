@@ -247,6 +247,29 @@ new class extends Component {
     public string $aufmassTitle = 'Massenermittlung & Aufmaßblatt';
     public string $aufmassUnit = 'm²'; // m, m², m³, Stk, lfm
     public array $aufmassRows = [];
+    public string $aufmassAiText = '';
+
+    public function parseAufmassWithAi(?\App\Services\OpenAiParserService $parser = null)
+    {
+        $parser = $parser ?? app(\App\Services\OpenAiParserService::class);
+        if (empty(trim($this->aufmassAiText))) {
+            $this->dispatch('notify', 'Bitte geben Sie zuerst Notizen oder ein Diktat ein.');
+            return;
+        }
+
+        try {
+            $parsed = $parser->parseAufmassText($this->aufmassAiText);
+
+            if (!empty($parsed['rows'])) {
+                $this->aufmassUnit = $parsed['unit'] ?? 'm²';
+                $this->aufmassRows = $parsed['rows'];
+                $this->aufmassAiText = '';
+                $this->dispatch('notify', '✨ ' . count($parsed['rows']) . ' Aufmaßzeilen inkl. VOB-Abzügen erfolgreich per KI generiert!');
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('notify', 'Fehler bei der KI-Aufmaß-Analyse: ' . $e->getMessage());
+        }
+    }
 
     public function openAufmassModal(?int $itemIndex = null)
     {
@@ -2871,6 +2894,32 @@ new class extends Component {
                                 <option value="m">m (Laufmeter)</option>
                                 <option value="Stk">Stk (Stück)</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <!-- ✨ KI FREITEXT & SPRACH-DIKTAT BOX -->
+                    <div class="bg-gradient-to-r from-blue-900 to-indigo-950 rounded-2xl p-4 text-white shadow-lg space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg">🤖</span>
+                                <h4 class="text-xs font-black text-white uppercase tracking-wider">KI-Aufmaß aus Freitext oder Sprach-Diktat generieren</h4>
+                            </div>
+                            <span class="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-[10px] font-extrabold border border-blue-400/30">GPT-4o VOB/B Engine</span>
+                        </div>
+                        <p class="text-[11px] text-blue-200/90 leading-normal">
+                            Tippen oder kopieren Sie Notizen von der Baustelle rein – die KI errechnet Längen, Flächen, Volumen und ordnet Abzüge nach VOB/B DIN 18299 automatisch zu.
+                        </p>
+                        <div class="space-y-2">
+                            <textarea wire:model="aufmassAiText" rows="2" class="w-full bg-slate-900/90 border border-blue-400/40 rounded-xl p-3 text-xs text-white placeholder-blue-300/50 focus:border-blue-400 focus:outline-none" placeholder="z. B. Kellerwand Süd 14,50m lang 2,80m hoch. 1 Fenster 1,20m x 1,00m und 1 Lichtschacht 0,80m x 0,60m..."></textarea>
+                            <div class="flex justify-end">
+                                <button type="button" wire:click="parseAufmassWithAi" wire:loading.attr="disabled" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-extrabold text-xs rounded-xl shadow-md flex items-center gap-1.5 cursor-pointer disabled:opacity-50">
+                                    <span wire:loading.remove wire:target="parseAufmassWithAi">✨ Per KI in Aufmaßblatt umwandeln</span>
+                                    <span wire:loading wire:target="parseAufmassWithAi" class="flex items-center gap-1">
+                                        <svg class="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                        <span>Analysiere Diktat...</span>
+                                    </span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 

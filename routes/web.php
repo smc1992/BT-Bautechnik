@@ -44,6 +44,11 @@ Route::view('wissen', 'wissen')
     ->middleware(['auth', 'verified'])
     ->name('knowledge-base');
 
+Route::get('/seed-contacts-now', function () {
+    \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'ContactSeeder', '--force' => true]);
+    return "Contacts seeded successfully!\n" . \Illuminate\Support\Facades\Artisan::output();
+});
+
 Route::view('analytics', 'analytics')
     ->middleware(['auth', 'verified'])
     ->name('analytics');

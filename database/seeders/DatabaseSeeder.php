@@ -40,7 +40,10 @@ class DatabaseSeeder extends Seeder
         // 2. Seed Detailed Materials Catalog (Juli 2026 Prices)
         $this->call(MaterialSeeder::class);
 
-        // 3. Seed Real Projects from the Excel Spreadsheet
+        // 3. Seed Contacts (Hausverwaltungen, Bauträger, Subunternehmer, Privatkunden)
+        $this->call(ContactSeeder::class);
+
+        // 4. Seed Real Projects from the Excel Spreadsheet
         $projectsData = [
             [
                 'name' => 'WEG Ingolstädter Str. 11 - 11c',
@@ -61,7 +64,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Pfeifer & Perrine, Ingolstädter Straße 5c',
                 'zip' => '85092',
                 'city_street' => 'Kösching',
-                'contact_address' => 'Immo Köhler',
+                'contact_address' => 'Pfeifer & Perrine',
                 'phone' => '0176 92476566',
                 'work_type' => 'Isolierabdichtung Tiefgaragenrampe WGB 11c',
                 'start_week' => 21, // 24. Mai
@@ -106,7 +109,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Reagan, Kaltnerstrasse 10a',
                 'zip' => '85055',
                 'city_street' => 'Ingolstadt',
-                'contact_address' => 'Claudia und Peter Reagan, Kaltnerstr. 10a, 85055 Ingolstadt',
+                'contact_address' => 'Reagan',
                 'phone' => '0841 38123244',
                 'work_type' => 'Undichter Keller',
                 'start_week' => 23, // 02. Jun
@@ -136,7 +139,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Dexl Christian, Am Damm 12',
                 'zip' => '85051',
                 'city_street' => 'Ingolstadt',
-                'contact_address' => 'Christian Dexl, Am Damm 12, 85051 Ingolstadt',
+                'contact_address' => 'Christian Dexl',
                 'phone' => '0841 78003',
                 'work_type' => 'Sanierungs- und Abdichtungsarbeiten',
                 'start_week' => 23,
@@ -150,9 +153,14 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($projectsData as $data) {
+            $contact = \App\Models\Contact::where('company_name', 'LIKE', '%' . $data['contact_address'] . '%')
+                ->orWhere('last_name', 'LIKE', '%' . $data['contact_address'] . '%')
+                ->first();
+
             $project = Project::firstOrCreate(
                 ['name' => $data['name']],
                 [
+                    'contact_id' => $contact?->id,
                     'zip' => $data['zip'],
                     'city_street' => $data['city_street'],
                     'contact_address' => $data['contact_address'],

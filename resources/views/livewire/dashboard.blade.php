@@ -77,7 +77,8 @@ new class extends Component {
         $wageCosts = ActualCost::whereIn('type', ['subcontractor', 'internal_wage'])->sum('cost_amount');
 
         $remainingBudget = $totalBudget - $totalCosts;
-        $margin = $totalBudget > 0 ? (($totalBudget - $totalCosts) / $totalBudget) * 100 : 0;
+        $totalBudgetFloat = (float) $totalBudget;
+        $margin = $totalBudgetFloat > 0 ? (($totalBudgetFloat - (float) $totalCosts) / $totalBudgetFloat) * 100 : 0;
 
         return [
             'active_projects' => $activeCount,
@@ -679,9 +680,9 @@ new class extends Component {
                         <!-- Cost & Progress -->
                         <div class="text-left sm:text-right space-y-2 w-full sm:w-auto min-w-[200px]">
                             @php 
-                                $costSum = $proj->actualCosts->sum('cost_amount');
-                                $budgetTotal = $proj->budget?->total_with_buffer ?: 1;
-                                $percent = min(($costSum / $budgetTotal) * 100, 100);
+                                $costSum = (float) $proj->actualCosts->sum('cost_amount');
+                                $budgetTotal = (float) ($proj->budget?->total_with_buffer ?? 0);
+                                $percent = $budgetTotal > 0 ? min(($costSum / $budgetTotal) * 100, 100) : 0;
                             @endphp
 
                             <div class="flex justify-between sm:justify-end items-center space-x-2">
@@ -837,9 +838,9 @@ new class extends Component {
                                         <span class="text-slate-900 font-bold">{{ number_format($proj->budget?->material_budget, 2, ',', '.') }} €</span>
                                     </div>
                                     @php
-                                        $matCosts = $proj->actualCosts->where('type', 'material')->sum('cost_amount');
-                                        $matBudget = $proj->budget?->material_budget ?: 1;
-                                        $matPercent = min(($matCosts / $matBudget) * 100, 100);
+                                        $matCosts = (float) $proj->actualCosts->where('type', 'material')->sum('cost_amount');
+                                        $matBudget = (float) ($proj->budget?->material_budget ?? 0);
+                                        $matPercent = $matBudget > 0 ? min(($matCosts / $matBudget) * 100, 100) : 0;
                                     @endphp
                                     <div class="w-full bg-slate-200/80 rounded-full h-2.5 overflow-hidden border border-slate-300/60 p-0.5">
                                         <div class="bg-blue-500 h-full rounded-full transition-all" style="width: {{ $matPercent }}%"></div>
@@ -859,9 +860,9 @@ new class extends Component {
                                         <span class="text-slate-900 font-bold">{{ number_format($proj->budget?->wage_budget, 2, ',', '.') }} €</span>
                                     </div>
                                     @php
-                                        $wageCosts = $proj->actualCosts->whereIn('type', ['subcontractor', 'internal_wage'])->sum('cost_amount');
-                                        $wageBudget = $proj->budget?->wage_budget ?: 1;
-                                        $wagePercent = min(($wageCosts / $wageBudget) * 100, 100);
+                                        $wageCosts = (float) $proj->actualCosts->whereIn('type', ['subcontractor', 'internal_wage'])->sum('cost_amount');
+                                        $wageBudget = (float) ($proj->budget?->wage_budget ?? 0);
+                                        $wagePercent = $wageBudget > 0 ? min(($wageCosts / $wageBudget) * 100, 100) : 0;
                                     @endphp
                                     <div class="w-full bg-slate-200/80 rounded-full h-2.5 overflow-hidden border border-slate-300/60 p-0.5">
                                         <div class="bg-slate-500 h-full rounded-full transition-all" style="width: {{ $wagePercent }}%"></div>

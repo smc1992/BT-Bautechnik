@@ -36,7 +36,8 @@ new class extends Component {
         $subcontractorCosts = (clone $costsQuery)->whereIn('type', ['subcontractor', 'internal_wage'])->sum('cost_amount');
 
         $netProfit = $totalInvoicedNet - $totalCosts;
-        $profitMargin = $totalInvoicedNet > 0 ? ($netProfit / $totalInvoicedNet) * 100 : 0;
+        $totalInvoicedNetFloat = (float) $totalInvoicedNet;
+        $profitMargin = $totalInvoicedNetFloat > 0 ? ($netProfit / $totalInvoicedNetFloat) * 100 : 0;
 
         return [
             'invoiced_net' => $totalInvoicedNet,
@@ -94,7 +95,7 @@ new class extends Component {
         return $projects->map(function ($p) {
             $invoicedNet = $p->invoices->sum('total_net');
             $totalCosts = $p->actualCosts->sum('cost_amount');
-            $budgetTotal = $p->budget?->total_with_buffer ?: 0;
+            $budgetTotal = (float) ($p->budget?->total_with_buffer ?? 0);
             $netProfit = $invoicedNet > 0 ? ($invoicedNet - $totalCosts) : ($budgetTotal - $totalCosts);
             $margin = $budgetTotal > 0 ? ($netProfit / $budgetTotal) * 100 : 0;
 

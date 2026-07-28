@@ -6,8 +6,8 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Stage 2: Application Runtime
-FROM php:8.3-fpm-alpine
+# Stage 2: Application Runtime (PHP 8.4 for Laravel 13 & Symfony 8.1 dependencies)
+FROM php:8.4-fpm-alpine
 WORKDIR /var/www/html
 
 # Install system dependencies

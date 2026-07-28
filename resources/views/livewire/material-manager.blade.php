@@ -1,12 +1,31 @@
 <?php
 
 use Livewire\Volt\Component;
+use Livewire\WithPagination;
 use App\Models\Material;
 
 new class extends Component {
+    use WithPagination;
+
     // Filters & Search
     public string $searchQuery = '';
     public string $selectedCategory = 'all';
+    public int $perPage = 15;
+
+    public function updatedSearchQuery()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSelectedCategory()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
 
     // Manual Form State
     public bool $showModal = false;
@@ -35,12 +54,20 @@ new class extends Component {
             'Dämmung',
             'Sanitär & Elektro',
             'Werkzeuge & Sonstiges',
+            'Abdichtung & Reaktivabdichtung',
+            'Injektionstechnik & Rissverpressung',
+            'Beton- & Estrichsanierung',
+            'Dämmung & Perimeter',
+            'Drainage & Schutzsysteme',
+            'Dichtbänder & Fugenabdichtung',
+            'Trockenbau & Wandbaustoffe',
+            'Verbrauchsmaterial & Arbeitsschutz',
         ];
     }
 
     public function getMaterialsProperty()
     {
-        return Material::query()
+        $query = Material::query()
             ->when($this->selectedCategory !== 'all', fn($q) => $q->where('category', $this->selectedCategory))
             ->when(trim($this->searchQuery) !== '', function ($q) {
                 $search = '%' . trim($this->searchQuery) . '%';
@@ -52,8 +79,9 @@ new class extends Component {
                 });
             })
             ->orderBy('category', 'asc')
-            ->orderBy('name', 'asc')
-            ->get();
+            ->orderBy('name', 'asc');
+
+        return $this->perPage === -1 ? $query->get() : $query->paginate($this->perPage);
     }
 
     public function openCreateModal()
@@ -235,14 +263,14 @@ new class extends Component {
                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-blue-500/30 text-blue-200 border border-blue-400/30">
                     Stammdaten & KI-Preise
                 </span>
-                <span class="text-xs text-slate-300">{{ $this->materials->count() }} Baustoffe gelistet</span>
+                <span class="text-xs text-slate-300">{{ $this->materials instanceof \Illuminate\Pagination\LengthAwarePaginator ? $this->materials->total() : $this->materials->count() }} Baustoffe gelistet</span>
             </div>
             <h1 class="text-xl md:text-2xl font-black tracking-tight text-white">Material- & Baustoffkatalog</h1>
             <p class="text-xs text-slate-300 max-w-xl">Zentrale Preisverwaltung aller Baumaterialien. Preisanpassungen manuell in der UI oder per KI-Prompt (z. B. <em>"Zement um +8% erhöhen"</em>).</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2.5 relative z-10 w-full md:w-auto">
-            @if($this->materials->count() === 0)
+            @if(($this->materials instanceof \Illuminate\Pagination\LengthAwarePaginator ? $this->materials->total() : $this->materials->count()) === 0)
                 <button wire:click="seedDefaultMaterials" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl transition shadow-md shadow-emerald-500/20 flex items-center gap-1.5 cursor-pointer">
                     <span>🌱 Standard-Baustoffe laden</span>
                 </button>
@@ -402,6 +430,37 @@ new class extends Component {
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        <!-- PAGINATION & RESULTS FOOTER -->
+        <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="text-xs text-slate-500 font-medium">
+                @if($this->materials instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                    Zeige <span class="font-extrabold text-slate-900">{{ $this->materials->firstItem() ?? 0 }}</span> bis <span class="font-extrabold text-slate-900">{{ $this->materials->lastItem() ?? 0 }}</span> von insgesamt <span class="font-extrabold text-slate-900">{{ $this->materials->total() }}</span> Baustoffen
+                @else
+                    Gesamt: <span class="font-extrabold text-slate-900">{{ $this->materials->count() }}</span> Baustoffe
+                @endif
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
+                    <span>Pro Seite:</span>
+                    <select wire:model.live="perPage" class="bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs font-bold text-slate-800 focus:outline-none focus:border-blue-600">
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="-1">Alle</option>
+                    </select>
+                </div>
+
+                @if($this->materials instanceof \Illuminate\Pagination\LengthAwarePaginator && $this->materials->hasPages())
+                    <div class="text-xs font-medium">
+                        {{ $this->materials->links() }}
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
 

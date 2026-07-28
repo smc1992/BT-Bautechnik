@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('daily_log_shares', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('daily_log_id')->constrained('daily_logs')->onDelete('cascade');
+            $table->foreignUuid('daily_log_id')->constrained('daily_logs')->onDelete('cascade');
             $table->string('share_token', 64)->unique();
             $table->string('approver_name')->nullable();
             $table->string('approver_role')->default('Architekt'); // Architekt, Bauherr, Bauleiter

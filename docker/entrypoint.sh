@@ -18,10 +18,10 @@ php artisan storage:link --force || true
 
 # 4. Run database migrations & seeders
 echo "🗄️ Running database migrations..."
-php artisan migrate --force || echo "⚠️ Migration completed with notice."
+php artisan migrate --force
 
 echo "🌱 Seeding default data if needed..."
-php artisan db:seed --force || echo "⚠️ Seeding completed with notice."
+php artisan db:seed --force
 
 # 5. Optimize caches for production
 echo "⚡ Caching Laravel configuration & routes..."

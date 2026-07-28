@@ -18,20 +18,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Create Default Admin Users
-        User::firstOrCreate(
+        // 1. Create/Update Default Admin Users
+        User::updateOrCreate(
             ['email' => 'bt-bautechnik@gmx.de'],
             [
                 'name' => 'Julia Haberzettel',
-                'password' => bcrypt('password'),
+                'password' => bcrypt('BT-Bau2026#SecureAdmin!Pass'),
             ]
         );
 
-        User::firstOrCreate(
+        User::updateOrCreate(
             ['email' => 'admin@bautechnik-bt.de'],
             [
                 'name' => 'Administrator',
-                'password' => bcrypt('password'),
+                'password' => bcrypt('BT-Bau2026#SecureAdmin!Pass'),
             ]
         );
 

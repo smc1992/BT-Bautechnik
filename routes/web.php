@@ -59,4 +59,18 @@ Route::view('materialien', 'materialien')
 Route::get('/bautagebuch/freigabe/{token}', App\Livewire\PublicDailyLogApproval::class)
     ->name('daily-log.public-approval');
 
+Route::get('/system/seed-knowledge-glossar-2026', function () {
+    if (request('key') !== 'BT-Bau2026-KnowledgeSeedKey!') {
+        abort(403);
+    }
+    \Illuminate\Support\Facades\Artisan::call('db:seed', [
+        '--class' => 'KnowledgeBaseSeeder',
+        '--force' => true,
+    ]);
+    return response()->json([
+        'status' => 'success',
+        'output' => \Illuminate\Support\Facades\Artisan::output(),
+    ]);
+});
+
 require __DIR__.'/auth.php';

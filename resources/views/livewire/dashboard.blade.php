@@ -1343,6 +1343,8 @@ new class extends Component {
             <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
                 <div class="bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 h-full w-3/4 animate-pulse"></div>
             </div>
+        </div>
+    </div>
     <!-- Create Defect Modal (From Baustellen-Detail) -->
     @if ($showCreateDefectModal)
         <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">

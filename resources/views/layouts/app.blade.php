@@ -7,6 +7,13 @@
 
         <title>{{ config('app.name', 'BT Bautechnik') }} - Cockpit & Controlling</title>
 
+        <!-- PWA Manifest & Theme -->
+        <link rel="manifest" href="/manifest.json">
+        <meta name="theme-color" content="#2563eb">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="BT Bautechnik">
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
@@ -14,7 +21,22 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
+    <body x-data="{ isOffline: !navigator.onLine }" 
+          x-init="
+              window.addEventListener('offline', () => isOffline = true);
+              window.addEventListener('online', () => isOffline = false);
+              if ('serviceWorker' in navigator) {
+                  navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW Reg Error', err));
+              }
+          " 
+          class="font-sans antialiased bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
+
+        <!-- Offline Status Banner -->
+        <div x-show="isOffline" x-cloak class="bg-amber-500 text-slate-900 px-4 py-2 text-center text-xs font-black shadow-md flex items-center justify-center gap-2 relative z-50 sticky top-0">
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-900 animate-ping"></span>
+            <span>📡 OFFLINE-MODUS AKTIV: Bautagebuch-Einträge & Notizen werden lokal gespeichert und bei Netzempfang automatisch synchronisiert!</span>
+        </div>
+
         <div class="min-h-screen bg-slate-50">
             <livewire:layout.navigation />
 

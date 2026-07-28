@@ -36,7 +36,7 @@ new class extends Component
                     </x-nav-link>
 
                     <!-- 2. Baustellen Dropdown -->
-                    @php $isBaustellenActive = request()->routeIs('planning', 'daily-logs', 'defects'); @endphp
+                    @php $isBaustellenActive = request()->routeIs('planning', 'work-schedule', 'daily-logs', 'defects'); @endphp
                     <x-dropdown align="left" width="72">
                         <x-slot name="trigger">
                             <button class="inline-flex items-center gap-1 px-3 py-2 text-xs font-extrabold rounded-xl transition cursor-pointer {{ $isBaustellenActive ? 'text-blue-700 bg-blue-50 border border-blue-200' : 'text-slate-700 hover:text-blue-600 hover:bg-slate-50' }}">
@@ -45,6 +45,9 @@ new class extends Component
                             </button>
                         </x-slot>
                         <x-slot name="content">
+                            <x-dropdown-link :href="route('work-schedule')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap text-blue-700 font-extrabold">
+                                <span>👷</span> {{ __('Handwerker-Einsatzplaner') }}
+                            </x-dropdown-link>
                             <x-dropdown-link :href="route('planning')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap">
                                 <span>📅</span> {{ __('Bauzeitenplaner') }}
                             </x-dropdown-link>

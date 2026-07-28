@@ -1,0 +1,17 @@
+{
+  "name": "BT Bautechnik UG - Cockpit & Baustellen-App",
+  "short_name": "BT Bautechnik",
+  "description": "Bautagebuch, Einsatzplaner, Massenermittlung & Mängelverwaltung",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

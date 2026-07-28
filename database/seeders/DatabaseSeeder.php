@@ -293,5 +293,8 @@ class DatabaseSeeder extends Seeder
 
         // 5. Seed Knowledge Base Documents & Vectors
         $this->call(KnowledgeBaseSeeder::class);
+
+        // 6. Seed Worker Schedules
+        $this->call(WorkerScheduleSeeder::class);
     }
 }

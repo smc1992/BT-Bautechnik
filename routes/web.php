@@ -44,6 +44,10 @@ Route::view('wissen', 'wissen')
     ->middleware(['auth', 'verified'])
     ->name('knowledge-base');
 
+Route::view('einsatzplan', 'einsatzplan')
+    ->middleware(['auth', 'verified'])
+    ->name('work-schedule');
+
 Route::view('analytics', 'analytics')
     ->middleware(['auth', 'verified'])
     ->name('analytics');

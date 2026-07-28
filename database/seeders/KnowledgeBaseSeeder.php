@@ -185,6 +185,27 @@ Richtlinien zur Verlegung von Estrichen im Bauwesen nach DIN 18560.
   - Geheizt: max. 0,3 CM-%
 EOT,
             ],
+            [
+                'title' => 'Glossar - Bauabrechnung, Aufmaß & Massenermittlung (VOB/B & DIN 18299)',
+                'category' => 'Kalkulation & Abrechnung',
+                'content' => <<<EOT
+GLOSSAR DER WICHTIGSTEN BEGRIFFE DER BAUABRECHNUNG & KALKULATION:
+
+1. MASSENERMITTLUNG (auch Massenberechnung):
+- Das mathematische Ermitteln von Längen (m), Flächen (m²) und Volumen (m³ - Kubikmeter) aus den Ausführungs- und Bauplänen.
+- Nach DIN 18299 gilt: Aussparungen und Durchbrüche bis 0,1 m² Einzelfläche bei Flächenberechnungen bzw. bis 0,5 m³ Einzelvolumen bei Volumenberechnungen werden übermessen und nicht abgezogen.
+
+2. LEISTUNGSVERZEICHNIS (LV):
+- Die strukturierte Liste aller nötigen Teilleistungen und Arbeiten einer Baumaßnahme.
+- Hier steht bei Beton-, Erd- oder Abdichtungsarbeiten die Menge als konkrete Maßeinheit (z. B. m³, m², lfm, Stk) sowie der kalkulierte Einheitspreis (€/Einheit).
+
+3. EINHEITSPREISVERTRAG:
+- Die bevorzugte Vertragsart nach VOB/B, bei der der Endpreis nicht starr ist, sondern exakt nach der tatsächlich auf der Baustelle eingebauten und per Aufmaß nachgewiesenen Menge (Volumen/Fläche) abgerechnet wird.
+
+4. AUFMASS:
+- Das präzise Ausmessen der fertiggestellten Bauteile und erbrachten Bauleistungen direkt vor Ort auf der Baustelle oder anhand geprüfter As-Built-Pläne, um die finale Abrechnungsmenge für die Abschlags- oder Schlussrechnung festzulegen.
+EOT,
+            ],
         ];
 
         foreach ($documents as $docData) {

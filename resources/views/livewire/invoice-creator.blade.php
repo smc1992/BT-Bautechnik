@@ -240,6 +240,133 @@ new class extends Component {
     public function updatedFilterMonth() { $this->loadSavedDocuments(); }
     public function updatedDocSearch() { $this->loadSavedDocuments(); }
 
+    // Aufmaß & Glossar Modal State
+    public bool $showAufmassModal = false;
+    public bool $showGlossarModal = false;
+    public ?int $targetItemIndex = null;
+    public string $aufmassTitle = 'Massenermittlung & Aufmaßblatt';
+    public string $aufmassUnit = 'm²'; // m, m², m³, Stk, lfm
+    public array $aufmassRows = [];
+
+    public function openAufmassModal(?int $itemIndex = null)
+    {
+        $this->targetItemIndex = $itemIndex;
+        if ($itemIndex !== null && isset($this->items[$itemIndex])) {
+            $item = $this->items[$itemIndex];
+            $this->aufmassTitle = 'Aufmaß für Position #' . ($itemIndex + 1) . ': ' . ($item['description'] ? strtok($item['description'], "\n") : 'Position');
+            $this->aufmassUnit = $item['unit'] ?: 'm²';
+        } else {
+            $this->aufmassTitle = 'Massenermittlung (Aufmaßblatt nach VOB/B)';
+            $this->aufmassUnit = 'm²';
+        }
+
+        if (empty($this->aufmassRows)) {
+            $this->aufmassRows = [
+                [
+                    'label' => 'Bauteil / Wand 1',
+                    'count' => 1,
+                    'length' => 10.0,
+                    'width' => 2.50,
+                    'height' => 1.0,
+                    'mode' => 'add', // 'add', 'subtract', 'overmeasure'
+                    'note' => '',
+                ]
+            ];
+        }
+        $this->showAufmassModal = true;
+    }
+
+    public function openGlossarModal()
+    {
+        $this->showGlossarModal = true;
+    }
+
+    public function addAufmassRow()
+    {
+        $this->aufmassRows[] = [
+            'label' => 'Teilleistung / Abzug ' . (count($this->aufmassRows) + 1),
+            'count' => 1,
+            'length' => 0.0,
+            'width' => 0.0,
+            'height' => 1.0,
+            'mode' => 'add',
+            'note' => '',
+        ];
+    }
+
+    public function removeAufmassRow(int $index)
+    {
+        unset($this->aufmassRows[$index]);
+        $this->aufmassRows = array_values($this->aufmassRows);
+    }
+
+    public function calculateRowSubtotal(array $row): float
+    {
+        $count = floatval($row['count'] ?? 1);
+        $length = floatval($row['length'] ?? 0);
+        $width = floatval($row['width'] ?? 0);
+        $height = floatval($row['height'] ?? 1);
+
+        if ($length <= 0 && $width <= 0) return 0.0;
+
+        $l = $length > 0 ? $length : 1.0;
+        $w = $width > 0 ? $width : 1.0;
+        $h = $height > 0 ? $height : 1.0;
+
+        $vol = $count * $l * $w * $h;
+
+        // VOB DIN 18299 Übermessungsregel check:
+        if (($row['mode'] ?? 'add') === 'overmeasure') {
+            return 0.0; // Übermessen (<0.1m² / <0.5m³) -> kein Abzug
+        }
+
+        if (($row['mode'] ?? 'add') === 'subtract') {
+            return -$vol;
+        }
+
+        return $vol;
+    }
+
+    public function getAufmassTotalProperty(): float
+    {
+        $total = 0.0;
+        foreach ($this->aufmassRows as $row) {
+            $total += $this->calculateRowSubtotal($row);
+        }
+        return max(0.0, round($total, 3));
+    }
+
+    public function applyAufmassToTarget()
+    {
+        $total = $this->aufmassTotal;
+
+        $details = [];
+        foreach ($this->aufmassRows as $r) {
+            $sub = $this->calculateRowSubtotal($r);
+            if (($r['mode'] ?? 'add') === 'overmeasure') {
+                $details[] = ($r['label'] ?: 'Aussparung') . ': Übermessen DIN 18299';
+            } else {
+                $sign = ($r['mode'] ?? 'add') === 'subtract' ? '-' : '';
+                $details[] = ($r['label'] ?: 'Pos') . ': ' . $sign . number_format(abs($sub), 2, ',', '.') . ' ' . $this->aufmassUnit;
+            }
+        }
+
+        $formulaText = "\n[Aufmaß: " . implode(' | ', $details) . " -> Gesamt: " . number_format($total, 2, ',', '.') . ' ' . $this->aufmassUnit . "]";
+
+        if ($this->targetItemIndex !== null && isset($this->items[$this->targetItemIndex])) {
+            $this->items[$this->targetItemIndex]['quantity'] = $total;
+            $this->items[$this->targetItemIndex]['unit'] = $this->aufmassUnit;
+            if (!str_contains($this->items[$this->targetItemIndex]['description'], '[Aufmaß:')) {
+                $this->items[$this->targetItemIndex]['description'] .= $formulaText;
+            }
+            $this->dispatch('notify', '📐 Aufmaß von ' . number_format($total, 2, ',', '.') . ' ' . $this->aufmassUnit . ' in Position #' . ($this->targetItemIndex + 1) . ' übernommen!');
+        } else {
+            $this->dispatch('notify', '📐 Massenermittlung berechnet: ' . number_format($total, 2, ',', '.') . ' ' . $this->aufmassUnit);
+        }
+
+        $this->showAufmassModal = false;
+    }
+
     public function mount()
     {
         $this->docDate = date('Y-m-d');
@@ -1978,10 +2105,20 @@ new class extends Component {
             <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm space-y-4">
                 <div class="space-y-3">
                     <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                        <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Positionen</h3>
-                        <button wire:click="addItem" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold rounded-xl shadow-xs transition flex items-center gap-1 cursor-pointer shrink-0">
-                            <span>+ Position hinzufügen</span>
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Positionen</h3>
+                            <button wire:click="openGlossarModal" type="button" class="px-2 py-0.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-[10px] font-extrabold rounded-lg transition flex items-center gap-1 cursor-pointer" title="Begriffe der Bauabrechnung anzeigen">
+                                <span>💡 Spicker</span>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button wire:click="openAufmassModal(null)" type="button" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200 text-xs font-extrabold rounded-xl transition flex items-center gap-1 cursor-pointer shrink-0">
+                                <span>📐 Aufmaß-Rechner</span>
+                            </button>
+                            <button wire:click="addItem" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold rounded-xl shadow-xs transition flex items-center gap-1 cursor-pointer shrink-0">
+                                <span>+ Position</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div>
@@ -1997,9 +2134,14 @@ new class extends Component {
                     @foreach ($items as $idx => $item)
                         <div wire:key="{{ $item['id'] }}" class="bg-slate-50 p-3 rounded-xl border border-slate-200/80 space-y-2 relative">
                             <div class="flex items-center justify-between">
-                                <button wire:click="saveItemAsTemplate({{ $idx }})" type="button" title="Diese Position als Vorlage speichern" class="text-blue-600 hover:text-blue-800 text-[11px] font-bold flex items-center gap-1 cursor-pointer">
-                                    <span>💾 Als Vorlage in Bibliothek speichern</span>
-                                </button>
+                                <div class="flex items-center gap-2">
+                                    <button wire:click="saveItemAsTemplate({{ $idx }})" type="button" title="Diese Position als Vorlage speichern" class="text-blue-600 hover:text-blue-800 text-[11px] font-bold flex items-center gap-1 cursor-pointer">
+                                        <span>💾 Als Vorlage speichern</span>
+                                    </button>
+                                    <button wire:click="openAufmassModal({{ $idx }})" type="button" title="Aufmaß & Massenermittlung berechnen" class="px-2 py-0.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-900 border border-indigo-300 text-[11px] font-black rounded-lg transition flex items-center gap-1 cursor-pointer">
+                                        <span>📐 Aufmaß</span>
+                                    </button>
+                                </div>
                                 <button wire:click="removeItem('{{ $item['id'] }}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold cursor-pointer">✕ Entfernen</button>
                             </div>
                             <div class="grid grid-cols-6 gap-2">
@@ -2695,6 +2837,179 @@ new class extends Component {
                             <span>⚠️ Mahnung Stufe {{ $dunningLevel }} ausführen & speichern</span>
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- AUFMASS & MASSENERMITTLUNGS MODAL -->
+    @if($showAufmassModal)
+        <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-3xl shadow-2xl overflow-hidden my-6 flex flex-col max-h-[90vh]">
+                <div class="px-6 py-4 bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-950 text-white flex justify-between items-center shrink-0">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">📐</span>
+                        <div>
+                            <h3 class="text-base font-extrabold text-white">{{ $aufmassTitle }}</h3>
+                            <p class="text-[11px] text-indigo-200">Formelmäßige Massenermittlung nach VOB/B & DIN 18299</p>
+                        </div>
+                    </div>
+                    <button wire:click="$set('showAufmassModal', false)" class="text-slate-400 hover:text-white text-xl font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div class="p-6 space-y-4 overflow-y-auto grow">
+                    <div class="bg-indigo-50/70 border border-indigo-200 rounded-2xl p-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div class="text-xs text-indigo-900 font-medium space-y-0.5">
+                            <span class="font-extrabold block">VOB-Übermessungsregel (DIN 18299):</span>
+                            <span>Aussparungen / Öffnungen &lt; 0,1 m² (Fläche) oder &lt; 0,5 m³ (Volumen) werden übermessen (kein Abzug).</span>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <label class="text-xs font-bold text-slate-700">Einheit:</label>
+                            <select wire:model.live="aufmassUnit" class="bg-white border border-indigo-300 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-900">
+                                <option value="m²">m² (Quadratmeter)</option>
+                                <option value="m³">m³ (Kubikmeter)</option>
+                                <option value="m">m (Laufmeter)</option>
+                                <option value="Stk">Stk (Stück)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Aufmaß Zeilen -->
+                    <div class="space-y-3">
+                        @foreach($aufmassRows as $rIdx => $row)
+                            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 space-y-2 relative">
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="text-xs font-black text-slate-700">Teilaufmaß #{{ $rIdx + 1 }}</span>
+                                    <button wire:click="removeAufmassRow({{ $rIdx }})" type="button" class="text-rose-500 hover:text-rose-700 text-xs font-bold">✕ Zeile entfernen</button>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-6 gap-2">
+                                    <div class="sm:col-span-2">
+                                        <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Bauteil / Raum / Lage</label>
+                                        <input wire:model.live="aufmassRows.{{ $rIdx }}.label" type="text" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-900" placeholder="z. B. Kellerwand Süd">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Anzahl</label>
+                                        <input wire:model.live="aufmassRows.{{ $rIdx }}.count" type="number" step="1" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs font-bold text-slate-900 text-right">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Länge (m)</label>
+                                        <input wire:model.live="aufmassRows.{{ $rIdx }}.length" type="number" step="0.01" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs font-bold text-slate-900 text-right" placeholder="10.50">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Breite/Höhe (m)</label>
+                                        <input wire:model.live="aufmassRows.{{ $rIdx }}.width" type="number" step="0.01" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs font-bold text-slate-900 text-right" placeholder="2.80">
+                                    </div>
+                                    @if($aufmassUnit === 'm³')
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Dicke (m)</label>
+                                            <input wire:model.live="aufmassRows.{{ $rIdx }}.height" type="number" step="0.01" class="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs font-bold text-slate-900 text-right" placeholder="0.25">
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
+                                    <div class="flex items-center gap-2">
+                                        <label class="text-[11px] font-bold text-slate-600">VOB-Modus:</label>
+                                        <select wire:model.live="aufmassRows.{{ $rIdx }}.mode" class="bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-semibold text-slate-900">
+                                            <option value="add">➕ Hinzurechnen (Standard)</option>
+                                            <option value="subtract">➖ Abziehen (Abzug)</option>
+                                            <option value="overmeasure">🛡️ Übermessen (&lt;0,1m² / &lt;0,5m³)</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="text-right text-xs">
+                                        <span class="text-slate-500">Ergebnis:</span>
+                                        <span class="font-black text-slate-900 text-sm ml-1">
+                                            {{ number_format($this->calculateRowSubtotal($row), 2, ',', '.') }} {{ $aufmassUnit }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <button wire:click="addAufmassRow" type="button" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-2xl transition border border-dashed border-slate-300 flex items-center justify-center gap-1 cursor-pointer">
+                        <span>➕ Weitere Zeile / Teilleistung hinzufügen</span>
+                    </button>
+                </div>
+
+                <!-- Footer Total & Action -->
+                <div class="px-6 py-4 bg-slate-900 text-white flex flex-col sm:flex-row justify-between items-center gap-4 shrink-0">
+                    <div>
+                        <span class="text-xs text-slate-400 block uppercase font-bold">Gesamte errechnete Menge:</span>
+                        <span class="text-2xl font-black text-emerald-400">{{ number_format($this->aufmassTotal, 2, ',', '.') }} {{ $aufmassUnit }}</span>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button type="button" wire:click="$set('showAufmassModal', false)" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold">Abbrechen</button>
+                        <button type="button" wire:click="applyAufmassToTarget" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-600/30 flex items-center gap-1.5 cursor-pointer">
+                            <span>📐 {{ $targetItemIndex !== null ? 'In Position #' . ($targetItemIndex + 1) . ' übernehmen' : 'Als Menge übernehmen' }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- BEGRIFFE GLOSSAR SPICKER MODAL -->
+    @if($showGlossarModal)
+        <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden my-6 flex flex-col max-h-[85vh]">
+                <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center shrink-0">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">💡</span>
+                        <div>
+                            <h3 class="text-base font-extrabold text-white">Die wichtigsten Begriffe der Bauabrechnung im Überblick</h3>
+                            <p class="text-[11px] text-slate-300">Grundwissen nach VOB/B & DIN 18299</p>
+                        </div>
+                    </div>
+                    <button wire:click="$set('showGlossarModal', false)" class="text-slate-400 hover:text-white text-xl font-bold cursor-pointer">✕</button>
+                </div>
+
+                <div class="p-6 space-y-4 overflow-y-auto grow text-xs leading-relaxed text-slate-800">
+                    <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 space-y-1">
+                        <h4 class="font-extrabold text-blue-900 text-sm flex items-center gap-1.5">
+                            <span>📐 Massenermittlung (auch Massenberechnung)</span>
+                        </h4>
+                        <p class="text-slate-700">
+                            Das mathematische Ermitteln von Längen (m), Flächen (m²) und Volumen (m³ - Kubikmeter) aus den Bauplänen und Ausführungszeichnungen.
+                            <br><span class="font-bold text-slate-900">VOB-Regel (DIN 18299):</span> Aussparungen und Durchbrüche bis 0,1 m² bei Flächen bzw. bis 0,5 m³ bei Volumen werden übermessen und nicht abgezogen.
+                        </p>
+                    </div>
+
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 space-y-1">
+                        <h4 class="font-extrabold text-emerald-900 text-sm flex items-center gap-1.5">
+                            <span>📋 Leistungsverzeichnis (LV)</span>
+                        </h4>
+                        <p class="text-slate-700">
+                            Die strukturierte Liste aller nötigen Arbeiten einer Baumaßnahme. Hier steht bei Beton-, Erd- oder Abdichtungsarbeiten die Menge als Maßeinheit (z. B. m³, m², lfm) sowie der Preis pro Einheit (Einheitspreis in €).
+                        </p>
+                    </div>
+
+                    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-1">
+                        <h4 class="font-extrabold text-amber-900 text-sm flex items-center gap-1.5">
+                            <span>⚖️ Einheitspreisvertrag</span>
+                        </h4>
+                        <p class="text-slate-700">
+                            Die nach VOB/B bevorzugte Vertragsart, bei der exakt nach der tatsächlich auf der Baustelle eingebauten Menge (Volumen/Fläche) abgerechnet wird.
+                        </p>
+                    </div>
+
+                    <div class="bg-purple-50 border border-purple-200 rounded-2xl p-4 space-y-1">
+                        <h4 class="font-extrabold text-purple-900 text-sm flex items-center gap-1.5">
+                            <span>🔍 Aufmaß</span>
+                        </h4>
+                        <p class="text-slate-700">
+                            Das Ausmessen der fertigen Bauteile direkt vor Ort auf der Baustelle, um das finale Volumen für die Abschlags- oder Schlussrechnung zu bestimmen.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex justify-end shrink-0">
+                    <button type="button" wire:click="$set('showGlossarModal', false)" class="px-5 py-2 bg-slate-900 text-white font-extrabold rounded-xl text-xs">
+                        Schließen
+                    </button>
                 </div>
             </div>
         </div>

@@ -11,7 +11,7 @@ FROM php:8.3-fpm-alpine
 WORKDIR /var/www/html
 
 # Install system dependencies
-RUN apk add --no-update --no-cache \
+RUN apk add --no-cache \
     nginx \
     supervisor \
     postgresql-dev \

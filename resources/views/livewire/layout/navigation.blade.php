@@ -57,15 +57,15 @@ new class extends Component
                 <!-- Structured Desktop Navigation Links -->
                 <div class="hidden md:flex md:items-center md:gap-1.5">
                     <!-- 1. Dashboard -->
-                    <a href="{{ route('dashboard') }}" wire:navigate class="h-9 px-3 text-xs font-extrabold rounded-xl transition flex items-center gap-1.5 {{ request()->routeIs('dashboard') ? 'bg-white/20 text-white border border-white/20 shadow-2xs' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
+                    <a wire:key="nav-btn-dashboard" href="{{ route('dashboard') }}" wire:navigate class="h-9 px-3 text-xs font-extrabold rounded-xl transition flex items-center gap-1.5 border {{ request()->routeIs('dashboard') ? 'bg-white/20 text-white border-white/20 shadow-2xs' : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10' }}">
                         <span>📊</span> <span>{{ __('Dashboard') }}</span>
                     </a>
 
                     <!-- 2. Baustellen Dropdown -->
                     @php $isBaustellenGroup = request()->routeIs('planning', 'work-schedule', 'daily-logs', 'defects'); @endphp
-                    <x-dropdown align="left" width="72">
+                    <x-dropdown align="left" width="72" wire:key="nav-dropdown-baustellen">
                         <x-slot name="trigger">
-                            <button class="h-9 inline-flex items-center gap-1.5 px-3 text-xs font-extrabold rounded-xl transition cursor-pointer {{ $isBaustellenGroup ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
+                            <button class="h-9 inline-flex items-center gap-1.5 px-3 text-xs font-extrabold rounded-xl transition cursor-pointer border {{ $isBaustellenGroup ? 'bg-blue-600 text-white border-blue-500/30 shadow-xs' : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10' }}">
                                 <span>🏗️</span> <span>Baustellen</span>
                                 <svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
@@ -87,9 +87,9 @@ new class extends Component
                     </x-dropdown>
 
                     <!-- 3. Finanzen Dropdown -->
-                    <x-dropdown align="left" width="72">
+                    <x-dropdown align="left" width="72" wire:key="nav-dropdown-finanzen">
                         <x-slot name="trigger">
-                            <button class="h-9 inline-flex items-center gap-1.5 px-3 text-xs font-extrabold rounded-xl transition cursor-pointer {{ $isFinanzenActive ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
+                            <button class="h-9 inline-flex items-center gap-1.5 px-3 text-xs font-extrabold rounded-xl transition cursor-pointer border {{ $isFinanzenActive ? 'bg-emerald-600 text-white border-emerald-500/30 shadow-xs' : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10' }}">
                                 <span>💶</span> <span>Finanzen</span>
                                 <svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
@@ -111,9 +111,9 @@ new class extends Component
                     </x-dropdown>
 
                     <!-- 4. CRM & Verwaltung Dropdown -->
-                    <x-dropdown align="left" width="72">
+                    <x-dropdown align="left" width="72" wire:key="nav-dropdown-crm">
                         <x-slot name="trigger">
-                            <button class="h-9 inline-flex items-center gap-1.5 px-3 text-xs font-extrabold rounded-xl transition cursor-pointer {{ $isCrmActive ? 'bg-purple-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
+                            <button class="h-9 inline-flex items-center gap-1.5 px-3 text-xs font-extrabold rounded-xl transition cursor-pointer border {{ $isCrmActive ? 'bg-purple-600 text-white border-purple-500/30 shadow-xs' : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10' }}">
                                 <span>👥</span> <span>CRM & Firma</span>
                                 <svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
@@ -129,12 +129,12 @@ new class extends Component
                     </x-dropdown>
 
                     <!-- 5. Wissen (RAG) -->
-                    <a href="{{ route('knowledge-base') }}" wire:navigate class="h-9 px-3 text-xs font-extrabold rounded-xl transition flex items-center gap-1.5 {{ request()->routeIs('knowledge-base') ? 'bg-cyan-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
+                    <a wire:key="nav-btn-wissen" href="{{ route('knowledge-base') }}" wire:navigate class="h-9 px-3 text-xs font-extrabold rounded-xl transition flex items-center gap-1.5 border {{ request()->routeIs('knowledge-base') ? 'bg-cyan-600 text-white border-cyan-500/30 shadow-xs' : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10' }}">
                         <span>📚</span> <span>{{ __('Wissen') }}</span>
                     </a>
 
                     <!-- 6. Featured KI-Agent Button Badge -->
-                    <a href="{{ route('ai-agent') }}" wire:navigate 
+                    <a wire:key="nav-btn-ki" href="{{ route('ai-agent') }}" wire:navigate 
                        class="h-9 px-3.5 rounded-xl font-black text-xs text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-md shadow-blue-500/20 transition flex items-center gap-1.5 cursor-pointer border border-white/20">
                         <span>🤖 KI-Agent</span>
                         <span class="px-1.5 py-0.2 rounded-full text-[9px] font-black uppercase bg-white/20 text-white backdrop-blur-xs">PRO</span>

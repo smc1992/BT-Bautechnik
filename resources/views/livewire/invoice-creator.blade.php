@@ -1657,8 +1657,6 @@ new class extends Component {
 }; ?>
 
 <div class="space-y-6 font-sans max-w-full overflow-x-hidden relative">
-    <!-- Load custom legacy CSS styles dynamically -->
-    <link rel="stylesheet" href="{{ asset('css/invoice-style.css') }}">
 
     <!-- FLOATING TOAST NOTIFICATION BANNER -->
     <div x-data="{ show: false, message: '' }"

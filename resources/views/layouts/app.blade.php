@@ -18,6 +18,9 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
 
+        <!-- Custom Stylesheets -->
+        <link rel="stylesheet" href="{{ asset('css/invoice-style.css') }}">
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -50,10 +53,10 @@
             @endif
 
             <!-- Main Content Area with HubSpot-Style Sidebar -->
-            <div class="flex-1 flex w-full">
+            <div class="flex-1 w-full max-w-7xl mx-auto flex items-start">
                 <livewire:layout.sidebar />
 
-                <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full overflow-x-hidden">
+                <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 w-full overflow-x-hidden">
                     {{ $slot }}
                 </main>
             </div>

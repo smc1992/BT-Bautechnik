@@ -202,7 +202,8 @@ new class extends Component {
                         @endif
                     </div>
 
-                    <div class="flex flex-wrap items-center gap-2 text-xs                         <span class="bg-slate-100 px-2.5 py-1 rounded-lg">🌤️ {{ $log->weather }} ({{ $log->temperature }})</span>
+                    <div class="flex flex-wrap items-center gap-2 text-xs">
+                        <span class="bg-slate-100 px-2.5 py-1 rounded-lg">🌤️ {{ $log->weather }} ({{ $log->temperature }})</span>
                         <span class="bg-slate-100 px-2.5 py-1 rounded-lg">👷 {{ $log->workers_count }} Mitarbeiter</span>
                         
                         @if($log->contact)

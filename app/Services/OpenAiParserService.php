@@ -484,10 +484,10 @@ class OpenAiParserService
                                             ],
                                             'note' => [
                                                 'type' => 'string',
-                                                'description' => 'Optionaler VOB-Hinweis'
+                                                'description' => 'Optionaler VOB-Hinweis oder Begründung (sonst Leerstring "")'
                                             ]
                                         ],
-                                        'required' => ['label', 'count', 'length', 'width', 'height', 'mode'],
+                                        'required' => ['label', 'count', 'length', 'width', 'height', 'mode', 'note'],
                                         'additionalProperties' => false
                                     ]
                                 ]

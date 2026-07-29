@@ -450,6 +450,84 @@ class OpenAiAgentService
                         'required' => ['query']
                     ]
                 ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'schedule_worker',
+                    'description' => 'Teilt einen Handwerker, Monteur oder Subunternehmer für einen Tag auf einer Baustelle ein oder fragt den Einsatzplan ab.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'project_name' => ['type' => 'string', 'description' => 'Name der Baustelle'],
+                            'worker_name' => ['type' => 'string', 'description' => 'Name des Mitarbeiters oder Subunternehmers'],
+                            'date' => ['type' => 'string', 'description' => 'Datum im Format YYYY-MM-DD (oder "heute", "morgen")'],
+                            'shift_type' => ['type' => 'string', 'enum' => ['ganztags', 'vormittags', 'nachmittags'], 'description' => 'Schicht/Dauer (Standard ganztags)'],
+                            'action' => ['type' => 'string', 'enum' => ['create', 'query'], 'description' => 'Einteilen ("create") oder Einsatzplan abfragen ("query")']
+                        ],
+                        'required' => ['project_name', 'action']
+                    ]
+                ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'check_project_profitability',
+                    'description' => 'Führt eine Finanz-Nachkalkulation für eine Baustelle durch (Einnahmen vs. Subunternehmerkosten vs. Baukosten vs. Gewinnmarge).',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'project_name' => ['type' => 'string', 'description' => 'Name der Baustelle']
+                        ],
+                        'required' => ['project_name']
+                    ]
+                ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'search_contacts',
+                    'description' => 'Durchsucht die Firmen-Kontaktdatenbank nach Hausverwaltungen, Bauträgern, Nachunternehmern, Handwerkern und Telefonnummern.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'query' => ['type' => 'string', 'description' => 'Name, Firma, Kategorie oder Ort des Kontakts']
+                        ],
+                        'required' => ['query']
+                    ]
+                ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'generate_defect_pdf',
+                    'description' => 'Erstellt ein rechtssicheres VOB/B §13 Mängelrüge-Schreiben an einen Subunternehmer inklusive PDF-Drucklink.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'project_name' => ['type' => 'string', 'description' => 'Name der Baustelle'],
+                            'subcontractor_name' => ['type' => 'string', 'description' => 'Name des Subunternehmers'],
+                            'defect_title' => ['type' => 'string', 'description' => 'Titel des Mangels'],
+                            'deadline_days' => ['type' => 'integer', 'description' => 'Frist in Tagen (Standard 7)']
+                        ],
+                        'required' => ['project_name', 'subcontractor_name', 'defect_title']
+                    ]
+                ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'check_site_weather',
+                    'description' => 'Prüft das Baustellen-Wetter und VOB-Norm-Anforderungen für Gewerkearbeiten (z.B. Bitumen >5°C, Beton Eisschutz, Malerarbeiten).',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'project_name' => ['type' => 'string', 'description' => 'Name der Baustelle'],
+                            'work_type' => ['type' => 'string', 'description' => 'Gewerk/Arbeit (z.B. Bitumenabdichtung, Estrich, Betonieren, Maler)']
+                        ],
+                        'required' => ['project_name', 'work_type']
+                    ]
+                ]
             ]
         ];
     }
@@ -880,6 +958,179 @@ class OpenAiAgentService
                     'success' => true,
                     'count' => $materials->count(),
                     'summary' => "📦 **Materialpreise (Stand Juli 2026):**\n\n" . implode("\n", $list) . "\n\n[Zum Materialkatalog](/materialien)"
+                ];
+
+            case 'schedule_worker':
+                $projectName = $args['project_name'] ?? '';
+                $project = Project::where('name', 'LIKE', "%{$projectName}%")->first();
+                if (!$project) {
+                    return ['success' => false, 'summary' => "Baustelle '{$projectName}' nicht gefunden."];
+                }
+
+                $action = $args['action'] ?? 'query';
+                $targetDate = $args['date'] ?? date('Y-m-d');
+                if ($targetDate === 'heute') $targetDate = date('Y-m-d');
+                if ($targetDate === 'morgen') $targetDate = date('Y-m-d', strtotime('+1 day'));
+
+                if ($action === 'create') {
+                    $workerName = $args['worker_name'] ?? 'Mitarbeiter';
+                    $shiftType = $args['shift_type'] ?? 'ganztags';
+                    
+                    $contact = \App\Models\Contact::where('display_name', 'LIKE', "%{$workerName}%")
+                        ->orWhere('company_name', 'LIKE', "%{$workerName}%")
+                        ->first();
+
+                    \App\Models\WorkerSchedule::create([
+                        'project_id' => $project->id,
+                        'contact_id' => $contact ? $contact->id : null,
+                        'worker_name' => $workerName,
+                        'worker_type' => $contact ? 'subcontractor' : 'employee',
+                        'date' => $targetDate,
+                        'shift_type' => $shiftType,
+                        'notes' => 'Über KI-Agent eingeteilt'
+                    ]);
+
+                    return [
+                        'success' => true,
+                        'summary' => "👷 **Einsatzplan aktualisiert:**\n• **Handwerker/Sub:** {$workerName}\n• **Baustelle:** {$project->name}\n• **Datum:** " . date('d.m.Y', strtotime($targetDate)) . " ({$shiftType})\n\n[Zum Einsatzplaner](/einsatzplan)"
+                    ];
+                } else {
+                    $schedules = \App\Models\WorkerSchedule::where('project_id', $project->id)
+                        ->where('date', $targetDate)
+                        ->get();
+
+                    if ($schedules->isEmpty()) {
+                        return [
+                            'success' => true,
+                            'summary' => "Keine Einteilungen für '{$project->name}' am " . date('d.m.Y', strtotime($targetDate)) . " gefunden. [Zum Einsatzplaner](/einsatzplan)"
+                        ];
+                    }
+
+                    $list = [];
+                    foreach ($schedules as $s) {
+                        $list[] = "• **{$s->worker_name}** (" . ($s->worker_type === 'subcontractor' ? 'Subunternehmer' : 'Eigenleistung') . ") - {$s->shift_type}";
+                    }
+
+                    return [
+                        'success' => true,
+                        'summary' => "👷 **Einsatzplan für {$project->name} (" . date('d.m.Y', strtotime($targetDate)) . "):**\n\n" . implode("\n", $list) . "\n\n[Zum Einsatzplaner](/einsatzplan)"
+                    ];
+                }
+
+            case 'check_project_profitability':
+                $projectName = $args['project_name'] ?? '';
+                $project = Project::where('name', 'LIKE', "%{$projectName}%")->first();
+                if (!$project) {
+                    return ['success' => false, 'summary' => "Baustelle '{$projectName}' nicht gefunden."];
+                }
+
+                $invoicesTotal = \App\Models\Invoice::where('project_id', $project->id)->sum('total');
+                $subInvoicesTotal = \App\Models\SubcontractorInvoice::where('project_id', $project->id)->sum('gross_amount');
+                $actualCostsTotal = \App\Models\ActualCost::where('project_id', $project->id)->sum('amount');
+                $totalExpenses = $subInvoicesTotal + $actualCostsTotal;
+                $profit = $invoicesTotal - $totalExpenses;
+                $marginPercent = $invoicesTotal > 0 ? round(($profit / $invoicesTotal) * 100, 1) : 0;
+
+                $summary = "📊 **Finanz-Nachkalkulation für Baustelle: {$project->name}**\n\n" .
+                           "• **Fakturierte Einnahmen:** " . number_format($invoicesTotal, 2, ',', '.') . " €\n" .
+                           "• **Gebuchte Subunternehmer-Kosten:** " . number_format($subInvoicesTotal, 2, ',', '.') . " €\n" .
+                           "• **Sonstige Baukosten:** " . number_format($actualCostsTotal, 2, ',', '.') . " €\n" .
+                           "• **Gesamte Ausgaben:** " . number_format($totalExpenses, 2, ',', '.') . " €\n" .
+                           "-----------------------------------------\n" .
+                           "• **Rohgewinn / Reingewinn:** **" . number_format($profit, 2, ',', '.') . " €**\n" .
+                           "• **Gewinnmarge:** **" . $marginPercent . "%**\n\n" .
+                           ($profit >= 0 ? "✅ Baustelle läuft profitabel im grünen Bereich." : "⚠️ Achtung: Ausgaben übersteigen bisherige Abrechnungen!");
+
+                return [
+                    'success' => true,
+                    'summary' => $summary
+                ];
+
+            case 'search_contacts':
+                $query = $args['query'] ?? '';
+                $contacts = \App\Models\Contact::where('display_name', 'LIKE', "%{$query}%")
+                    ->orWhere('company_name', 'LIKE', "%{$query}%")
+                    ->orWhere('category', 'LIKE', "%{$query}%")
+                    ->orWhere('city', 'LIKE', "%{$query}%")
+                    ->take(6)
+                    ->get();
+
+                if ($contacts->isEmpty()) {
+                    return [
+                        'success' => true,
+                        'summary' => "Keine Kontakte für '{$query}' in der Kontaktdatenbank gefunden."
+                    ];
+                }
+
+                $list = [];
+                foreach ($contacts as $c) {
+                    $phoneStr = $c->phone ? " 📞 " . $c->phone : "";
+                    $emailStr = $c->email ? " ✉️ " . $c->email : "";
+                    $categoryBadge = $c->category ? " ({$c->category})" : "";
+                    $list[] = "• **{$c->display_name}**{$categoryBadge}\n  " . ($c->company_name ? "Firma: {$c->company_name} | " : "") . "Ort: {$c->city}{$phoneStr}{$emailStr}";
+                }
+
+                return [
+                    'success' => true,
+                    'summary' => "📇 **Gefundene Kontakte & Ansprechpartner:**\n\n" . implode("\n\n", $list)
+                ];
+
+            case 'generate_defect_pdf':
+                $projectName = $args['project_name'] ?? '';
+                $subName = $args['subcontractor_name'] ?? '';
+                $defectTitle = $args['defect_title'] ?? '';
+                $deadlineDays = $args['deadline_days'] ?? 7;
+
+                $project = Project::where('name', 'LIKE', "%{$projectName}%")->first();
+
+                $defect = Defect::create([
+                    'project_id' => $project ? $project->id : null,
+                    'title' => $defectTitle,
+                    'location' => 'Baustelle ' . ($project ? $project->name : $projectName),
+                    'description' => "VOB/B § 13 Mangel rügen: {$defectTitle}. Nachbesserung verlangt von {$subName}.",
+                    'status' => 'open',
+                    'deadline' => date('Y-m-d', strtotime("+{$deadlineDays} days")),
+                    'subcontractor_name' => $subName
+                ]);
+
+                return [
+                    'success' => true,
+                    'summary' => "📄 **VOB/B Mängelrüge-Schreiben erstellt!**\n\n" .
+                                 "• **Mangel:** {$defectTitle}\n" .
+                                 "• **Subunternehmer:** {$subName}\n" .
+                                 "• **Nachbesserungsfrist:** " . date('d.m.Y', strtotime("+{$deadlineDays} days")) . " ({$deadlineDays} Tage)\n\n" .
+                                 "🔗 [Mängel-Übersicht & PDF-Druck öffnen](/maengel)"
+                ];
+
+            case 'check_site_weather':
+                $projectName = $args['project_name'] ?? '';
+                $workType = strtolower($args['work_type'] ?? '');
+
+                $project = Project::where('name', 'LIKE', "%{$projectName}%")->first();
+                $latestLog = $project ? DailyLog::where('project_id', $project->id)->orderBy('date', 'desc')->first() : null;
+
+                $currentTemp = $latestLog ? $latestLog->temperature : '20°C';
+                $currentWeather = $latestLog ? $latestLog->weather : 'Sonnig';
+
+                $isBitumen = str_contains($workType, 'bitumen') || str_contains($workType, 'abdichtung');
+                $isBeton = str_contains($workType, 'beton') || str_contains($workType, 'estrich');
+
+                $warning = "☀️ **Baustellen-Wetter- & Gewerkeprüfung:**\n\n" .
+                           "• **Baustelle:** " . ($project ? $project->name : $projectName) . "\n" .
+                           "• **Gewerk:** {$args['work_type']}\n" .
+                           "• **Wetter:** {$currentWeather} ({$currentTemp})\n\n";
+
+                if ($isBitumen && (str_contains($currentWeather, 'Regen') || str_contains($currentWeather, 'Schnee'))) {
+                    $warning .= "⚠️ **VOB-WARNUNG (NO-GO):** Nasse Witterung/Regen erkannt! Bitumenabdichtungen dürfen gem. DIN 18533 nur auf trockenem Untergrund verlegt werden.";
+                } elseif ($isBeton && str_contains($currentWeather, 'Frost')) {
+                    $warning .= "⚠️ **VOB-WARNUNG (NO-GO):** Frostgefahr! Betonierarbeiten erfordern Frostschutzmittel & Thermodecken gem. DIN 1045.";
+                } else {
+                    $warning .= "✅ **FREIGABE:** Witterungsverhältnisse sind für {$args['work_type']} gemäß VOB/B DIN 18299 geeignet.";
+                }
+
+                return [
+                    'success' => true,
+                    'summary' => $warning
                 ];
 
             default:

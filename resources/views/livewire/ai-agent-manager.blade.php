@@ -343,6 +343,30 @@ new class extends Component {
                         <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-100 group-hover:bg-emerald-600 text-emerald-700 group-hover:text-white flex items-center justify-center text-xs transition-colors shrink-0 font-bold">🏗️</span>
                         <span class="truncate">Baukosten</span>
                     </button>
+
+                    <button wire:click="runQuickAction('Teile Subunternehmer Meier Bausanierung für morgen ganztags auf Baustelle Berching ein.')" 
+                            class="group p-2.5 sm:p-3 bg-white hover:bg-indigo-50/50 text-slate-700 hover:text-indigo-900 font-semibold text-xs rounded-xl border border-slate-200/90 hover:border-indigo-300 shadow-2xs hover:shadow-md transition-all duration-200 flex items-center gap-2 cursor-pointer text-left">
+                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-indigo-100 group-hover:bg-indigo-600 text-indigo-700 group-hover:text-white flex items-center justify-center text-xs transition-colors shrink-0 font-bold">👷</span>
+                        <span class="truncate">Einsatzplaner</span>
+                    </button>
+
+                    <button wire:click="runQuickAction('Wie steht Baustelle Berching finanziell da? Berechne Rohgewinn und Marge.')" 
+                            class="group p-2.5 sm:p-3 bg-white hover:bg-emerald-50/50 text-slate-700 hover:text-emerald-900 font-semibold text-xs rounded-xl border border-slate-200/90 hover:border-emerald-300 shadow-2xs hover:shadow-md transition-all duration-200 flex items-center gap-2 cursor-pointer text-left">
+                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-100 group-hover:bg-emerald-600 text-emerald-700 group-hover:text-white flex items-center justify-center text-xs transition-colors shrink-0 font-bold">📊</span>
+                        <span class="truncate">Gewinn-Check</span>
+                    </button>
+
+                    <button wire:click="runQuickAction('Gib mir die Kontaktdaten und Telefonnummer von Immo Köhler.')" 
+                            class="group p-2.5 sm:p-3 bg-white hover:bg-blue-50/50 text-slate-700 hover:text-blue-900 font-semibold text-xs rounded-xl border border-slate-200/90 hover:border-blue-300 shadow-2xs hover:shadow-md transition-all duration-200 flex items-center gap-2 cursor-pointer text-left">
+                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-blue-100 group-hover:bg-blue-600 text-blue-700 group-hover:text-white flex items-center justify-center text-xs transition-colors shrink-0 font-bold">📇</span>
+                        <span class="truncate">Kontakte</span>
+                    </button>
+
+                    <button wire:click="runQuickAction('Können wir auf Baustelle Berching Bitumenabdichtungen verlegen oder gibt es Wetter-Warnungen?')" 
+                            class="group p-2.5 sm:p-3 bg-white hover:bg-amber-50/50 text-slate-700 hover:text-amber-900 font-semibold text-xs rounded-xl border border-slate-200/90 hover:border-amber-300 shadow-2xs hover:shadow-md transition-all duration-200 flex items-center gap-2 cursor-pointer text-left">
+                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-amber-100 group-hover:bg-amber-600 text-amber-700 group-hover:text-white flex items-center justify-center text-xs transition-colors shrink-0 font-bold">☀️</span>
+                        <span class="truncate">Wetter-Check</span>
+                    </button>
                 </div>
             </div>
 

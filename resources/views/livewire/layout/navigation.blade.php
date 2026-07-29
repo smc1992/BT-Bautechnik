@@ -23,57 +23,53 @@ new class extends Component
     $isKiActive = request()->routeIs('ai-agent', 'knowledge-base');
 
     if ($isFinanzenActive) {
-        $navBg = 'bg-gradient-to-r from-emerald-950 via-slate-900 to-teal-950 text-white border-b border-emerald-500/30 shadow-md';
+        $navBg = 'bg-slate-950 text-white border-b-2 border-emerald-500 shadow-md';
         $badgeClass = 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
     } elseif ($isCrmActive) {
-        $navBg = 'bg-gradient-to-r from-purple-950 via-slate-900 to-indigo-950 text-white border-b border-purple-500/30 shadow-md';
+        $navBg = 'bg-slate-950 text-white border-b-2 border-purple-500 shadow-md';
         $badgeClass = 'bg-purple-500/20 text-purple-300 border border-purple-500/40';
     } elseif ($isKiActive) {
-        $navBg = 'bg-gradient-to-r from-cyan-950 via-blue-950 to-indigo-950 text-white border-b border-cyan-500/30 shadow-md';
+        $navBg = 'bg-slate-950 text-white border-b-2 border-cyan-500 shadow-md';
         $badgeClass = 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40';
     } else {
-        // Baustellen / Dashboard
-        $navBg = 'bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 text-white border-b border-blue-500/30 shadow-md';
+        // Baustellen / Dashboard default
+        $navBg = 'bg-slate-950 text-white border-b-2 border-blue-500 shadow-md';
         $badgeClass = 'bg-blue-500/20 text-blue-300 border border-blue-500/40';
     }
 @endphp
 
-<nav x-data="{ open: false }" class="{{ $navBg }} relative z-30 transition-all duration-500">
+<nav x-data="{ open: false }" class="{{ $navBg }} relative z-30 transition-all duration-300">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex items-center space-x-3">
-                <!-- Logo & Section Badge -->
-                <div class="shrink-0 flex items-center gap-2 pr-2">
-                    <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-2">
-                        <x-application-logo class="block h-9 w-auto text-white" />
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider {{ $badgeClass }} hidden sm:inline-block">
+        <div class="flex justify-between h-16 items-center">
+            
+            <!-- Left: Logo & Main Navigation -->
+            <div class="flex items-center gap-3">
+                <!-- Logo Badge & Section Indicator -->
+                <div class="shrink-0 flex items-center">
+                    <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-2 group">
+                        <div class="bg-white px-2.5 py-1 rounded-xl shadow-xs border border-white/20 flex items-center justify-center h-9 group-hover:bg-slate-100 transition">
+                            <x-application-logo class="h-6 w-auto object-contain" />
+                        </div>
+                        <span class="px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider {{ $badgeClass }} hidden lg:inline-flex items-center gap-1.5 shadow-2xs h-9">
                             @if($isFinanzenActive) 💶 Finanzen @elseif($isCrmActive) 👥 CRM @elseif($isKiActive) 🤖 KI-Hub @else 🏗️ Baustellen @endif
                         </span>
                     </a>
                 </div>
 
                 <!-- Structured Desktop Navigation Links -->
-                <div class="hidden md:flex md:items-center md:space-x-1">
+                <div class="hidden md:flex md:items-center md:gap-1.5">
                     <!-- 1. Dashboard -->
-                    <a href="{{ route('dashboard') }}" wire:navigate class="px-3 py-2 text-xs font-extrabold rounded-xl transition {{ request()->routeIs('dashboard') ? 'bg-white/20 text-white border border-white/20 shadow-2xs' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
-                        📊 {{ __('Dashboard') }}
+                    <a href="{{ route('dashboard') }}" wire:navigate class="h-9 px-3 text-xs font-extrabold rounded-xl transition flex items-center gap-1.5 {{ request()->routeIs('dashboard') ? 'bg-white/20 text-white border border-white/20 shadow-2xs' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
+                        <span>📊</span> <span>{{ __('Dashboard') }}</span>
                     </a>
-
-                    <!-- Global Command Palette Trigger (`Cmd + K`) -->
-                    <button @click="$dispatch('open-cmd-palette')" 
-                            class="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white rounded-xl border border-white/15 text-xs font-semibold transition cursor-pointer shadow-2xs mx-1">
-                        <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        <span>Schnellsuche...</span>
-                        <kbd class="px-1.5 py-0.5 text-[10px] font-black font-mono text-slate-200 bg-white/15 rounded border border-white/20 shadow-2xs">⌘K</kbd>
-                    </button>
 
                     <!-- 2. Baustellen Dropdown -->
                     @php $isBaustellenGroup = request()->routeIs('planning', 'work-schedule', 'daily-logs', 'defects'); @endphp
                     <x-dropdown align="left" width="72">
                         <x-slot name="trigger">
-                            <button class="inline-flex items-center gap-1 px-3 py-2 text-xs font-extrabold rounded-xl transition cursor-pointer {{ $isBaustellenGroup ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
-                                <span>🏗️ Baustellen</span>
+                            <button class="h-9 inline-flex items-center gap-1.5 px-3 text-xs font-extrabold rounded-xl transition cursor-pointer {{ $isBaustellenGroup ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
+                                <span>🏗️</span> <span>Baustellen</span>
                                 <svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
                         </x-slot>
@@ -96,8 +92,8 @@ new class extends Component
                     <!-- 3. Finanzen Dropdown -->
                     <x-dropdown align="left" width="72">
                         <x-slot name="trigger">
-                            <button class="inline-flex items-center gap-1 px-3 py-2 text-xs font-extrabold rounded-xl transition cursor-pointer {{ $isFinanzenActive ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
-                                <span>💶 Finanzen</span>
+                            <button class="h-9 inline-flex items-center gap-1.5 px-3 text-xs font-extrabold rounded-xl transition cursor-pointer {{ $isFinanzenActive ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
+                                <span>💶</span> <span>Finanzen</span>
                                 <svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
                         </x-slot>
@@ -120,8 +116,8 @@ new class extends Component
                     <!-- 4. CRM & Verwaltung Dropdown -->
                     <x-dropdown align="left" width="72">
                         <x-slot name="trigger">
-                            <button class="inline-flex items-center gap-1 px-3 py-2 text-xs font-extrabold rounded-xl transition cursor-pointer {{ $isCrmActive ? 'bg-purple-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
-                                <span>👥 CRM & Firma</span>
+                            <button class="h-9 inline-flex items-center gap-1.5 px-3 text-xs font-extrabold rounded-xl transition cursor-pointer {{ $isCrmActive ? 'bg-purple-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
+                                <span>👥</span> <span>CRM & Firma</span>
                                 <svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
                         </x-slot>
@@ -136,24 +132,32 @@ new class extends Component
                     </x-dropdown>
 
                     <!-- 5. Wissen (RAG) -->
-                    <a href="{{ route('knowledge-base') }}" wire:navigate class="px-3 py-2 text-xs font-extrabold rounded-xl transition {{ request()->routeIs('knowledge-base') ? 'bg-cyan-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
-                        📚 {{ __('Wissen') }}
+                    <a href="{{ route('knowledge-base') }}" wire:navigate class="h-9 px-3 text-xs font-extrabold rounded-xl transition flex items-center gap-1.5 {{ request()->routeIs('knowledge-base') ? 'bg-cyan-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
+                        <span>📚</span> <span>{{ __('Wissen') }}</span>
                     </a>
 
                     <!-- 6. Featured KI-Agent Button Badge -->
                     <a href="{{ route('ai-agent') }}" wire:navigate 
-                       class="px-3.5 py-1.5 rounded-xl font-black text-xs text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-md shadow-blue-500/20 transition flex items-center gap-1.5 cursor-pointer ml-2 border border-white/20">
+                       class="h-9 px-3.5 rounded-xl font-black text-xs text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-md shadow-blue-500/20 transition flex items-center gap-1.5 cursor-pointer border border-white/20">
                         <span>🤖 KI-Agent</span>
                         <span class="px-1.5 py-0.2 rounded-full text-[9px] font-black uppercase bg-white/20 text-white backdrop-blur-xs">PRO</span>
                     </a>
                 </div>
             </div>
 
-            <!-- Right Profile Settings Dropdown -->
-            <div class="hidden md:flex md:items-center md:ms-6">
+            <!-- Right: Schnellsuche & Profile Settings Dropdown -->
+            <div class="hidden md:flex md:items-center md:gap-2">
+                <!-- Global Command Palette Trigger (`Cmd + K`) -->
+                <button @click="$dispatch('open-cmd-palette')" 
+                        class="h-9 hidden xl:flex items-center gap-2 px-3 bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white rounded-xl border border-white/15 text-xs font-semibold transition cursor-pointer shadow-2xs">
+                    <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <span>Schnellsuche...</span>
+                    <kbd class="px-1.5 py-0.5 text-[10px] font-black font-mono text-slate-200 bg-white/15 rounded border border-white/20 shadow-2xs">⌘K</kbd>
+                </button>
+
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3.5 py-2 border border-white/20 text-xs leading-4 font-extrabold rounded-xl text-white bg-white/10 hover:bg-white/20 focus:outline-none transition ease-in-out duration-150 cursor-pointer">
+                        <button class="h-9 inline-flex items-center px-3.5 border border-white/20 text-xs leading-4 font-extrabold rounded-xl text-white bg-white/10 hover:bg-white/20 focus:outline-none transition ease-in-out duration-150 cursor-pointer">
                             <div x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
 
                             <div class="ms-1">

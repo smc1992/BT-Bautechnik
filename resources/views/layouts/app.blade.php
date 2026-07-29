@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="overflow-y-scroll" style="scrollbar-gutter: stable;">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,7 +29,7 @@
                   navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW Reg Error', err));
               }
           " 
-          class="font-sans antialiased bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
+          class="font-sans antialiased bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white flex flex-col min-h-screen">
 
         <!-- Offline Status Banner -->
         <div x-show="isOffline" x-cloak class="bg-amber-500 text-slate-900 px-4 py-2 text-center text-xs font-black shadow-md flex items-center justify-center gap-2 relative z-50 sticky top-0">

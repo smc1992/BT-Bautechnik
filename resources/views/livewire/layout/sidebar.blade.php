@@ -14,7 +14,7 @@ new class extends Component {
     $hasSidebar = $isBaustellen || $isFinanzen || $isCrm;
 @endphp
 
-<div>
+<div wire:key="sidebar-layout-navigation">
     @if ($hasSidebar)
         <aside class="w-64 shrink-0 hidden md:block space-y-6 bg-white border-r border-slate-200/80 min-h-[calc(100vh-4rem)] p-4 relative transition-all duration-300">
             

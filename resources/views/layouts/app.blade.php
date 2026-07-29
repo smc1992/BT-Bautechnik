@@ -37,22 +37,26 @@
             <span>📡 OFFLINE-MODUS AKTIV: Bautagebuch-Einträge & Notizen werden lokal gespeichert und bei Netzempfang automatisch synchronisiert!</span>
         </div>
 
-        <div class="min-h-screen bg-slate-50">
+        <div class="min-h-screen bg-slate-50 flex flex-col">
             <livewire:layout.navigation />
 
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="bg-white border-b border-slate-200/80 shadow-sm">
-                    <div class="max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8">
+                <header class="bg-white border-b border-slate-200/80 shadow-xs">
+                    <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
             @endif
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+            <!-- Main Content Area with HubSpot-Style Sidebar -->
+            <div class="flex-1 flex w-full">
+                <livewire:layout.sidebar />
+
+                <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full overflow-x-hidden">
+                    {{ $slot }}
+                </main>
+            </div>
         </div>
     </body>
 </html>

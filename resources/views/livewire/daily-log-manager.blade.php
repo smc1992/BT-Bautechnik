@@ -284,7 +284,6 @@ new class extends Component {
                                 @endforeach
                             </select>
                         </div>
-                    </div>                       </select>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">

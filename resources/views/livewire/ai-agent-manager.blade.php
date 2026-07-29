@@ -51,6 +51,41 @@ new class extends Component {
         }
     }
 
+    public ?string $editingChatId = null;
+    public string $editingChatTitle = '';
+    public bool $showRenameModal = false;
+
+    public function openRenameModal(string $chatId)
+    {
+        $chat = AgentChat::find($chatId);
+        if ($chat) {
+            $this->editingChatId = $chat->id;
+            $this->editingChatTitle = $chat->title;
+            $this->showRenameModal = true;
+        }
+    }
+
+    public function saveChatTitle()
+    {
+        $title = trim($this->editingChatTitle);
+        if (empty($title)) {
+            $this->dispatch('notify', '⚠️ Bitte einen gültigen Namen eingeben.');
+            return;
+        }
+
+        if ($this->editingChatId) {
+            $chat = AgentChat::find($this->editingChatId);
+            if ($chat) {
+                $chat->update(['title' => $title]);
+                $this->dispatch('notify', '✏️ Unterhaltung umbenannt in "' . $title . '"');
+            }
+        }
+
+        $this->showRenameModal = false;
+        $this->editingChatId = null;
+        $this->editingChatTitle = '';
+    }
+
     public function deleteChat(string $chatId)
     {
         AgentChat::destroy($chatId);
@@ -319,17 +354,26 @@ new class extends Component {
                     <div wire:click="loadChat('{{ $c->id }}'); showHistoryMobile = false;"
                          class="group p-3 rounded-xl border transition-all cursor-pointer relative flex flex-col gap-1 {{ $activeChatId === $c->id ? 'bg-slate-900 text-white border-blue-500 shadow-md' : 'bg-white text-slate-800 border-slate-200/80 hover:border-blue-300 hover:bg-blue-50/40' }}">
                         
-                        <div class="flex items-center justify-between gap-1">
-                            <p class="font-bold text-xs truncate leading-snug flex-1 pr-6 {{ $activeChatId === $c->id ? 'text-white' : 'text-slate-900' }}">
+                        <div class="flex items-center justify-between gap-1 pr-14">
+                            <p class="font-bold text-xs truncate leading-snug flex-1 {{ $activeChatId === $c->id ? 'text-white' : 'text-slate-900' }}">
                                 {{ $c->title }}
                             </p>
 
-                            <!-- Delete Chat Button -->
-                            <button wire:click.stop="deleteChat('{{ $c->id }}')" 
-                                    title="Unterhaltung löschen"
-                                    class="opacity-80 lg:opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-rose-500 rounded transition cursor-pointer absolute right-2 top-2">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            </button>
+                            <div class="absolute right-2 top-2 flex items-center gap-1 opacity-80 lg:opacity-0 group-hover:opacity-100 transition">
+                                <!-- Rename Chat Button -->
+                                <button wire:click.stop="openRenameModal('{{ $c->id }}')" 
+                                        title="Unterhaltung umbenennen"
+                                        class="p-1 text-slate-400 hover:text-blue-400 rounded transition cursor-pointer">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                </button>
+
+                                <!-- Delete Chat Button -->
+                                <button wire:click.stop="deleteChat('{{ $c->id }}')" 
+                                        title="Unterhaltung löschen"
+                                        class="p-1 text-slate-400 hover:text-rose-500 rounded transition cursor-pointer">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="flex items-center justify-between text-[10px] {{ $activeChatId === $c->id ? 'text-blue-200' : 'text-slate-400' }}">
@@ -417,6 +461,11 @@ new class extends Component {
                             <h3 class="font-bold text-xs text-white truncate max-w-xs sm:max-w-md">
                                 {{ $this->activeChat->title }}
                             </h3>
+                            <button wire:click="openRenameModal('{{ $this->activeChat->id }}')" 
+                                    title="Titel dieser Unterhaltung bearbeiten"
+                                    class="p-1 text-slate-400 hover:text-blue-300 transition cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                            </button>
                         </div>
                         <div class="flex items-center gap-3">
                             <button wire:click="exportChatMarkdown" 
@@ -747,4 +796,33 @@ new class extends Component {
             </div>
         </div>
     </div>
+
+    <!-- Rename Chat Session Modal -->
+    @if ($showRenameModal)
+        <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden space-y-0">
+                <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="text-lg">✏️</span>
+                        <h3 class="text-sm font-extrabold text-white">Unterhaltung umbenennen</h3>
+                    </div>
+                    <button wire:click="$set('showRenameModal', false)" class="text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
+                </div>
+
+                <form wire:submit="saveChatTitle" class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Titel der Unterhaltung</label>
+                        <input wire:model="editingChatTitle" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-bold focus:border-blue-600 focus:bg-white focus:outline-none" placeholder="z. B. Baustelle Berching Abnahme" required>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-3 border-t border-slate-100">
+                        <button type="button" wire:click="$set('showRenameModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition cursor-pointer">Abbrechen</button>
+                        <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition cursor-pointer">
+                            Speichern
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
 </div>

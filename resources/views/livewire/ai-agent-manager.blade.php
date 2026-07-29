@@ -210,6 +210,42 @@ new class extends Component {
     {
         $this->userMessage = $actionText;
     }
+
+    public function exportChatMarkdown()
+    {
+        $chat = AgentChat::with('messages')->find($this->activeChatId);
+        if (!$chat) {
+            $this->dispatch('notify', '⚠️ Keine Unterhaltung zum Exportieren gefunden.');
+            return;
+        }
+
+        $md = "# 🏗️ BT Bautechnik UG — KI-Agent Protokoll\n";
+        $md .= "**Unterhaltung:** " . $chat->title . "\n";
+        $md .= "**Erstellt am:** " . $chat->created_at->format('d.m.Y H:i') . " Uhr\n";
+        $md .= "**Export-Datum:** " . date('d.m.Y H:i') . " Uhr\n\n";
+        $md .= "---\n\n";
+
+        foreach ($chat->messages as $msg) {
+            $sender = $msg->role === 'user' ? '👤 Bauleiter / Anwender' : '🤖 BT KI-Agent PRO';
+            $md .= "### " . $sender . " (" . $msg->created_at->format('H:i') . " Uhr)\n\n";
+            $md .= $msg->content . "\n\n";
+
+            if (!empty($msg->tools)) {
+                $md .= "**Ausgeführte Werkzeuge:**\n";
+                foreach ($msg->tools as $tExecuted) {
+                    $md .= "- `" . ($tExecuted['tool'] ?? 'Werkzeug') . "`: " . strip_tags($tExecuted['result'] ?? '') . "\n";
+                }
+                $md .= "\n";
+            }
+            $md .= "---\n\n";
+        }
+
+        $filename = 'KI-Protokoll-' . \Illuminate\Support\Str::slug($chat->title) . '-' . date('Y-m-d') . '.md';
+
+        return response()->streamDownload(function () use ($md) {
+            echo $md;
+        }, $filename);
+    }
 }; ?>
 
 <div x-data="{ showHistoryMobile: false }" class="space-y-6 font-sans max-w-full overflow-x-hidden">
@@ -382,9 +418,16 @@ new class extends Component {
                                 {{ $this->activeChat->title }}
                             </h3>
                         </div>
-                        <span class="text-[10px] text-slate-400 font-mono">
-                            {{ $this->activeChat->created_at->format('d.m.Y H:i') }}
-                        </span>
+                        <div class="flex items-center gap-3">
+                            <button wire:click="exportChatMarkdown" 
+                                    title="Chat-Protokoll als Markdown herunterladen"
+                                    class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-blue-300 hover:text-white border border-slate-700 rounded-lg text-[10px] font-bold transition flex items-center gap-1 cursor-pointer">
+                                <span>📥</span> <span>Exportieren</span>
+                            </button>
+                            <span class="text-[10px] text-slate-400 font-mono hidden sm:inline">
+                                {{ $this->activeChat->created_at->format('d.m.Y H:i') }}
+                            </span>
+                        </div>
                     </div>
                 @endif
 
@@ -463,7 +506,57 @@ new class extends Component {
                                         <!-- Message Content with Rendered Markdown -->
                                         <div class="bg-white border border-slate-200/90 rounded-2xl rounded-tl-xs p-3.5 sm:p-6 text-xs text-slate-800 leading-relaxed shadow-sm font-sans [&_p]:mb-3 [&_p:last-child]:mb-0 [&_strong]:font-bold [&_strong]:text-slate-900 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2.5 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2.5 [&_li]:mb-1.5 [&_h1]:text-base [&_h1]:font-bold [&_h1]:text-slate-900 [&_h1]:my-2.5 [&_h2]:text-sm [&_h2]:font-bold [&_h2]:text-slate-900 [&_h2]:my-2.5 [&_h3]:text-xs [&_h3]:font-bold [&_h3]:text-slate-900 [&_h3]:my-2 [&_code]:bg-blue-50 [&_code]:text-blue-700 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded-md [&_code]:font-mono [&_code]:text-[11px] [&_pre]:bg-slate-950 [&_pre]:text-slate-100 [&_pre]:p-3.5 [&_pre]:rounded-xl [&_pre]:overflow-x-auto [&_pre]:my-2.5 [&_blockquote]:border-l-4 [&_blockquote]:border-blue-600 [&_blockquote]:pl-3.5 [&_blockquote]:italic [&_blockquote]:text-slate-600 [&_table]:w-full [&_table]:border-collapse [&_table]:my-2.5 [&_th]:bg-slate-100 [&_th]:p-2.5 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-slate-200 [&_td]:p-2.5 [&_td]:border [&_td]:border-slate-200 [&_a]:text-blue-600 [&_a]:font-bold [&_a]:underline">
                                             {!! \Illuminate\Support\Str::markdown($msg->content) !!}
+                                            
+                                            <!-- Feature 3: Interactive Direct Action Buttons -->
+                                            @php $lower = strtolower($msg->content); @endphp
+                                            @if (str_contains($lower, 'bautagebuch') || str_contains($lower, 'tagesbericht') || str_contains($lower, 'mangel') || str_contains($lower, 'rechnung') || str_contains($lower, 'einsatzplan'))
+                                                <div class="mt-3 pt-3 border-t border-slate-100 flex flex-wrap gap-2">
+                                                    @if(str_contains($lower, 'bautagebuch') || str_contains($lower, 'tagesbericht'))
+                                                        <a href="/bautagebuch" wire:navigate class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-800 font-extrabold text-[10px] rounded-lg border border-blue-200 transition flex items-center gap-1">
+                                                            <span>🎙️</span> <span>Zum Bautagebuch ➔</span>
+                                                        </a>
+                                                    @endif
+                                                    @if(str_contains($lower, 'mangel') || str_contains($lower, 'mängel'))
+                                                        <a href="/defects" wire:navigate class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 font-extrabold text-[10px] rounded-lg border border-amber-200 transition flex items-center gap-1">
+                                                            <span>⚠️</span> <span>Zur Mängel-Verwaltung ➔</span>
+                                                        </a>
+                                                    @endif
+                                                    @if(str_contains($lower, 'rechnung') || str_contains($lower, 'angebot'))
+                                                        <a href="/rechnungen" wire:navigate class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-extrabold text-[10px] rounded-lg border border-emerald-200 transition flex items-center gap-1">
+                                                            <span>📄</span> <span>Zu den Rechnungen ➔</span>
+                                                        </a>
+                                                    @endif
+                                                    @if(str_contains($lower, 'einsatzplan') || str_contains($lower, 'handwerker'))
+                                                        <a href="/einsatzplan" wire:navigate class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 font-extrabold text-[10px] rounded-lg border border-indigo-200 transition flex items-center gap-1">
+                                                            <span>👷</span> <span>Zum Einsatzplaner ➔</span>
+                                                        </a>
+                                                    @endif
+                                                </div>
+                                            @endif
                                         </div>
+
+                                        <!-- Feature 4: Smart Follow-Up Chips on Latest Message -->
+                                        @if ($loop->last)
+                                            <div class="pt-2 space-y-1.5">
+                                                <div class="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                                                    <span>💡 Vorgeschlagene Folge-Aktionen:</span>
+                                                </div>
+                                                <div class="flex flex-wrap gap-1.5">
+                                                    <button wire:click="runQuickAction('Welche Fristen oder VOB/B Bedenken sind hierbei zu beachten?')" 
+                                                            class="px-2.5 py-1 bg-white hover:bg-amber-50 text-slate-700 hover:text-amber-900 font-bold text-[11px] rounded-lg border border-slate-200 hover:border-amber-300 transition shadow-2xs cursor-pointer">
+                                                        <span>⚠️ Fristen & VOB/B prüfen</span>
+                                                    </button>
+                                                    <button wire:click="runQuickAction('Erstelle daraus einen Bautagebuch-Eintrag für heute.')" 
+                                                            class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-900 font-bold text-[11px] rounded-lg border border-slate-200 hover:border-blue-300 transition shadow-2xs cursor-pointer">
+                                                        <span>🎙️ In Bautagebuch eintragen</span>
+                                                    </button>
+                                                    <button wire:click="runQuickAction('Wie sieht die finanzielle Marge für diese Baustelle aktuell aus?')" 
+                                                            class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 font-bold text-[11px] rounded-lg border border-slate-200 hover:border-emerald-300 transition shadow-2xs cursor-pointer">
+                                                        <span>📊 Rohgewinn-Check</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             @endif
@@ -517,6 +610,8 @@ new class extends Component {
                 <!-- Input Form with OpenAI Whisper Voice Recording & Vision Photo Upload -->
                 <div x-data="{
                     recording: false,
+                    recordingTime: 0,
+                    recordingInterval: null,
                     mediaRecorder: null,
                     audioChunks: [],
                     async startRecording() {
@@ -528,6 +623,7 @@ new class extends Component {
                                 if (e.data.size > 0) this.audioChunks.push(e.data);
                             };
                             this.mediaRecorder.onstop = async () => {
+                                clearInterval(this.recordingInterval);
                                 const blob = new Blob(this.audioChunks, { type: 'audio/webm' });
                                 const file = new File([blob], 'speech.webm', { type: 'audio/webm' });
                                 @this.upload('audioFile', file, () => {
@@ -536,6 +632,8 @@ new class extends Component {
                             };
                             this.mediaRecorder.start();
                             this.recording = true;
+                            this.recordingTime = 0;
+                            this.recordingInterval = setInterval(() => this.recordingTime++, 1000);
                         } catch (err) {
                             alert('Mikrofon-Zugriff fehlgeschlagen: ' + err.message);
                         }
@@ -544,12 +642,27 @@ new class extends Component {
                         if (this.mediaRecorder && this.recording) {
                             this.mediaRecorder.stop();
                             this.recording = false;
+                            clearInterval(this.recordingInterval);
                             if (this.mediaRecorder.stream) {
                                 this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
                             }
                         }
                     }
                 }">
+                    <!-- Photo Thumbnail Preview if uploaded -->
+                    @if ($photoFile)
+                        <div class="px-4 py-2 bg-blue-50 border-t border-blue-200 flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg">📷</span>
+                                <div>
+                                    <span class="text-xs font-extrabold text-blue-900">Baustellen-Foto ausgewählt (Vision KI)</span>
+                                    <span class="text-[10px] text-blue-600 block">{{ $photoFile->getClientOriginalName() }}</span>
+                                </div>
+                            </div>
+                            <button type="button" wire:click="$set('photoFile', null)" class="text-slate-400 hover:text-rose-600 font-bold text-xs cursor-pointer">✕ Entfernen</button>
+                        </div>
+                    @endif
+
                     <!-- Quick Action Pills -->
                     <div class="px-3 sm:px-4 pt-2.5 bg-slate-50 border-t border-slate-200/60 flex flex-wrap gap-1.5 sm:gap-2 text-[11px]">
                         <button type="button" wire:click="$set('userMessage', 'Berechne Aufmaß: Kellerwand Süd 14,5m x 2,8m mit Fenster 1,20m x 1,00m nach VOB/B')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-indigo-50 text-indigo-700 hover:text-indigo-900 rounded-lg border border-indigo-200 hover:border-indigo-300 font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1">
@@ -563,12 +676,6 @@ new class extends Component {
                         </button>
                         <button type="button" wire:click="$set('userMessage', 'Erstelle eine Bedenkenanmeldung gem. § 4 VOB/B wegen feuchtem Untergrund')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 rounded-lg border border-slate-200 hover:border-blue-300 font-medium transition-all shadow-2xs cursor-pointer flex items-center gap-1">
                             <span>⚖️</span> <span>VOB/B Bedenken</span>
-                        </button>
-                        <button type="button" wire:click="$set('userMessage', 'Analysiere Baustellen-Risiken und Kosten für Berching')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 rounded-lg border border-slate-200 hover:border-blue-300 font-medium transition-all shadow-2xs cursor-pointer flex items-center gap-1">
-                            <span>🚨</span> <span>Risiko-Analyse</span>
-                        </button>
-                        <button type="button" wire:click="$set('userMessage', 'Suche in der Wissensdatenbank nach Gewährleistungsfristen VOB vs BGB')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 rounded-lg border border-slate-200 hover:border-blue-300 font-medium transition-all shadow-2xs cursor-pointer flex items-center gap-1">
-                            <span>📚</span> <span>Wissen durchsuchen</span>
                         </button>
                     </div>
 
@@ -599,7 +706,7 @@ new class extends Component {
                                     title="Aufnahme beenden & analysieren"
                                     class="px-2.5 sm:px-3.5 py-2.5 sm:py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-md shadow-rose-500/20 animate-pulse transition-all flex items-center gap-1.5 shrink-0 cursor-pointer h-10 sm:h-auto">
                                 <span class="w-2.5 h-2.5 rounded-full bg-white animate-ping"></span>
-                                <span>Stopp</span>
+                                <span>Stopp (<span x-text="recordingTime"></span>s)</span>
                             </button>
                         </template>
 

@@ -24,6 +24,12 @@ new class extends Component {
     {
         $this->selectedWeekStart = Carbon::now()->startOfWeek()->format('Y-m-d');
         $this->date = Carbon::now()->format('Y-m-d');
+
+        $reqProjectId = request()->query('project_id');
+        if ($reqProjectId && Project::find($reqProjectId)) {
+            $this->projectId = $reqProjectId;
+            $this->showModal = true;
+        }
     }
 
     public function previousWeek()

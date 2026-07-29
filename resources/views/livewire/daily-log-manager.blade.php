@@ -34,10 +34,16 @@ new class extends Component {
     public function mount()
     {
         $this->date = date('Y-m-d');
-        $firstProject = Project::first();
-        if ($firstProject) {
-            $this->projectId = $firstProject->id;
-            $this->selectedProjectId = $firstProject->id;
+        $reqProjectId = request()->query('project_id');
+        if ($reqProjectId && Project::find($reqProjectId)) {
+            $this->projectId = $reqProjectId;
+            $this->selectedProjectId = $reqProjectId;
+        } else {
+            $firstProject = Project::first();
+            if ($firstProject) {
+                $this->projectId = $firstProject->id;
+                $this->selectedProjectId = $firstProject->id;
+            }
         }
     }
 

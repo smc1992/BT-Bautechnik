@@ -32,9 +32,12 @@ Route::view('maengel', 'maengel')
     ->middleware(['auth', 'verified'])
     ->name('defects');
 
-Route::view('einstellungen', 'einstellungen')
+Route::view('firmeneinstellungen', 'einstellungen')
     ->middleware(['auth', 'verified'])
     ->name('company-settings');
+
+Route::view('einstellungen', 'einstellungen')
+    ->middleware(['auth', 'verified']);
 
 Route::view('ki-agent', 'ki-agent')
     ->middleware(['auth', 'verified'])

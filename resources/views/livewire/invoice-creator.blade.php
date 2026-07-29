@@ -215,12 +215,26 @@ new class extends Component {
     // Historical documents list & Tab State & Filtering/Sorting
     public array $savedDocs = [];
     public string $docSearch = '';
-    public string $activeTab = 'editor'; // 'editor' or 'archive'
+    public string $activeTab = 'archive'; // 'archive' (overview default) or 'editor'
     public string $archiveFilter = 'all'; // 'all', 'invoice', 'offer'
     public string $sortOrder = 'desc'; // 'desc' (neueste zuerst) or 'asc' (älteste zuerst)
     public string $filterYear = 'all'; // 'all', '2026', '2025'...
     public string $filterQuarter = 'all'; // 'all', 'Q1', 'Q2', 'Q3', 'Q4'
     public string $filterMonth = 'all'; // 'all', '1', '2'... '12'
+
+    public function createNewInvoice()
+    {
+        $this->mode = 'invoice';
+        $this->resetForm();
+        $this->activeTab = 'editor';
+    }
+
+    public function createNewOffer()
+    {
+        $this->mode = 'offer';
+        $this->resetForm();
+        $this->activeTab = 'editor';
+    }
 
     public function setTab(string $tab)
     {
@@ -396,8 +410,15 @@ new class extends Component {
         $this->resetForm();
 
         $reqProjectId = request()->query('project_id');
+        $reqAction = request()->query('action');
+
         if ($reqProjectId) {
             $this->selectProject($reqProjectId);
+            $this->activeTab = 'editor';
+        } elseif ($reqAction === 'new') {
+            $this->activeTab = 'editor';
+        } else {
+            $this->activeTab = 'archive';
         }
 
         $this->loadSavedDocuments();
@@ -1665,27 +1686,41 @@ new class extends Component {
     </div>
 
     <!-- MAIN TAB NAVIGATION BAR -->
-    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-900/95 p-2 sm:p-2.5 rounded-2xl border border-slate-800 shadow-xl text-white no-print">
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-900/95 p-2.5 rounded-2xl border border-slate-800 shadow-xl text-white no-print">
         <div class="flex items-center gap-2">
-            <button wire:click="setTab('editor')" 
-                    class="px-5 py-2.5 rounded-xl text-xs font-black transition cursor-pointer flex items-center gap-2 {{ $activeTab === 'editor' ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                <span>✍️ Erstellen & Bearbeiten</span>
-            </button>
+            <!-- 1. Archive / Overview Tab (DEFAULT FIRST) -->
             <button wire:click="setTab('archive')" 
                     class="px-5 py-2.5 rounded-xl text-xs font-black transition cursor-pointer flex items-center gap-2 {{ $activeTab === 'archive' ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                <span>📁 Dokumenten-Archiv & Suche</span>
+                <span>📁 Alle Rechnungen & Angebote</span>
                 <span class="px-2 py-0.5 rounded-full text-[10px] font-black {{ $activeTab === 'archive' ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-300' }}">
                     {{ count($savedDocs) }}
                 </span>
             </button>
+
+            <!-- 2. Editor Tab -->
+            <button wire:click="setTab('editor')" 
+                    class="px-5 py-2.5 rounded-xl text-xs font-black transition cursor-pointer flex items-center gap-2 {{ $activeTab === 'editor' ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
+                <span>✍️ {{ $mode === 'offer' ? 'Angebot bearbeiten' : 'Rechnung bearbeiten' }}</span>
+            </button>
         </div>
 
-        @if ($activeTab === 'editor')
-            <div class="flex items-center gap-2 text-xs text-slate-300 font-medium px-2">
-                <span class="text-slate-400">Dokumentennummer:</span>
-                <span class="px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-blue-400 font-mono font-bold">{{ $docNumber }}</span>
-            </div>
-        @endif
+        <div class="flex items-center gap-2">
+            @if ($activeTab === 'archive')
+                <button wire:click="createNewInvoice" 
+                        class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-black rounded-xl shadow-md shadow-blue-500/20 transition flex items-center gap-1.5 cursor-pointer active:scale-95">
+                    <span>➕ Neue Rechnung erstellen</span>
+                </button>
+                <button wire:click="createNewOffer" 
+                        class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition flex items-center gap-1.5 cursor-pointer">
+                    <span>➕ Neues Angebot</span>
+                </button>
+            @else
+                <button wire:click="setTab('archive')" 
+                        class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition flex items-center gap-1.5 cursor-pointer">
+                    <span>← Zurück zur Übersicht</span>
+                </button>
+            @endif
+        </div>
     </div>
 
     @if ($activeTab === 'editor')
@@ -2438,13 +2473,19 @@ new class extends Component {
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-slate-200">
                 <div>
                     <h2 class="text-lg font-extrabold text-slate-900 flex items-center gap-2">
-                        <span>📁 Dokumenten-Archiv</span>
+                        <span>📁 Rechnungs- & Dokumentenübersicht</span>
                         <span class="px-2.5 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800 font-black">{{ count($savedDocs) }} Dokumente</span>
                     </h2>
-                    <p class="text-xs text-slate-500 mt-0.5">Alle erstellten Rechnungen und Angebote mit erweiterten Filtern, Einzel- und Sammel-Export.</p>
+                    <p class="text-xs text-slate-500 mt-0.5">Übersicht aller bereits erstellten Rechnungen und Angebote. Klicken Sie auf ein Dokument zum Bearbeiten oder Exportieren.</p>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2.5">
+                    <!-- Primary CTA: Neue Rechnung erstellen -->
+                    <button wire:click="createNewInvoice" 
+                            class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs rounded-xl shadow-md shadow-blue-500/20 transition flex items-center gap-1.5 cursor-pointer active:scale-95">
+                        <span>➕ Neue Rechnung erstellen</span>
+                    </button>
+
                     <!-- Filter Tabs: Alle / Rechnungen / Angebote -->
                     <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
                         <button wire:click="setArchiveFilter('all')" 
@@ -2464,9 +2505,8 @@ new class extends Component {
                     <!-- Sammel-Export ZIP Button -->
                     <button wire:click="exportZipArchive" 
                             title="Sammel-Export aller gefilterten Dokumente als ZIP-Archiv herunterladen"
-                            class="px-4 py-2 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white font-extrabold text-xs rounded-xl transition shadow-md shadow-blue-500/20 flex items-center gap-1.5 cursor-pointer">
-                        <span>📦</span>
-                        <span>Sammel-Export (ZIP)</span>
+                            class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs rounded-xl border border-slate-300 transition flex items-center gap-1.5 cursor-pointer">
+                        <span>📦 ZIP-Export</span>
                     </button>
                 </div>
             </div>

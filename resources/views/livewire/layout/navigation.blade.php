@@ -45,15 +45,12 @@ new class extends Component
             
             <!-- Left: Logo & Main Navigation -->
             <div class="flex items-center gap-3">
-                <!-- Logo Badge & Section Indicator -->
+                <!-- Logo Badge -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-2 group">
-                        <div class="bg-white px-2.5 py-1 rounded-xl shadow-xs border border-white/20 flex items-center justify-center h-9 group-hover:bg-slate-100 transition">
+                    <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center group">
+                        <div class="bg-white px-3 py-1 rounded-xl shadow-xs border border-white/20 flex items-center justify-center h-9 group-hover:bg-slate-100 transition">
                             <x-application-logo class="h-6 w-auto object-contain" />
                         </div>
-                        <span class="px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider {{ $badgeClass }} hidden lg:inline-flex items-center gap-1.5 shadow-2xs h-9">
-                            @if($isFinanzenActive) 💶 Finanzen @elseif($isCrmActive) 👥 CRM @elseif($isKiActive) 🤖 KI-Hub @else 🏗️ Baustellen @endif
-                        </span>
                     </a>
                 </div>
 

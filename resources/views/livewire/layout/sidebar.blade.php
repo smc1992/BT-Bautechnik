@@ -10,9 +10,11 @@ new class extends Component {
     $isBaustellen = request()->routeIs('dashboard', 'planning', 'work-schedule', 'daily-logs', 'defects');
     $isFinanzen = request()->routeIs('invoices', 'subcontractor-invoices', 'analytics', 'materials');
     $isCrm = request()->routeIs('contacts', 'company-settings');
-    $isKi = request()->routeIs('ai-agent', 'knowledge-base');
+
+    $hasSidebar = $isBaustellen || $isFinanzen || $isCrm;
 @endphp
 
+@if ($hasSidebar)
 <aside class="w-64 shrink-0 hidden md:block space-y-6 bg-white border-r border-slate-200/80 min-h-[calc(100vh-4rem)] p-4 relative transition-all duration-300">
     
     @if ($isBaustellen)
@@ -52,20 +54,16 @@ new class extends Component {
                     </span>
                 </a>
 
-                <a href="/defects" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('defects') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
+                <a href="/maengel" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('defects') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
                     <span class="flex items-center gap-2.5">
                         <span class="text-base">⚠️</span> <span>Mängel-Verwaltung</span>
                     </span>
-                    @php $openDefects = \App\Models\Defect::where('status', 'offen')->count(); @endphp
-                    @if($openDefects > 0)
-                        <span class="px-1.5 py-0.2 rounded-full text-[10px] font-black bg-rose-500 text-white">{{ $openDefects }}</span>
-                    @endif
                 </a>
             </nav>
         </div>
 
     @elseif ($isFinanzen)
-        <!-- Finanzen Sidebar -->
+        <!-- Finanzen & Controlling Sidebar -->
         <div class="space-y-4">
             <div class="px-3 py-2 bg-emerald-50/80 border border-emerald-200/60 rounded-xl flex items-center justify-between">
                 <div class="flex items-center gap-2">
@@ -84,7 +82,7 @@ new class extends Component {
 
                 <a href="/baukosten" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('subcontractor-invoices') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-emerald-600' }}">
                     <span class="flex items-center gap-2.5">
-                        <span class="text-base">🏗️</span> <span>Baukosten & Subunternehmer</span>
+                        <span class="text-base">🏗️</span> <span>Subunternehmer-Kosten</span>
                     </span>
                 </a>
 
@@ -103,7 +101,7 @@ new class extends Component {
         </div>
 
     @elseif ($isCrm)
-        <!-- CRM Sidebar -->
+        <!-- CRM & Firmen-Verwaltung Sidebar -->
         <div class="space-y-4">
             <div class="px-3 py-2 bg-purple-50/80 border border-purple-200/60 rounded-xl flex items-center justify-between">
                 <div class="flex items-center gap-2">
@@ -128,33 +126,6 @@ new class extends Component {
                 </a>
             </nav>
         </div>
-
-    @elseif ($isKi)
-        <!-- KI & Wissen Sidebar -->
-        <div class="space-y-4">
-            <div class="px-3 py-2 bg-indigo-50/80 border border-indigo-200/60 rounded-xl flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span>
-                    <span class="text-xs font-black uppercase tracking-wider text-indigo-900">KI & Wissen</span>
-                </div>
-                <span class="text-[10px] font-extrabold text-indigo-700 bg-white px-2 py-0.5 rounded-md border border-indigo-200 shadow-2xs">HUB</span>
-            </div>
-
-            <nav class="space-y-1 text-xs">
-                <a href="/ki-agent" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('ai-agent') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-indigo-600' }}">
-                    <span class="flex items-center gap-2.5">
-                        <span class="text-base">🤖</span> <span>KI-Agent PRO</span>
-                    </span>
-                    <span class="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-emerald-500 text-white">AUTONOM</span>
-                </a>
-
-                <a href="/wissen" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('knowledge-base') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-indigo-600' }}">
-                    <span class="flex items-center gap-2.5">
-                        <span class="text-base">📚</span> <span>Wissensdatenbank</span>
-                    </span>
-                </a>
-            </nav>
-        </div>
     @endif
 
     <!-- Schnell-Hilfe Card in Sidebar Bottom -->
@@ -168,3 +139,4 @@ new class extends Component {
         </div>
     </div>
 </aside>
+@endif

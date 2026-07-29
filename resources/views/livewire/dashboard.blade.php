@@ -171,6 +171,24 @@ new class extends Component {
     public float $quickInvoiceAmount = 0.0;
     public string $quickInvoiceDescription = '';
 
+    public function openQuickInvoiceModalForProject(string $id)
+    {
+        $this->selectedProjectId = $id;
+        $this->openQuickInvoiceModal();
+    }
+
+    public function openQuickOfferModalForProject(string $id)
+    {
+        $this->selectedProjectId = $id;
+        $this->openQuickOfferModal();
+    }
+
+    public function openQuickDailyLogModalForProject(string $id)
+    {
+        $this->selectedProjectId = $id;
+        $this->openQuickDailyLogModal();
+    }
+
     public function openQuickInvoiceModal()
     {
         $this->quickInvoiceNumber = 'RE-' . date('Y') . '-' . str_pad(mt_rand(1, 999), 3, '0', STR_PAD_LEFT);
@@ -852,57 +870,106 @@ new class extends Component {
             <div class="divide-y divide-slate-200/80">
                 @forelse ($this->projects as $proj)
                     <div wire:key="{{ $proj->id }}" wire:click="selectProject('{{ $proj->id }}')" 
-                         class="p-6 cursor-pointer hover:bg-slate-50/80 transition duration-150 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 {{ $this->selectedProjectId === $proj->id ? 'bg-blue-50/60 border-l-4 border-blue-600 shadow-2xs' : '' }}">
+                         class="p-5 sm:p-6 cursor-pointer hover:bg-slate-50/90 transition duration-200 border-b border-slate-100 flex flex-col gap-4 group relative overflow-hidden {{ $this->selectedProjectId === $proj->id ? 'bg-blue-50/70 border-l-4 border-l-blue-600 shadow-xs' : '' }}">
                         
-                        <!-- Project Info -->
-                        <div class="space-y-1.5 max-w-md">
-                            <div class="flex items-center gap-2">
-                                <h4 class="font-bold text-slate-900 text-base tracking-tight hover:text-blue-600 transition">{{ $proj->name }}</h4>
-                                <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase {{ $proj->status === 'active' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700' }}">
-                                    {{ $proj->status === 'active' ? 'Aktiv' : $proj->status }}
-                                </span>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <!-- Left: Status & Title & Metadata -->
+                            <div class="space-y-2 max-w-xl">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider {{ $proj->status === 'active' ? 'bg-emerald-100 text-emerald-900 border border-emerald-300/80 shadow-2xs' : 'bg-slate-100 text-slate-700' }}">
+                                        <span class="w-1.5 h-1.5 rounded-full {{ $proj->status === 'active' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400' }}"></span>
+                                        {{ $proj->status === 'active' ? 'Aktiv' : $proj->status }}
+                                    </span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100/80 text-amber-900 border border-amber-300/60 shadow-2xs">
+                                        KW {{ $proj->start_week }} — KW {{ $proj->end_week }}
+                                    </span>
+                                </div>
+
+                                <div>
+                                    <h4 class="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight group-hover:text-blue-600 transition flex items-center gap-2">
+                                        <span>{{ $proj->name }}</span>
+                                    </h4>
+                                    <p class="text-xs text-slate-600 font-medium leading-relaxed flex items-center gap-2 mt-0.5">
+                                        <span>🏗️ {{ $proj->work_type }}</span>
+                                        <span class="text-slate-300">•</span>
+                                        <span>📍 {{ $proj->city_street }}</span>
+                                    </p>
+                                </div>
                             </div>
-                            <p class="text-xs text-slate-600 font-medium leading-relaxed">{{ $proj->work_type }} <span class="text-slate-300">•</span> {{ $proj->city_street }}</p>
-                            
-                            <div class="pt-1 flex items-center gap-2">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs">
-                                    KW {{ $proj->start_week }} — KW {{ $proj->end_week }}
-                                </span>
+
+                            <!-- Right: Budget Gauge & Metrics -->
+                            <div class="text-left md:text-right space-y-2 shrink-0 min-w-[220px]">
+                                @php 
+                                    $costSum = (float) $proj->actualCosts->sum('cost_amount');
+                                    $budgetTotal = (float) ($proj->budget?->total_with_buffer ?? 0);
+                                    $percent = $budgetTotal > 0 ? min(($costSum / $budgetTotal) * 100, 100) : 0;
+                                @endphp
+
+                                <div class="flex justify-between md:justify-end items-center gap-2">
+                                    <span class="text-[10px] text-slate-500 font-black uppercase tracking-wider">Kosten / Budget:</span>
+                                    <span class="text-xs sm:text-sm font-extrabold text-slate-900">
+                                        <span class="{{ $costSum > $budgetTotal ? 'text-rose-600 font-black' : 'text-blue-600' }}">{{ number_format($costSum, 2, ',', '.') }} €</span> 
+                                        <span class="text-slate-300">/</span> 
+                                        <span class="text-slate-700">{{ number_format($budgetTotal, 2, ',', '.') }} €</span>
+                                    </span>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <div class="w-full bg-slate-200/90 rounded-full h-3 overflow-hidden border border-slate-300/50 p-0.5 shadow-inner">
+                                        <div class="h-full rounded-full transition-all duration-500 {{ $percent > 90 ? 'bg-gradient-to-r from-amber-500 to-rose-600 shadow-xs' : 'bg-gradient-to-r from-blue-600 to-indigo-600 shadow-xs' }}" style="width: {{ max($percent, 3) }}%"></div>
+                                    </div>
+                                    <div class="flex justify-between items-center text-[10px] font-bold text-slate-500">
+                                        <span>Fortschritt</span>
+                                        <span class="{{ $percent > 90 ? 'text-rose-600 font-black' : 'text-slate-700' }}">{{ number_format($percent, 1, ',', '.') }}% ausgeschöpft</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Cost & Progress -->
-                        <div class="text-left sm:text-right space-y-2 w-full sm:w-auto min-w-[200px]">
-                            @php 
-                                $costSum = (float) $proj->actualCosts->sum('cost_amount');
-                                $budgetTotal = (float) ($proj->budget?->total_with_buffer ?? 0);
-                                $percent = $budgetTotal > 0 ? min(($costSum / $budgetTotal) * 100, 100) : 0;
-                            @endphp
+                        <!-- Card Footer: Direct 1-Click Action Bar -->
+                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2 flex-wrap" @click.stop>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <button wire:click="openQuickInvoiceModalForProject('{{ $proj->id }}')" 
+                                        class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 font-bold text-[11px] rounded-lg border border-slate-200 hover:border-blue-300 shadow-2xs transition flex items-center gap-1 cursor-pointer"
+                                        title="Schnell-Rechnung für diese Baustelle erstellen">
+                                    <span>🧾</span> <span>Rechnung</span>
+                                </button>
 
-                            <div class="flex justify-between sm:justify-end items-center space-x-2">
-                                <span class="text-xs text-slate-500 uppercase font-semibold">Ist / Soll:</span>
-                                <span class="text-sm font-bold text-slate-900">
-                                    <span class="{{ $costSum > $budgetTotal ? 'text-rose-600' : 'text-blue-600' }}">{{ number_format($costSum, 2, ',', '.') }} €</span> 
-                                    <span class="text-slate-400">/</span> 
-                                    <span class="text-slate-700">{{ number_format($budgetTotal, 2, ',', '.') }} €</span>
-                                </span>
+                                <button wire:click="openQuickOfferModalForProject('{{ $proj->id }}')" 
+                                        class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 font-bold text-[11px] rounded-lg border border-slate-200 hover:border-blue-300 shadow-2xs transition flex items-center gap-1 cursor-pointer"
+                                        title="Angebot / LV für diese Baustelle erstellen">
+                                    <span>📄</span> <span>Angebot</span>
+                                </button>
+
+                                <button wire:click="openQuickDailyLogModalForProject('{{ $proj->id }}')" 
+                                        class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 font-bold text-[11px] rounded-lg border border-slate-200 hover:border-blue-300 shadow-2xs transition flex items-center gap-1 cursor-pointer"
+                                        title="Tagesbericht für diese Baustelle verfassen">
+                                    <span>🎙️</span> <span>Tagebuch</span>
+                                </button>
+
+                                <button wire:click="openCreateDefectModal('{{ $proj->id }}')" 
+                                        class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-[11px] rounded-lg border border-amber-200 hover:border-amber-300 shadow-2xs transition flex items-center gap-1 cursor-pointer"
+                                        title="Mangel erfassen">
+                                    <span>⚠️</span> <span>Mangel</span>
+                                </button>
+
+                                <a href="/projects/{{ $proj->id }}/abnahmeprotokoll-pdf" target="_blank"
+                                   class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold text-[11px] rounded-lg border border-blue-200 transition flex items-center gap-1"
+                                   title="VOB/B Abnahmeprotokoll PDF herunterladen">
+                                    <span>📋</span> <span>Abnahme-PDF</span>
+                                </a>
                             </div>
 
-                            <!-- High Visibility Bar -->
-                            <div class="space-y-1">
-                                <div class="w-full bg-slate-200/80 rounded-full h-3 overflow-hidden border border-slate-300/60 p-0.5 shadow-inner">
-                                    <div class="h-full rounded-full transition-all duration-500 {{ $percent > 90 ? 'bg-gradient-to-r from-amber-500 to-rose-600' : 'bg-gradient-to-r from-blue-600 to-indigo-600' }}" style="width: {{ max($percent, 2) }}%"></div>
-                                </div>
-                                <div class="flex justify-end items-center gap-3">
-                                    <span class="text-[11px] font-bold text-slate-600">
-                                        {{ number_format($percent, 1, ',', '.') }}% ausgeschöpft
-                                    </span>
-                                    <button wire:click.stop="confirmDeleteProject('{{ $proj->id }}')"
-                                            title="Baustelle löschen"
-                                            class="p-1 text-slate-400 hover:text-rose-600 rounded hover:bg-rose-50 transition cursor-pointer">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    </button>
-                                </div>
+                            <div class="flex items-center gap-2">
+                                <button wire:click="selectProject('{{ $proj->id }}')" 
+                                        class="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] rounded-lg transition shadow-2xs cursor-pointer flex items-center gap-1">
+                                    <span>Öffnen ➔</span>
+                                </button>
+                                <button wire:click.stop="confirmDeleteProject('{{ $proj->id }}')" 
+                                        class="p-1 text-slate-400 hover:text-rose-600 rounded hover:bg-rose-50 transition cursor-pointer"
+                                        title="Baustelle löschen">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1894,4 +1961,72 @@ new class extends Component {
             </div>
         </div>
     @endif
+
+    <!-- Global Command Palette Modal (`Cmd + K`) -->
+    <div x-data="{ showCmdPalette: false, cmdQuery: '' }" 
+         x-on:keydown.window.cmd.k.prevent="showCmdPalette = true"
+         x-on:keydown.window.ctrl.k.prevent="showCmdPalette = true"
+         x-on:open-cmd-palette.window="showCmdPalette = true"
+         x-show="showCmdPalette" 
+         x-cloak
+         class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-start justify-center z-50 pt-20 p-4 transition-all">
+        
+        <div @click.away="showCmdPalette = false" 
+             class="bg-white border border-slate-200 rounded-3xl w-full max-w-xl shadow-2xl overflow-hidden flex flex-col space-y-0">
+            
+            <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center gap-3">
+                <span class="text-slate-400 text-lg">🔍</span>
+                <input x-model="cmdQuery" 
+                       x-ref="cmdInput"
+                       x-effect="if (showCmdPalette) setTimeout(() => $refs.cmdInput.focus(), 50)"
+                       type="text" 
+                       class="w-full bg-transparent border-0 text-sm font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-0" 
+                       placeholder="Suchen nach Baustellen, Werkzeugen, Rechnungen... (z. B. Berching, Mangel, Tagebuch)">
+                <button @click="showCmdPalette = false" class="text-slate-400 hover:text-slate-700 text-xs font-bold">✕</button>
+            </div>
+
+            <div class="p-4 max-h-96 overflow-y-auto space-y-3">
+                <div class="text-[10px] font-black uppercase tracking-wider text-slate-400 px-2">Schnell-Aktionen & Navigation</div>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <button @click="showCmdPalette = false; $wire.openCreateProject()" class="p-3 bg-slate-50 hover:bg-blue-50 text-left rounded-xl border border-slate-200 hover:border-blue-300 transition cursor-pointer flex items-center gap-2">
+                        <span class="text-base">🏗️</span>
+                        <div>
+                            <div class="text-xs font-bold text-slate-900">Neue Baustelle</div>
+                            <div class="text-[10px] text-slate-500">Projekt anlegen</div>
+                        </div>
+                    </button>
+
+                    <button @click="showCmdPalette = false; window.location.href='/bautagebuch'" class="p-3 bg-slate-50 hover:bg-blue-50 text-left rounded-xl border border-slate-200 hover:border-blue-300 transition cursor-pointer flex items-center gap-2">
+                        <span class="text-base">🎙️</span>
+                        <div>
+                            <div class="text-xs font-bold text-slate-900">Bautagebuch</div>
+                            <div class="text-[10px] text-slate-500">Tagesberichte verfassen</div>
+                        </div>
+                    </button>
+
+                    <button @click="showCmdPalette = false; window.location.href='/einsatzplan'" class="p-3 bg-slate-50 hover:bg-blue-50 text-left rounded-xl border border-slate-200 hover:border-blue-300 transition cursor-pointer flex items-center gap-2">
+                        <span class="text-base">👷</span>
+                        <div>
+                            <div class="text-xs font-bold text-slate-900">Einsatzplaner</div>
+                            <div class="text-[10px] text-slate-500">Handwerker & Subunternehmer</div>
+                        </div>
+                    </button>
+
+                    <button @click="showCmdPalette = false; window.location.href='/ki-agent'" class="p-3 bg-slate-50 hover:bg-blue-50 text-left rounded-xl border border-slate-200 hover:border-blue-300 transition cursor-pointer flex items-center gap-2">
+                        <span class="text-base">🤖</span>
+                        <div>
+                            <div class="text-xs font-bold text-slate-900">KI-Assistent</div>
+                            <div class="text-[10px] text-slate-500">Autonomer Bot PRO</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-between items-center text-[11px] text-slate-400 font-medium">
+                <span>BT Bautechnik Global Command Palette</span>
+                <span>Drücken Sie <kbd class="px-1.5 py-0.5 bg-white border border-slate-300 rounded font-mono text-[9px]">ESC</kbd> zum Schließen</span>
+            </div>
+        </div>
+    </div>
 </div>

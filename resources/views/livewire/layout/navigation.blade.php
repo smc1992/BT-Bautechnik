@@ -35,6 +35,14 @@ new class extends Component
                         📊 {{ __('Dashboard') }}
                     </x-nav-link>
 
+                    <!-- Global Command Palette Trigger (`Cmd + K`) -->
+                    <button @click="$dispatch('open-cmd-palette')" 
+                            class="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200/80 text-slate-500 hover:text-slate-900 rounded-xl border border-slate-200 text-xs font-semibold transition cursor-pointer shadow-2xs mx-1">
+                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        <span>Schnellsuche...</span>
+                        <kbd class="px-1.5 py-0.5 text-[10px] font-black font-mono text-slate-500 bg-white rounded border border-slate-300 shadow-2xs">⌘K</kbd>
+                    </button>
+
                     <!-- 2. Baustellen Dropdown -->
                     @php $isBaustellenActive = request()->routeIs('planning', 'work-schedule', 'daily-logs', 'defects'); @endphp
                     <x-dropdown align="left" width="72">

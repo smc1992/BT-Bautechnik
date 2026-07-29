@@ -50,7 +50,7 @@ class OpenAiAgentService
 
             return trim($response->text ?? '');
         } catch (Exception $e) {
-            Log::error("Whisper Audio Transcription Error: " . $e->getMessage());
+            $this->safeLog('error', "Whisper Audio Transcription Error: " . $e->getMessage());
             throw new Exception("Fehler bei der Spracheingabe (Whisper): " . $e->getMessage());
         }
     }
@@ -95,7 +95,7 @@ class OpenAiAgentService
 
             return trim(preg_replace('/\*\*|\*/', '', $response->choices[0]->message->content ?? ''));
         } catch (Exception $e) {
-            Log::error("GPT-4o Vision Photo Analysis Error: " . $e->getMessage());
+            $this->safeLog('error', "GPT-4o Vision Photo Analysis Error: " . $e->getMessage());
             throw new Exception("Fehler bei der Bildanalyse (GPT-4o Vision): " . $e->getMessage());
         }
     }
@@ -157,7 +157,7 @@ class OpenAiAgentService
                     $functionName = $toolCall->function->name;
                     $arguments = json_decode($toolCall->function->arguments, true) ?? [];
 
-                    Log::info("AI Agent Tool Execution: {$functionName}", $arguments);
+                    $this->safeLog('info', "AI Agent Tool Execution: {$functionName}", $arguments);
 
                     $toolResult = $this->executeTool($functionName, $arguments);
                     $toolsExecuted[] = [
@@ -190,7 +190,7 @@ class OpenAiAgentService
             ];
 
         } catch (Exception $e) {
-            Log::error("OpenAiAgentService Error: " . $e->getMessage());
+            $this->safeLog('error', "OpenAiAgentService Error: " . $e->getMessage());
             throw $e;
         }
     }
@@ -884,6 +884,18 @@ class OpenAiAgentService
 
             default:
                 return ['success' => false, 'summary' => "Werkzeug '{$name}' unbekannt."];
+        }
+    }
+
+    /**
+     * Safely write log entries without throwing disk permission exceptions.
+     */
+    protected function safeLog(string $level, string $message, array $context = []): void
+    {
+        try {
+            Log::$level($message, $context);
+        } catch (\Throwable $e) {
+            // Silently ignore log permission issues on disk
         }
     }
 }

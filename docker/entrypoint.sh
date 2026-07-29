@@ -32,5 +32,12 @@ php artisan config:cache || true
 php artisan route:cache || true
 php artisan view:cache || true
 
+# 6. Ensure full write permissions for www-data on storage & logs
+echo "🔒 Securing storage & log permissions for www-data..."
+mkdir -p /var/www/html/storage/logs
+touch /var/www/html/storage/logs/laravel.log
+chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database || true
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database || true
+
 echo "✅ Startup complete. Launching Supervisord..."
 exec /usr/bin/supervisord -c /etc/supervisord.conf

@@ -799,23 +799,66 @@ new class extends Component {
 
                 <!-- Modal Body (Scrollable) -->
                 <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
-                    <!-- AI Assistant Card -->
-                    <div class="bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 border border-indigo-200/80 p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-2xs">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-white border border-indigo-200 flex items-center justify-center text-lg shadow-2xs shrink-0">
-                                🤖
+                    
+                    <!-- PROJEKT COMMAND CENTER (All-in-One 1-Klick Aktionsleiste) -->
+                    <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-4 sm:p-5 rounded-2xl shadow-md border border-indigo-500/20 space-y-3">
+                        <div class="flex items-center justify-between flex-wrap gap-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <h4 class="font-extrabold text-xs uppercase tracking-wider text-white">⚡ Projekt Schnellaktionen — Alles aus 1 Hand</h4>
                             </div>
-                            <div>
-                                <h4 class="font-extrabold text-xs text-slate-900">Automatische KI-Zusammenfassung</h4>
-                                <p class="text-[11px] text-slate-600">Generiert aus allen Tagesberichten der letzten 7 Tage einen fertigen Wochenbericht für Kunden.</p>
-                            </div>
+                            <span class="text-[10px] text-slate-400 font-medium">Belege & Berichte direkt für <strong>{{ $proj->name }}</strong> erstellen</span>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <button wire:click="generateWeeklyReport" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1 cursor-pointer">
-                                📊 KI-Wochenbericht
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 pt-1">
+                            <!-- 1. Rechnung erstellen -->
+                            <a href="/rechnungen?project_id={{ $proj->id }}" 
+                               class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                                <span class="text-base group-hover:scale-110 transition-transform">🧾</span>
+                                <span class="text-[11px] truncate">Rechnung</span>
+                            </a>
+
+                            <!-- 2. Angebot / LV -->
+                            <a href="/planung?project_id={{ $proj->id }}" 
+                               class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                                <span class="text-base group-hover:scale-110 transition-transform">📄</span>
+                                <span class="text-[11px] truncate">Angebot / LV</span>
+                            </a>
+
+                            <!-- 3. Bautagebuch -->
+                            <a href="/bautagebuch?project_id={{ $proj->id }}" 
+                               class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                                <span class="text-base group-hover:scale-110 transition-transform">🎙️</span>
+                                <span class="text-[11px] truncate">Bautagebuch</span>
+                            </a>
+
+                            <!-- 4. Mangel erfassen -->
+                            <button wire:click="openCreateDefectModal('{{ $proj->id }}')" 
+                                    class="p-2.5 bg-amber-500/20 hover:bg-amber-500 text-amber-200 hover:text-white font-bold text-xs rounded-xl border border-amber-400/30 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                                <span class="text-base group-hover:scale-110 transition-transform">⚠️</span>
+                                <span class="text-[11px] truncate">Mangel</span>
                             </button>
-                            <button wire:click="openParseOffer" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs transition cursor-pointer">
-                                📄 LV Einlesen
+
+                            <!-- 5. VOB/B Abnahmeprotokoll PDF -->
+                            <a href="/projects/{{ $proj->id }}/abnahmeprotokoll-pdf" 
+                               target="_blank"
+                               class="p-2.5 bg-blue-500/20 hover:bg-blue-600 text-blue-200 hover:text-white font-bold text-xs rounded-xl border border-blue-400/30 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group shadow-xs">
+                                <span class="text-base group-hover:scale-110 transition-transform">📋</span>
+                                <span class="text-[11px] truncate">Abnahme-PDF</span>
+                            </a>
+
+                            <!-- 6. Einsatzplan -->
+                            <a href="/einsatzplan?project_id={{ $proj->id }}" 
+                               class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                                <span class="text-base group-hover:scale-110 transition-transform">👷</span>
+                                <span class="text-[11px] truncate">Einsatzplan</span>
+                            </a>
+
+                            <!-- 7. KI-Wochenbericht -->
+                            <button wire:click="generateWeeklyReport" 
+                                    class="p-2.5 bg-emerald-500/20 hover:bg-emerald-600 text-emerald-200 hover:text-white font-bold text-xs rounded-xl border border-emerald-400/30 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                                <span class="text-base group-hover:scale-110 transition-transform">📊</span>
+                                <span class="text-[11px] truncate">Wochenbericht</span>
                             </button>
                         </div>
                     </div>

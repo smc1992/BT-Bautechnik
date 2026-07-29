@@ -63,4 +63,13 @@ Route::view('materialien', 'materialien')
 Route::get('/bautagebuch/freigabe/{token}', App\Livewire\PublicDailyLogApproval::class)
     ->name('daily-log.public-approval');
 
+Route::get('/projects/{project}/abnahmeprotokoll-pdf', function (\App\Models\Project $project) {
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.abnahmeprotokoll', [
+        'project' => $project,
+        'defects' => $project->defects ?? collect(),
+        'date' => date('d.m.Y'),
+    ]);
+    return $pdf->download('VOB_Abnahmeprotokoll_' . \Illuminate\Support\Str::slug($project->name) . '.pdf');
+})->middleware(['auth', 'verified'])->name('project.abnahmeprotokoll-pdf');
+
 require __DIR__.'/auth.php';

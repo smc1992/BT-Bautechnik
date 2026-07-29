@@ -394,6 +394,12 @@ new class extends Component {
     {
         $this->docDate = date('Y-m-d');
         $this->resetForm();
+
+        $reqProjectId = request()->query('project_id');
+        if ($reqProjectId) {
+            $this->selectProject($reqProjectId);
+        }
+
         $this->loadSavedDocuments();
     }
 

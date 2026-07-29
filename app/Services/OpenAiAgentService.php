@@ -859,7 +859,7 @@ class OpenAiAgentService
                 $query = $args['query'] ?? '';
                 $materials = \App\Models\Material::where('name', 'LIKE', "%{$query}%")
                     ->orWhere('category', 'LIKE', "%{$query}%")
-                    ->orWhere('manufacturer', 'LIKE', "%{$query}%")
+                    ->orWhere('supplier', 'LIKE', "%{$query}%")
                     ->take(8)
                     ->get();
 
@@ -873,7 +873,7 @@ class OpenAiAgentService
 
                 $list = [];
                 foreach ($materials as $m) {
-                    $list[] = "• **{$m->name}** ({$m->category}): " . number_format($m->unit_price, 2, ',', '.') . " € / {$m->unit} (Hersteller: " . ($m->manufacturer ?: 'Standard') . ")";
+                    $list[] = "• **{$m->name}** ({$m->category}): " . number_format($m->unit_price, 2, ',', '.') . " € / {$m->unit} (Lieferant/Hersteller: " . ($m->supplier ?: 'Standard') . ")";
                 }
 
                 return [

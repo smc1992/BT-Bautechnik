@@ -164,6 +164,200 @@ new class extends Component {
         $this->dispatch('notify', '⚠️ Mangel für Baustelle "' . ($this->selectedProject?->name ?: 'ausgewählt') . '" erfolgreich erfasst!');
     }
 
+    // Quick Invoice Modal State & Logic
+    public bool $showQuickInvoiceModal = false;
+    public string $quickInvoiceNumber = '';
+    public string $quickInvoiceDate = '';
+    public float $quickInvoiceAmount = 0.0;
+    public string $quickInvoiceDescription = '';
+
+    public function openQuickInvoiceModal()
+    {
+        $this->quickInvoiceNumber = 'RE-' . date('Y') . '-' . str_pad(mt_rand(1, 999), 3, '0', STR_PAD_LEFT);
+        $this->quickInvoiceDate = date('Y-m-d');
+        $this->quickInvoiceAmount = (float) ($this->selectedProject?->budget?->total_with_buffer ?? 1000.0);
+        $this->quickInvoiceDescription = 'Rechnung für Baustellenarbeiten ' . ($this->selectedProject?->name ?: '');
+        $this->showQuickInvoiceModal = true;
+    }
+
+    public function saveQuickInvoice()
+    {
+        $this->validate([
+            'selectedProjectId' => 'required|exists:projects,id',
+            'quickInvoiceNumber' => 'required|string',
+            'quickInvoiceAmount' => 'required|numeric|min:0.01',
+        ]);
+
+        $subtotal = round($this->quickInvoiceAmount / 1.19, 2);
+        $vat = round($this->quickInvoiceAmount - $subtotal, 2);
+
+        $inv = \App\Models\Invoice::create([
+            'project_id' => $this->selectedProjectId,
+            'invoice_number' => $this->quickInvoiceNumber,
+            'invoice_date' => $this->quickInvoiceDate,
+            'due_date' => date('Y-m-d', strtotime('+14 days', strtotime($this->quickInvoiceDate))),
+            'total_amount' => $this->quickInvoiceAmount,
+            'subtotal' => $subtotal,
+            'vat_amount' => $vat,
+            'status' => 'draft',
+            'notes' => $this->quickInvoiceDescription,
+        ]);
+
+        \App\Models\InvoiceItem::create([
+            'invoice_id' => $inv->id,
+            'description' => $this->quickInvoiceDescription ?: 'Bau- & Sanierungsarbeiten laut Vereinbarung',
+            'quantity' => 1,
+            'unit' => 'Pauschal',
+            'unit_price' => $subtotal,
+            'total_price' => $subtotal,
+        ]);
+
+        $this->showQuickInvoiceModal = false;
+        $this->dispatch('notify', '🧾 Rechnung ' . $this->quickInvoiceNumber . ' (' . number_format($this->quickInvoiceAmount, 2, ',', '.') . ' €) erfolgreich direkt im Projekt erstellt!');
+    }
+
+    // Quick Offer Modal State & Logic
+    public bool $showQuickOfferModal = false;
+    public string $quickOfferNumber = '';
+    public string $quickOfferDate = '';
+    public string $quickOfferTitle = '';
+    public float $quickOfferAmount = 0.0;
+
+    public function openQuickOfferModal()
+    {
+        $this->quickOfferNumber = 'ANG-' . date('Y') . '-' . str_pad(mt_rand(1, 999), 3, '0', STR_PAD_LEFT);
+        $this->quickOfferDate = date('Y-m-d');
+        $this->quickOfferTitle = 'Angebot & LV: ' . ($this->selectedProject?->work_type ?: 'Bauleistungen');
+        $this->quickOfferAmount = (float) ($this->selectedProject?->budget?->total_with_buffer ?? 2500.0);
+        $this->showQuickOfferModal = true;
+    }
+
+    public function saveQuickOffer()
+    {
+        $this->validate([
+            'selectedProjectId' => 'required|exists:projects,id',
+            'quickOfferNumber' => 'required|string',
+            'quickOfferAmount' => 'required|numeric|min:0.01',
+        ]);
+
+        $subtotal = round($this->quickOfferAmount / 1.19, 2);
+        $vat = round($this->quickOfferAmount - $subtotal, 2);
+
+        $offer = \App\Models\Offer::create([
+            'project_id' => $this->selectedProjectId,
+            'offer_number' => $this->quickOfferNumber,
+            'offer_date' => $this->quickOfferDate,
+            'title' => $this->quickOfferTitle,
+            'total_amount' => $this->quickOfferAmount,
+            'subtotal' => $subtotal,
+            'vat_amount' => $vat,
+            'status' => 'draft',
+        ]);
+
+        $sec = \App\Models\OfferSection::create([
+            'offer_id' => $offer->id,
+            'title' => 'Hauptgewerk / Leistungen',
+            'sort_order' => 1,
+        ]);
+
+        \App\Models\OfferItem::create([
+            'offer_section_id' => $sec->id,
+            'item_number' => '1.1',
+            'description' => $this->quickOfferTitle,
+            'quantity' => 1,
+            'unit' => 'Pauschal',
+            'unit_price' => $subtotal,
+            'total_price' => $subtotal,
+        ]);
+
+        $this->showQuickOfferModal = false;
+        $this->dispatch('notify', '📄 Angebot ' . $this->quickOfferNumber . ' (' . number_format($this->quickOfferAmount, 2, ',', '.') . ' €) erfolgreich direkt im Projekt erstellt!');
+    }
+
+    // Quick Daily Log Modal State & Logic
+    public bool $showQuickDailyLogModal = false;
+    public string $quickLogDate = '';
+    public string $quickLogWeather = 'Sonnig';
+    public int $quickLogWorkersCount = 2;
+    public string $quickLogContactId = '';
+    public string $quickLogWorkPerformed = '';
+    public string $quickLogSpecialOccurrences = '';
+
+    public function openQuickDailyLogModal()
+    {
+        $this->quickLogDate = date('Y-m-d');
+        $this->quickLogWeather = 'Sonnig';
+        $this->quickLogWorkersCount = 2;
+        $this->quickLogContactId = '';
+        $this->quickLogWorkPerformed = '';
+        $this->quickLogSpecialOccurrences = '';
+        $this->showQuickDailyLogModal = true;
+    }
+
+    public function saveQuickDailyLog()
+    {
+        $this->validate([
+            'selectedProjectId' => 'required|exists:projects,id',
+            'quickLogDate' => 'required|date',
+            'quickLogWorkPerformed' => 'required|string|min:3',
+        ]);
+
+        \App\Models\DailyLog::create([
+            'project_id' => $this->selectedProjectId,
+            'contact_id' => $this->quickLogContactId ?: null,
+            'date' => $this->quickLogDate,
+            'weather' => $this->quickLogWeather,
+            'temperature' => '20°C',
+            'workers_count' => $this->quickLogWorkersCount,
+            'work_performed' => $this->quickLogWorkPerformed,
+            'special_occurrences' => $this->quickLogSpecialOccurrences ?: null,
+        ]);
+
+        $this->showQuickDailyLogModal = false;
+        $this->dispatch('notify', '🎙️ Bautagebuch-Eintrag für Baustelle erfolgreich direkt erstellt!');
+    }
+
+    // Quick Schedule Modal State & Logic
+    public bool $showQuickScheduleModal = false;
+    public string $quickScheduleWorkerType = 'mitarbeiter';
+    public string $quickScheduleContactId = '';
+    public string $quickScheduleWorkerName = '';
+    public string $quickScheduleDate = '';
+    public string $quickScheduleShiftType = 'ganztags';
+    public string $quickScheduleNotes = '';
+
+    public function openQuickScheduleModal()
+    {
+        $this->quickScheduleWorkerType = 'mitarbeiter';
+        $this->quickScheduleContactId = '';
+        $this->quickScheduleWorkerName = '';
+        $this->quickScheduleDate = date('Y-m-d');
+        $this->quickScheduleShiftType = 'ganztags';
+        $this->quickScheduleNotes = '';
+        $this->showQuickScheduleModal = true;
+    }
+
+    public function saveQuickSchedule()
+    {
+        $this->validate([
+            'selectedProjectId' => 'required|exists:projects,id',
+            'quickScheduleDate' => 'required|date',
+        ]);
+
+        \App\Models\WorkerSchedule::create([
+            'project_id' => $this->selectedProjectId,
+            'contact_id' => $this->quickScheduleContactId ?: null,
+            'worker_name' => $this->quickScheduleWorkerName ?: 'Handwerker / Subunternehmer',
+            'worker_type' => $this->quickScheduleWorkerType,
+            'date' => $this->quickScheduleDate,
+            'shift_type' => $this->quickScheduleShiftType,
+            'notes' => $this->quickScheduleNotes ?: null,
+        ]);
+
+        $this->showQuickScheduleModal = false;
+        $this->dispatch('notify', '👷 Einsatzplan-Eintrag für Baustelle erfolgreich direkt erstellt!');
+    }
+
     public function getSelectedProjectProperty()
     {
         if (!$this->selectedProjectId) {
@@ -812,25 +1006,25 @@ new class extends Component {
 
                         <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 pt-1">
                             <!-- 1. Rechnung erstellen -->
-                            <a href="/rechnungen?project_id={{ $proj->id }}" 
-                               class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                            <button wire:click="openQuickInvoiceModal" 
+                                    class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
                                 <span class="text-base group-hover:scale-110 transition-transform">🧾</span>
                                 <span class="text-[11px] truncate">Rechnung</span>
-                            </a>
+                            </button>
 
                             <!-- 2. Angebot / LV -->
-                            <a href="/planung?project_id={{ $proj->id }}" 
-                               class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                            <button wire:click="openQuickOfferModal" 
+                                    class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
                                 <span class="text-base group-hover:scale-110 transition-transform">📄</span>
                                 <span class="text-[11px] truncate">Angebot / LV</span>
-                            </a>
+                            </button>
 
                             <!-- 3. Bautagebuch -->
-                            <a href="/bautagebuch?project_id={{ $proj->id }}" 
-                               class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                            <button wire:click="openQuickDailyLogModal" 
+                                    class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
                                 <span class="text-base group-hover:scale-110 transition-transform">🎙️</span>
                                 <span class="text-[11px] truncate">Bautagebuch</span>
-                            </a>
+                            </button>
 
                             <!-- 4. Mangel erfassen -->
                             <button wire:click="openCreateDefectModal('{{ $proj->id }}')" 
@@ -848,11 +1042,11 @@ new class extends Component {
                             </a>
 
                             <!-- 6. Einsatzplan -->
-                            <a href="/einsatzplan?project_id={{ $proj->id }}" 
-                               class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                            <button wire:click="openQuickScheduleModal" 
+                                    class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
                                 <span class="text-base group-hover:scale-110 transition-transform">👷</span>
                                 <span class="text-[11px] truncate">Einsatzplan</span>
-                            </a>
+                            </button>
 
                             <!-- 7. KI-Wochenbericht -->
                             <button wire:click="generateWeeklyReport" 
@@ -1452,6 +1646,248 @@ new class extends Component {
                         <button type="button" wire:click="$set('showCreateDefectModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">Abbrechen</button>
                         <button type="submit" class="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold shadow-md shadow-amber-500/20">
                             ⚠️ Mangel speichern
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- Quick Invoice Modal (In-Page) -->
+    @if ($showQuickInvoiceModal)
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">🧾</span>
+                        <div>
+                            <h3 class="text-base font-extrabold text-white">Neue Rechnung direkt im Projekt erstellen</h3>
+                            <p class="text-[11px] text-blue-300 font-medium">{{ $this->selectedProject?->name }}</p>
+                        </div>
+                    </div>
+                    <button wire:click="$set('showQuickInvoiceModal', false)" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+                </div>
+
+                <form wire:submit="saveQuickInvoice" class="p-6 space-y-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Rechnungsnummer *</label>
+                            <input wire:model="quickInvoiceNumber" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 focus:border-blue-600 focus:bg-white" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Rechnungsdatum *</label>
+                            <input wire:model="quickInvoiceDate" type="date" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:border-blue-600 focus:bg-white" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Rechnungsbetrag brutto (€) *</label>
+                        <div class="relative">
+                            <input wire:model="quickInvoiceAmount" type="number" step="0.01" min="0.01" class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-3.5 pr-8 py-2.5 text-sm font-extrabold text-slate-900 focus:border-blue-600 focus:bg-white" required>
+                            <span class="absolute right-3 top-2.5 text-sm font-bold text-slate-400">€</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-1">Enthält 19% MwSt (Netto: {{ number_format(round($quickInvoiceAmount / 1.19, 2), 2, ',', '.') }} €)</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Bezeichnung / Betreff</label>
+                        <textarea wire:model="quickInvoiceDescription" rows="3" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:border-blue-600 focus:bg-white" placeholder="Beschreibung der Bauleistungen..."></textarea>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200">
+                        <button type="button" wire:click="$set('showQuickInvoiceModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">Abbrechen</button>
+                        <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20">
+                            🧾 Rechnung jetzt erstellen
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- Quick Offer Modal (In-Page) -->
+    @if ($showQuickOfferModal)
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">📄</span>
+                        <div>
+                            <h3 class="text-base font-extrabold text-white">Neues Angebot direkt im Projekt erstellen</h3>
+                            <p class="text-[11px] text-blue-300 font-medium">{{ $this->selectedProject?->name }}</p>
+                        </div>
+                    </div>
+                    <button wire:click="$set('showQuickOfferModal', false)" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+                </div>
+
+                <form wire:submit="saveQuickOffer" class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Angebotstitel / Gewerk *</label>
+                        <input wire:model="quickOfferTitle" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 focus:border-blue-600 focus:bg-white" required>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Angebotsnummer *</label>
+                            <input wire:model="quickOfferNumber" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 focus:border-blue-600 focus:bg-white" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Datum *</label>
+                            <input wire:model="quickOfferDate" type="date" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:border-blue-600 focus:bg-white" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Angebotssumme brutto (€) *</label>
+                        <div class="relative">
+                            <input wire:model="quickOfferAmount" type="number" step="0.01" min="0.01" class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-3.5 pr-8 py-2.5 text-sm font-extrabold text-slate-900 focus:border-blue-600 focus:bg-white" required>
+                            <span class="absolute right-3 top-2.5 text-sm font-bold text-slate-400">€</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200">
+                        <button type="button" wire:click="$set('showQuickOfferModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">Abbrechen</button>
+                        <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20">
+                            📄 Angebot jetzt erstellen
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- Quick Daily Log Modal (In-Page) -->
+    @if ($showQuickDailyLogModal)
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">🎙️</span>
+                        <div>
+                            <h3 class="text-base font-extrabold text-white">Tagesbericht direkt im Projekt verfassen</h3>
+                            <p class="text-[11px] text-blue-300 font-medium">{{ $this->selectedProject?->name }}</p>
+                        </div>
+                    </div>
+                    <button wire:click="$set('showQuickDailyLogModal', false)" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+                </div>
+
+                <form wire:submit="saveQuickDailyLog" class="p-6 space-y-4">
+                    <div class="grid grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Datum *</label>
+                            <input wire:model="quickLogDate" type="date" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:border-blue-600 focus:bg-white" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Wetter</label>
+                            <select wire:model="quickLogWeather" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:border-blue-600 focus:bg-white">
+                                <option value="Sonnig">Sonnig</option>
+                                <option value="Bewölkt">Bewölkt</option>
+                                <option value="Regen">Regen</option>
+                                <option value="Frost/Schnee">Frost/Schnee</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Arbeiter</label>
+                            <input wire:model="quickLogWorkersCount" type="number" min="1" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:border-blue-600 focus:bg-white" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Subunternehmer / Gewerk</label>
+                        <select wire:model="quickLogContactId" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-900 focus:border-blue-600 focus:bg-white">
+                            <option value="">🏢 Eigenleistung (BT Bautechnik)</option>
+                            @foreach ($this->subcontractors as $sub)
+                                <option value="{{ $sub->id }}">🏗️ {{ $sub->display_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Geleistete Arbeiten *</label>
+                        <textarea wire:model="quickLogWorkPerformed" rows="3" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:border-blue-600 focus:bg-white" placeholder="Details zu Fortschritt, Materialverbrauch und Monteuren..." required></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Vorkommnisse / Störungen (Optional)</label>
+                        <textarea wire:model="quickLogSpecialOccurrences" rows="2" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:border-blue-600 focus:bg-white" placeholder="Verzögerungen, Behinderungen, Materialmangel..."></textarea>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200">
+                        <button type="button" wire:click="$set('showQuickDailyLogModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">Abbrechen</button>
+                        <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20">
+                            🎙️ Tagesbericht speichern
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- Quick Schedule Modal (In-Page) -->
+    @if ($showQuickScheduleModal)
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">👷</span>
+                        <div>
+                            <h3 class="text-base font-extrabold text-white">Handwerker für Baustelle einteilen</h3>
+                            <p class="text-[11px] text-blue-300 font-medium">{{ $this->selectedProject?->name }}</p>
+                        </div>
+                    </div>
+                    <button wire:click="$set('showQuickScheduleModal', false)" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+                </div>
+
+                <form wire:submit="saveQuickSchedule" class="p-6 space-y-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Personal-Typ</label>
+                            <select wire:model.live="quickScheduleWorkerType" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:border-blue-600 focus:bg-white">
+                                <option value="mitarbeiter">Mitarbeiter</option>
+                                <option value="subunternehmer">Subunternehmer</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Datum *</label>
+                            <input wire:model="quickScheduleDate" type="date" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:border-blue-600 focus:bg-white" required>
+                        </div>
+                    </div>
+
+                    @if($quickScheduleWorkerType === 'subunternehmer')
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Subunternehmer Auswählen</label>
+                            <select wire:model="quickScheduleContactId" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-900 focus:border-blue-600 focus:bg-white">
+                                <option value="">-- Subunternehmer wählen --</option>
+                                @foreach ($this->subcontractors as $sub)
+                                    <option value="{{ $sub->id }}">🏗️ {{ $sub->display_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @else
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Name des Mitarbeiters / Teams</label>
+                            <input wire:model="quickScheduleWorkerName" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:border-blue-600 focus:bg-white" placeholder="z. B. Spengler-Kolonne 2">
+                        </div>
+                    @endif
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Schicht / Einsatz</label>
+                        <select wire:model="quickScheduleShiftType" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:border-blue-600 focus:bg-white">
+                            <option value="ganztags">Ganztags (8 Std)</option>
+                            <option value="vormittags">Vormittags</option>
+                            <option value="nachmittags">Nachmittags</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Notizen / Aufgabenstellung</label>
+                        <textarea wire:model="quickScheduleNotes" rows="2" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:border-blue-600 focus:bg-white" placeholder="Spezielle Anweisungen für den Tag..."></textarea>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200">
+                        <button type="button" wire:click="$set('showQuickScheduleModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">Abbrechen</button>
+                        <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20">
+                            👷 Handwerker einteilen
                         </button>
                     </div>
                 </form>

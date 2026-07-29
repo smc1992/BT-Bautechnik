@@ -364,11 +364,20 @@ new class extends Component {
                     </div>
                 @endif
 
-                <!-- Messages Display -->
-                <div x-data
-                     x-init="$el.scrollTop = $el.scrollHeight"
-                     x-effect="$nextTick(() => { $el.scrollTop = $el.scrollHeight })"
-                     class="flex-1 p-3.5 sm:p-6 overflow-y-auto space-y-4 sm:space-y-5 bg-slate-50/60">
+                <!-- Messages Display with Instant Auto-Scroll to Newest Answer -->
+                <div x-data="{
+                         scrollToBottom() {
+                             this.$nextTick(() => {
+                                 $el.scrollTo({ top: $el.scrollHeight, behavior: 'smooth' });
+                             });
+                         }
+                     }"
+                     x-init="
+                         scrollToBottom();
+                         const observer = new MutationObserver(() => scrollToBottom());
+                         observer.observe($el, { childList: true, subtree: true, characterData: true });
+                     "
+                     class="flex-1 p-3.5 sm:p-6 overflow-y-auto space-y-4 sm:space-y-5 bg-slate-50/60 scroll-smooth">
                     
                     @if ($this->activeChat)
                         @foreach ($this->activeChat->messages as $msg)
@@ -437,17 +446,45 @@ new class extends Component {
                         @endforeach
                     @endif
 
+                    <!-- Instant Frontend Loading Indicator when Senden is clicked -->
+                    <div wire:loading.flex wire:target="sendPrompt, runQuickAction, photoFile, processVoiceRecording" 
+                         class="flex gap-3 items-start max-w-full sm:max-w-xl animate-fade-in my-2">
+                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-slate-900 text-white flex items-center justify-center text-sm shadow-md shadow-blue-500/20 animate-bounce shrink-0 mt-0.5">
+                            🤖
+                        </div>
+                        <div class="bg-white border border-blue-200/90 rounded-2xl rounded-tl-xs px-4 py-3 text-xs text-slate-800 font-medium shadow-md shadow-blue-500/5 flex items-center gap-3">
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping"></span>
+                                <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            </div>
+                            <div class="space-y-0.5">
+                                <p class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                                    <span>BT KI-Agent generiert Antwort...</span>
+                                    <span class="text-[10px] text-blue-600 font-semibold animate-pulse">(Live)</span>
+                                </p>
+                                <p class="text-[11px] text-slate-500 italic">Analysiere Baustellen-Datenbank, VOB/B & Werkzeuge...</p>
+                            </div>
+                        </div>
+                    </div>
+
                     @if ($isProcessing)
-                        <div class="flex gap-3 items-center">
-                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-900 text-white flex items-center justify-center text-xs sm:text-sm shadow-md animate-pulse shrink-0">
+                        <div wire:loading.remove class="flex gap-3 items-start max-w-full sm:max-w-xl animate-fade-in my-2">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-slate-900 text-white flex items-center justify-center text-sm shadow-md shadow-blue-500/20 animate-bounce shrink-0 mt-0.5">
                                 🤖
                             </div>
-                            <div class="bg-white border border-blue-200 rounded-2xl rounded-tl-xs px-4 py-3 text-xs text-blue-950 font-semibold flex items-center gap-3 shadow-xs">
-                                <span class="flex h-3 w-3 relative">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-600"></span>
-                                </span>
-                                <span>KI-Agent verarbeitet Befehl & führt Datenbank-Werkzeuge aus...</span>
+                            <div class="bg-white border border-blue-200/90 rounded-2xl rounded-tl-xs px-4 py-3 text-xs text-slate-800 font-medium shadow-md shadow-blue-500/5 flex items-center gap-3">
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping"></span>
+                                    <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                </div>
+                                <div class="space-y-0.5">
+                                    <p class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                                        <span>BT KI-Agent verarbeitet Befehl...</span>
+                                    </p>
+                                    <p class="text-[11px] text-slate-500 italic">Führe Datenbank-Werkzeuge & Berechnungen aus...</p>
+                                </div>
                             </div>
                         </div>
                     @endif

@@ -139,4 +139,6 @@ new class extends Component {
         </div>
     </div>
 </aside>
+@else
+<div class="hidden"></div>
 @endif

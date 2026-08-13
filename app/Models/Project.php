@@ -53,4 +53,29 @@ class Project extends Model
     {
         return $this->hasMany(Defect::class)->orderBy('created_at', 'desc');
     }
+
+    public function supplements(): HasMany
+    {
+        return $this->hasMany(Supplement::class)->orderBy('created_at', 'desc');
+    }
+
+    public function measurements(): HasMany
+    {
+        return $this->hasMany(Measurement::class)->orderBy('measurement_date', 'desc');
+    }
+
+    public function timeEntries(): HasMany
+    {
+        return $this->hasMany(TimeEntry::class)->orderBy('entry_date', 'desc');
+    }
+
+    public function plans(): HasMany
+    {
+        return $this->hasMany(ProjectPlan::class)->orderBy('created_at', 'desc');
+    }
+
+    public function equipment(): HasMany
+    {
+        return $this->hasMany(Equipment::class, 'current_project_id');
+    }
 }

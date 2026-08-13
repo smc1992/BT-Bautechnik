@@ -63,6 +63,36 @@ Route::view('materialien', 'materialien')
     ->middleware(['auth', 'verified'])
     ->name('materials');
 
+Route::view('nachtraege', 'nachtraege')
+    ->middleware(['auth', 'verified'])
+    ->name('supplements');
+
+Route::view('aufmass', 'aufmass')
+    ->middleware(['auth', 'verified'])
+    ->name('measurements');
+
+Route::view('zeiterfassung', 'zeiterfassung')
+    ->middleware(['auth', 'verified'])
+    ->name('time-tracking');
+
+Route::view('bauplaene', 'bauplaene')
+    ->middleware(['auth', 'verified'])
+    ->name('project-plans');
+
+Route::view('geraetepark', 'geraetepark')
+    ->middleware(['auth', 'verified'])
+    ->name('equipment');
+
+Route::get('/datev-export', function(\Illuminate\Http\Request $request, \App\Services\DatevExportService $service) {
+    $year = $request->query('year', 'all');
+    $skr = $request->query('skr', 'SKR03');
+    $csv = $service->generateDatevCsv($year, $skr);
+    return response($csv, 200, [
+        'Content-Type' => 'text/csv; charset=utf-8',
+        'Content-Disposition' => 'attachment; filename="DATEV_Buchungsstapel_' . $skr . '_' . ($year === 'all' ? date('Y') : $year) . '.csv"',
+    ]);
+})->middleware(['auth', 'verified'])->name('datev.export');
+
 Route::get('/bautagebuch/freigabe/{token}', App\Livewire\PublicDailyLogApproval::class)
     ->name('daily-log.public-approval');
 

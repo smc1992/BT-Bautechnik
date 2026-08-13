@@ -7,8 +7,8 @@ new class extends Component {
 }; ?>
 
 @php
-    $isBaustellen = request()->routeIs('dashboard', 'planning', 'work-schedule', 'daily-logs', 'defects');
-    $isFinanzen = request()->routeIs('invoices', 'subcontractor-invoices', 'analytics', 'materials');
+    $isBaustellen = request()->routeIs('dashboard', 'planning', 'work-schedule', 'daily-logs', 'defects', 'supplements', 'measurements', 'project-plans', 'equipment');
+    $isFinanzen = request()->routeIs('invoices', 'subcontractor-invoices', 'analytics', 'materials', 'time-tracking');
     $isCrm = request()->routeIs('contacts', 'company-settings');
 
     $hasSidebar = $isBaustellen || $isFinanzen || $isCrm;
@@ -29,24 +29,12 @@ new class extends Component {
                         <span class="text-[10px] font-extrabold text-blue-700 bg-white px-2 py-0.5 rounded-lg border border-blue-200 shadow-2xs">HUB</span>
                     </div>
 
-                    <nav class="space-y-1.5 text-xs xl:text-[13px]">
+                    <nav class="space-y-1 text-xs xl:text-[13px]">
                         <a href="/dashboard" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">🏢</span> <span>Baustellenübersicht</span>
                             </span>
                             <span class="text-[11px] font-mono px-2 py-0.5 rounded-full {{ request()->routeIs('dashboard') ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600' }}">{{ \App\Models\Project::where('status', 'active')->count() }}</span>
-                        </a>
-
-                        <a href="/einsatzplan" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('work-schedule') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
-                            <span class="flex items-center gap-2.5">
-                                <span class="text-base">👷</span> <span>Einsatzplaner</span>
-                            </span>
-                        </a>
-
-                        <a href="/planung" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('planning') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
-                            <span class="flex items-center gap-2.5">
-                                <span class="text-base">📅</span> <span>Bauzeitenplaner</span>
-                            </span>
                         </a>
 
                         <a href="/bautagebuch" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('daily-logs') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
@@ -58,6 +46,42 @@ new class extends Component {
                         <a href="/maengel" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('defects') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">⚠️</span> <span>Mängel-Verwaltung</span>
+                            </span>
+                        </a>
+
+                        <a href="/nachtraege" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('supplements') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
+                            <span class="flex items-center gap-2.5">
+                                <span class="text-base">📑</span> <span>Nachträge (VOB/B)</span>
+                            </span>
+                        </a>
+
+                        <a href="/aufmass" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('measurements') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
+                            <span class="flex items-center gap-2.5">
+                                <span class="text-base">📐</span> <span>Aufmaßblätter (VOB/C)</span>
+                            </span>
+                        </a>
+
+                        <a href="/bauplaene" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('project-plans') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
+                            <span class="flex items-center gap-2.5">
+                                <span class="text-base">📁</span> <span>Baupläne & Revisionsstand</span>
+                            </span>
+                        </a>
+
+                        <a href="/geraetepark" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('equipment') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
+                            <span class="flex items-center gap-2.5">
+                                <span class="text-base">🚜</span> <span>Geräte- & Fuhrpark</span>
+                            </span>
+                        </a>
+
+                        <a href="/einsatzplan" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('work-schedule') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
+                            <span class="flex items-center gap-2.5">
+                                <span class="text-base">👷</span> <span>Einsatzplaner</span>
+                            </span>
+                        </a>
+
+                        <a href="/planung" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('planning') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
+                            <span class="flex items-center gap-2.5">
+                                <span class="text-base">📅</span> <span>Bauzeitenplaner</span>
                             </span>
                         </a>
                     </nav>
@@ -74,16 +98,22 @@ new class extends Component {
                         <span class="text-[10px] font-extrabold text-emerald-700 bg-white px-2 py-0.5 rounded-lg border border-emerald-200 shadow-2xs">HUB</span>
                     </div>
 
-                    <nav class="space-y-1.5 text-xs xl:text-[13px]">
+                    <nav class="space-y-1 text-xs xl:text-[13px]">
                         <a href="/rechnungen" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('invoices') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-emerald-600' }}">
                             <span class="flex items-center gap-2.5">
-                                <span class="text-base">📄</span> <span>Rechnungen & Angebote</span>
+                                <span class="text-base">📄</span> <span>Rechnungen & VOB/B</span>
                             </span>
                         </a>
 
                         <a href="/baukosten" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('subcontractor-invoices') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-emerald-600' }}">
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">🏗️</span> <span>Subunternehmer-Kosten</span>
+                            </span>
+                        </a>
+
+                        <a href="/zeiterfassung" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('time-tracking') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-emerald-600' }}">
+                            <span class="flex items-center gap-2.5">
+                                <span class="text-base">⏱️</span> <span>Zeiterfassung (MiLoG)</span>
                             </span>
                         </a>
 
@@ -97,6 +127,14 @@ new class extends Component {
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">📈</span> <span>Finanz-Analytics</span>
                             </span>
+                        </a>
+
+                        <!-- DATEV Export Button Link -->
+                        <a href="/datev-export" target="_blank" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition text-emerald-800 bg-emerald-50/70 hover:bg-emerald-100 border border-emerald-200/60 btn-press">
+                            <span class="flex items-center gap-2.5">
+                                <span class="text-base">📊</span> <span>DATEV CSV Export</span>
+                            </span>
+                            <span class="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-emerald-200 text-emerald-900">SKR03</span>
                         </a>
                     </nav>
                 </div>
@@ -112,7 +150,7 @@ new class extends Component {
                         <span class="text-[10px] font-extrabold text-purple-700 bg-white px-2 py-0.5 rounded-lg border border-purple-200 shadow-2xs">HUB</span>
                     </div>
 
-                    <nav class="space-y-1.5 text-xs xl:text-[13px]">
+                    <nav class="space-y-1 text-xs xl:text-[13px]">
                         <a href="/kontakte" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('contacts') ? 'bg-purple-600 text-white shadow-md shadow-purple-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-purple-600' }}">
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">👥</span> <span>Kunden & Partner</span>

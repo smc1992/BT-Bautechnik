@@ -2625,7 +2625,7 @@ new class extends Component {
                                 </td>
 
                                 <!-- Betrag -->
-                                <td class="p-3.5 text-right font-black text-slate-900 font-mono text-xs whitespace-nowrap">
+                                <td class="p-3.5 text-right font-black text-slate-900 font-mono text-xs tabular-nums whitespace-nowrap">
                                     {{ number_format($totalGross ?: $totalNet, 2, ',', '.') }} €
                                 </td>
 
@@ -2651,14 +2651,14 @@ new class extends Component {
                                             <!-- Primary Edit Button -->
                                             <button wire:click="loadSavedDoc('{{ $doc['id'] }}', '{{ $isInvoice ? 'invoice' : 'offer' }}')" 
                                                     title="Im Editor öffnen"
-                                                    class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs rounded-xl transition shadow-2xs cursor-pointer flex items-center gap-1">
+                                                    class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs rounded-xl transition btn-press shadow-2xs cursor-pointer flex items-center gap-1">
                                                 <span>✏️</span>
                                                 <span>Bearbeiten</span>
                                             </button>
 
                                             <!-- Dropdown Trigger Button -->
                                             <button @click="open = !open" @click.away="open = false" 
-                                                    class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-900 text-slate-100 font-bold text-xs rounded-xl transition shadow-2xs cursor-pointer flex items-center gap-1">
+                                                    class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-900 text-slate-100 font-bold text-xs rounded-xl transition btn-press shadow-2xs cursor-pointer flex items-center gap-1">
                                                 <span>⚙️</span>
                                                 <span>Export & Aktionen</span>
                                                 <span class="text-[10px] opacity-70">▼</span>

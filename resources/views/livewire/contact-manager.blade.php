@@ -619,20 +619,36 @@ new class extends Component {
 
                 <div class="space-y-3">
                     <div class="flex justify-between items-start gap-2">
-                        <div>
-                            <div class="flex items-center gap-1.5 flex-wrap">
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase border shadow-2xs {{ $contact->type_badge_class }}">
-                                    {{ $contact->type_label }}
-                                </span>
-                                @if ($contact->customer_number)
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-200">
-                                        {{ $contact->customer_number }}
-                                    </span>
-                                @endif
+                        <div class="flex items-start gap-3">
+                            <!-- Monogram Avatar -->
+                            @php
+                                $initials = mb_substr($contact->company_name ?: ($contact->first_name . ' ' . $contact->last_name), 0, 2);
+                                $avatarBg = match($contact->type) {
+                                    'hausverwaltung' => 'bg-indigo-100 text-indigo-800 border-indigo-200',
+                                    'bautraeger' => 'bg-cyan-100 text-cyan-800 border-cyan-200',
+                                    'subunternehmer' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                                    default => 'bg-blue-100 text-blue-800 border-blue-200',
+                                };
+                            @endphp
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs uppercase border shadow-2xs shrink-0 {{ $avatarBg }}">
+                                {{ $initials }}
                             </div>
-                            <h3 wire:click="openDetailModal('{{ $contact->id }}')" class="text-base font-extrabold text-slate-900 mt-2 tracking-tight hover:text-blue-600 cursor-pointer line-clamp-1">
-                                {{ $contact->display_name }}
-                            </h3>
+
+                            <div>
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase border shadow-2xs {{ $contact->type_badge_class }}">
+                                        {{ $contact->type_label }}
+                                    </span>
+                                    @if ($contact->customer_number)
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-200">
+                                            {{ $contact->customer_number }}
+                                        </span>
+                                    @endif
+                                </div>
+                                <h3 wire:click="openDetailModal('{{ $contact->id }}')" class="text-base font-extrabold text-slate-900 mt-1 tracking-tight hover:text-blue-600 cursor-pointer line-clamp-1">
+                                    {{ $contact->display_name }}
+                                </h3>
+                            </div>
                         </div>
                     </div>
 
@@ -670,7 +686,7 @@ new class extends Component {
                     <div class="pt-2 border-t border-slate-100">
                         <div class="flex items-center justify-between text-xs">
                             <span class="text-slate-500 font-semibold">Baustellen:</span>
-                            <span class="font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60">
+                            <span class="font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60 tabular-nums">
                                 {{ $contact->projects->count() }} Verknüpft
                             </span>
                         </div>
@@ -679,16 +695,16 @@ new class extends Component {
 
                 <!-- Footer Actions -->
                 <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-                    <button wire:click="openDetailModal('{{ $contact->id }}')" class="px-3 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition border border-blue-200/60 flex items-center gap-1 cursor-pointer">
+                    <button wire:click="openDetailModal('{{ $contact->id }}')" class="px-3 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition border border-blue-200/60 flex items-center gap-1 btn-press cursor-pointer">
                         <span>🔍 Details & Notizen</span>
                     </button>
 
-                    <div class="flex items-center gap-2">
-                        <button wire:click="openEditModal('{{ $contact->id }}')" class="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition cursor-pointer">
+                    <div class="flex items-center gap-1.5">
+                        <button wire:click="openEditModal('{{ $contact->id }}')" class="px-2.5 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition btn-press cursor-pointer">
                             Bearbeiten
                         </button>
-                        <button wire:click="deleteContact('{{ $contact->id }}')" wire:confirm="Kontakt wirklich löschen?" class="px-2 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition cursor-pointer">
-                            Löschen
+                        <button wire:click="deleteContact('{{ $contact->id }}')" wire:confirm="Kontakt wirklich löschen?" class="px-2 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition btn-press cursor-pointer">
+                            ✕
                         </button>
                     </div>
                 </div>

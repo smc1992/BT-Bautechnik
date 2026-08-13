@@ -553,8 +553,20 @@ new class extends Component {
                                         @endif
 
                                         <!-- Message Content with Rendered Markdown -->
-                                        <div class="bg-white border border-slate-200/90 rounded-2xl rounded-tl-xs p-3.5 sm:p-6 text-xs text-slate-800 leading-relaxed shadow-sm font-sans [&_p]:mb-3 [&_p:last-child]:mb-0 [&_strong]:font-bold [&_strong]:text-slate-900 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2.5 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2.5 [&_li]:mb-1.5 [&_h1]:text-base [&_h1]:font-bold [&_h1]:text-slate-900 [&_h1]:my-2.5 [&_h2]:text-sm [&_h2]:font-bold [&_h2]:text-slate-900 [&_h2]:my-2.5 [&_h3]:text-xs [&_h3]:font-bold [&_h3]:text-slate-900 [&_h3]:my-2 [&_code]:bg-blue-50 [&_code]:text-blue-700 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded-md [&_code]:font-mono [&_code]:text-[11px] [&_pre]:bg-slate-950 [&_pre]:text-slate-100 [&_pre]:p-3.5 [&_pre]:rounded-xl [&_pre]:overflow-x-auto [&_pre]:my-2.5 [&_blockquote]:border-l-4 [&_blockquote]:border-blue-600 [&_blockquote]:pl-3.5 [&_blockquote]:italic [&_blockquote]:text-slate-600 [&_table]:w-full [&_table]:border-collapse [&_table]:my-2.5 [&_th]:bg-slate-100 [&_th]:p-2.5 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-slate-200 [&_td]:p-2.5 [&_td]:border [&_td]:border-slate-200 [&_a]:text-blue-600 [&_a]:font-bold [&_a]:underline">
-                                            {!! \Illuminate\Support\Str::markdown($msg->content) !!}
+                                        <div x-data="{ copied: false }" class="bg-white border border-slate-200/90 rounded-2xl rounded-tl-xs p-3.5 sm:p-6 text-xs text-slate-800 leading-relaxed shadow-sm font-sans relative group/msg [&_p]:mb-3 [&_p:last-child]:mb-0 [&_strong]:font-bold [&_strong]:text-slate-900 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2.5 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2.5 [&_li]:mb-1.5 [&_h1]:text-base [&_h1]:font-bold [&_h1]:text-slate-900 [&_h1]:my-2.5 [&_h2]:text-sm [&_h2]:font-bold [&_h2]:text-slate-900 [&_h2]:my-2.5 [&_h3]:text-xs [&_h3]:font-bold [&_h3]:text-slate-900 [&_h3]:my-2 [&_code]:bg-blue-50 [&_code]:text-blue-700 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded-md [&_code]:font-mono [&_code]:text-[11px] [&_pre]:bg-slate-950 [&_pre]:text-slate-100 [&_pre]:p-3.5 [&_pre]:rounded-xl [&_pre]:overflow-x-auto [&_pre]:my-2.5 [&_blockquote]:border-l-4 [&_blockquote]:border-blue-600 [&_blockquote]:pl-3.5 [&_blockquote]:italic [&_blockquote]:text-slate-600 [&_table]:w-full [&_table]:border-collapse [&_table]:my-2.5 [&_th]:bg-slate-100 [&_th]:p-2.5 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-slate-200 [&_td]:p-2.5 [&_td]:border [&_td]:border-slate-200 [&_a]:text-blue-600 [&_a]:font-bold [&_a]:underline">
+                                            
+                                            <!-- Quick Copy Button (Top Right of Bubble) -->
+                                            <button @click="navigator.clipboard.writeText($refs.msgText.innerText); copied = true; setTimeout(() => copied = false, 2000)"
+                                                    title="Antwort kopieren"
+                                                    class="absolute right-3 top-3 px-2 py-1 bg-slate-100 hover:bg-blue-50 text-slate-500 hover:text-blue-700 rounded-lg text-[10px] font-bold border border-slate-200 hover:border-blue-300 transition-all opacity-0 group-hover/msg:opacity-100 flex items-center gap-1 shadow-2xs cursor-pointer btn-press">
+                                                <span x-show="!copied">📋</span>
+                                                <span x-show="copied" class="text-emerald-600">✓</span>
+                                                <span x-text="copied ? 'Kopiert!' : 'Kopieren'"></span>
+                                            </button>
+
+                                            <div x-ref="msgText">
+                                                {!! \Illuminate\Support\Str::markdown($msg->content) !!}
+                                            </div>
                                             
                                             <!-- Feature 3: Interactive Direct Action Buttons -->
                                             @php $lower = strtolower($msg->content); @endphp
@@ -714,16 +726,16 @@ new class extends Component {
 
                     <!-- Quick Action Pills -->
                     <div class="px-3 sm:px-4 pt-2.5 bg-slate-50 border-t border-slate-200/60 flex flex-wrap gap-1.5 sm:gap-2 text-[11px]">
-                        <button type="button" wire:click="$set('userMessage', 'Berechne Aufmaß: Kellerwand Süd 14,5m x 2,8m mit Fenster 1,20m x 1,00m nach VOB/B')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-indigo-50 text-indigo-700 hover:text-indigo-900 rounded-lg border border-indigo-200 hover:border-indigo-300 font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1">
+                        <button type="button" wire:click="$set('userMessage', 'Berechne Aufmaß: Kellerwand Süd 14,5m x 2,8m mit Fenster 1,20m x 1,00m nach VOB/B')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-indigo-50 text-indigo-700 hover:text-indigo-900 rounded-lg border border-indigo-200 hover:border-indigo-300 font-bold transition-all shadow-2xs btn-press cursor-pointer flex items-center gap-1">
                             <span>📐</span> <span>Aufmaß berechnen</span>
                         </button>
-                        <button type="button" wire:click="$set('userMessage', 'Zeige Baustoffpreise Juli 2026 für Bitumen, Injektionsharz und Dämmung')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-blue-50 text-blue-700 hover:text-blue-900 rounded-lg border border-blue-200 hover:border-blue-300 font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1">
+                        <button type="button" wire:click="$set('userMessage', 'Zeige Baustoffpreise Juli 2026 für Bitumen, Injektionsharz und Dämmung')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-blue-50 text-blue-700 hover:text-blue-900 rounded-lg border border-blue-200 hover:border-blue-300 font-bold transition-all shadow-2xs btn-press cursor-pointer flex items-center gap-1">
                             <span>📦</span> <span>Materialpreise</span>
                         </button>
-                        <button type="button" wire:click="$set('userMessage', 'Erstelle einen KI-Wochenbericht für Baustelle Berching')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 rounded-lg border border-slate-200 hover:border-blue-300 font-medium transition-all shadow-2xs cursor-pointer flex items-center gap-1">
+                        <button type="button" wire:click="$set('userMessage', 'Erstelle einen KI-Wochenbericht für Baustelle Berching')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 rounded-lg border border-slate-200 hover:border-blue-300 font-medium transition-all shadow-2xs btn-press cursor-pointer flex items-center gap-1">
                             <span>📊</span> <span>Wochenbericht</span>
                         </button>
-                        <button type="button" wire:click="$set('userMessage', 'Erstelle eine Bedenkenanmeldung gem. § 4 VOB/B wegen feuchtem Untergrund')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 rounded-lg border border-slate-200 hover:border-blue-300 font-medium transition-all shadow-2xs cursor-pointer flex items-center gap-1">
+                        <button type="button" wire:click="$set('userMessage', 'Erstelle eine Bedenkenanmeldung gem. § 4 VOB/B wegen feuchtem Untergrund')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 rounded-lg border border-slate-200 hover:border-blue-300 font-medium transition-all shadow-2xs btn-press cursor-pointer flex items-center gap-1">
                             <span>⚖️</span> <span>VOB/B Bedenken</span>
                         </button>
                     </div>
@@ -732,7 +744,7 @@ new class extends Component {
                         
                         <!-- Photo Upload Button (OpenAI Vision) -->
                         <label title="Baustellen-Foto hochladen"
-                               class="p-2.5 sm:px-3.5 sm:py-3.5 bg-slate-100 hover:bg-blue-100 text-slate-700 hover:text-blue-800 font-bold text-xs rounded-xl border border-slate-200 hover:border-blue-300 transition-all flex items-center justify-center gap-1.5 shrink-0 cursor-pointer h-10 sm:h-auto">
+                                class="p-2.5 sm:px-3.5 sm:py-3.5 bg-slate-100 hover:bg-blue-100 text-slate-700 hover:text-blue-800 font-bold text-xs rounded-xl border border-slate-200 hover:border-blue-300 transition-all btn-press flex items-center justify-center gap-1.5 shrink-0 cursor-pointer h-10 sm:h-auto">
                             <span class="text-sm sm:text-lg">📷</span>
                             <span class="hidden md:inline">Foto</span>
                             <input type="file" wire:model="photoFile" accept="image/*" class="hidden">
@@ -743,7 +755,7 @@ new class extends Component {
                             <button type="button" 
                                     @click="startRecording()"
                                     title="Spracheingabe starten"
-                                    class="p-2.5 sm:px-3.5 sm:py-3.5 bg-slate-100 hover:bg-blue-100 text-slate-700 hover:text-blue-800 font-bold text-xs rounded-xl border border-slate-200 hover:border-blue-300 transition-all flex items-center justify-center gap-1.5 shrink-0 cursor-pointer h-10 sm:h-auto">
+                                    class="p-2.5 sm:px-3.5 sm:py-3.5 bg-slate-100 hover:bg-blue-100 text-slate-700 hover:text-blue-800 font-bold text-xs rounded-xl border border-slate-200 hover:border-blue-300 transition-all btn-press flex items-center justify-center gap-1.5 shrink-0 cursor-pointer h-10 sm:h-auto">
                                 <span class="text-sm sm:text-lg">🎙️</span>
                                 <span class="hidden md:inline">Einsprechen</span>
                             </button>

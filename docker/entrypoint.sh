@@ -18,7 +18,7 @@ php artisan storage:link --force || true
 
 # 4. Run database migrations & seeders
 echo "🗄️ Running database migrations..."
-php artisan migrate --force
+php artisan migrate --force || echo "Migration notice: continuing startup..."
 
 echo "🌱 Seeding default data if needed..."
 php artisan db:seed --force || true

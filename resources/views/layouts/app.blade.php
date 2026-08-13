@@ -53,7 +53,7 @@
             @endif
 
             <!-- Main Content Area with HubSpot-Style Sidebar -->
-            <div class="flex-1 w-full max-w-7xl mx-auto flex items-start">
+            <div class="flex-1 w-full flex items-start">
                 <livewire:layout.sidebar />
 
                 <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 w-full overflow-x-hidden">

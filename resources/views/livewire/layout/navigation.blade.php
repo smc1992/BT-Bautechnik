@@ -40,7 +40,7 @@ new class extends Component
 
 <nav x-data="{ open: false }" wire:key="topbar-navigation-header" class="{{ $navBg }} sticky top-0 z-40 transition-colors duration-200">
     <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
             
             <!-- Left: Logo & Main Navigation -->

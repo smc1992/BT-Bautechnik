@@ -713,27 +713,27 @@ new class extends Component {
 
         <div class="flex flex-wrap items-center gap-2 relative z-10">
             <button wire:click="openCreateProject" 
-                    class="px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/20 transition-all flex items-center gap-1.5 cursor-pointer">
+                    class="px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/20 transition-all flex items-center gap-1.5 cursor-pointer btn-press">
                 <span>+ Neue Baustelle</span>
             </button>
 
             <a href="{{ route('daily-logs') }}" wire:navigate 
-               class="px-3.5 py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+               class="px-3.5 py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 btn-press">
                 <span>🎙️ Bautagebuch</span>
             </a>
 
             <a href="{{ route('defects') }}" wire:navigate 
-               class="px-3.5 py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+               class="px-3.5 py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 btn-press">
                 <span>⚠️ Mängel</span>
             </a>
 
             <a href="{{ route('invoices') }}" wire:navigate 
-               class="px-3.5 py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+               class="px-3.5 py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 btn-press">
                 <span>📄 Rechnungen</span>
             </a>
 
             <a href="{{ route('knowledge-base') }}" wire:navigate 
-               class="px-3.5 py-2.5 bg-blue-900/40 hover:bg-blue-900/60 text-blue-200 border border-blue-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+               class="px-3.5 py-2.5 bg-blue-900/40 hover:bg-blue-900/60 text-blue-200 border border-blue-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5 btn-press">
                 <span>📚 Wissen</span>
             </a>
         </div>
@@ -750,7 +750,7 @@ new class extends Component {
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 </span>
             </div>
-            <p class="text-3xl font-extrabold text-slate-900 mt-3 tracking-tight tabular-nums">{{ $this->stats['active_projects'] }}</p>
+            <p class="text-2xl xl:text-3xl font-extrabold text-slate-900 mt-2 tracking-tight tabular-nums">{{ $this->stats['active_projects'] }}</p>
             <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-100">
                 <span class="inline-flex items-center text-xs font-semibold text-blue-600">
                     🟢 In laufender Betreuung
@@ -768,7 +768,10 @@ new class extends Component {
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </span>
             </div>
-            <p class="text-3xl font-extrabold text-slate-900 mt-3 tracking-tight tabular-nums">{{ number_format($this->stats['total_budget'], 2, ',', '.') }} €</p>
+            <div class="mt-2 flex items-baseline gap-1">
+                <span class="text-2xl xl:text-3xl font-extrabold text-slate-900 tracking-tight tabular-nums truncate">{{ number_format($this->stats['total_budget'], 2, ',', '.') }}</span>
+                <span class="text-base font-bold text-slate-500">€</span>
+            </div>
             <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-100">
                 <span class="inline-flex items-center text-xs font-semibold text-blue-700">
                     Kalkuliert inkl. Puffer
@@ -786,7 +789,10 @@ new class extends Component {
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                 </span>
             </div>
-            <p class="text-3xl font-extrabold text-rose-600 mt-3 tracking-tight tabular-nums">{{ number_format($this->stats['total_costs'], 2, ',', '.') }} €</p>
+            <div class="mt-2 flex items-baseline gap-1">
+                <span class="text-2xl xl:text-3xl font-extrabold text-rose-600 tracking-tight tabular-nums truncate">{{ number_format($this->stats['total_costs'], 2, ',', '.') }}</span>
+                <span class="text-base font-bold text-rose-500">€</span>
+            </div>
             <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-100">
                 <span class="inline-flex items-center text-xs font-semibold text-slate-600">
                     Material & Nachunternehmer
@@ -809,10 +815,13 @@ new class extends Component {
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </span>
             </div>
-            <p class="text-3xl font-extrabold text-emerald-600 mt-3 tracking-tight tabular-nums">{{ number_format($this->stats['margin'], 1, ',', '.') }} %</p>
-            <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-100">
-                <span class="inline-flex items-center text-xs font-semibold text-slate-600">
-                    Restbudget: <span class="tabular-nums font-bold">{{ number_format($this->stats['remaining_budget'], 0, ',', '.') }} €</span>
+            <div class="mt-2 flex items-baseline gap-1">
+                <span class="text-2xl xl:text-3xl font-extrabold text-emerald-600 tracking-tight tabular-nums truncate">{{ number_format($this->stats['margin'], 1, ',', '.') }}</span>
+                <span class="text-base font-bold text-emerald-500">%</span>
+            </div>
+            <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-100 gap-1.5 flex-wrap">
+                <span class="inline-flex items-center text-xs font-semibold text-slate-600 whitespace-nowrap">
+                    Rest: <span class="tabular-nums font-bold text-slate-900 ml-1">{{ number_format($this->stats['remaining_budget'], 0, ',', '.') }} €</span>
                 </span>
                 <span class="text-[10px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-200">
                     Im Plan

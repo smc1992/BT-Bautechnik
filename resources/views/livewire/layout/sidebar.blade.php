@@ -16,46 +16,46 @@ new class extends Component {
 
 <div wire:key="sidebar-layout-navigation">
     @if ($hasSidebar)
-        <aside class="w-64 shrink-0 hidden md:block space-y-6 bg-white border-r border-slate-200/80 min-h-[calc(100vh-4rem)] p-4 relative transition-all duration-300">
+        <aside class="w-64 xl:w-72 shrink-0 hidden md:block space-y-6 bg-white border-r border-slate-200/90 min-h-[calc(100vh-4rem)] p-4 xl:p-5 relative transition-all duration-200">
             
             @if ($isBaustellen)
                 <!-- Baustellen & Ausführung Sidebar -->
                 <div class="space-y-4">
-                    <div class="px-3 py-2 bg-blue-50/80 border border-blue-200/60 rounded-xl flex items-center justify-between">
+                    <div class="px-3.5 py-2.5 bg-blue-50/90 border border-blue-200/70 rounded-2xl flex items-center justify-between shadow-2xs">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse"></span>
                             <span class="text-xs font-black uppercase tracking-wider text-blue-900">Baustellen</span>
                         </div>
-                        <span class="text-[10px] font-extrabold text-blue-700 bg-white px-2 py-0.5 rounded-md border border-blue-200 shadow-2xs">HUB</span>
+                        <span class="text-[10px] font-extrabold text-blue-700 bg-white px-2 py-0.5 rounded-lg border border-blue-200 shadow-2xs">HUB</span>
                     </div>
 
-                    <nav class="space-y-1 text-xs">
-                        <a href="/dashboard" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
+                    <nav class="space-y-1.5 text-xs xl:text-[13px]">
+                        <a href="/dashboard" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('dashboard') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">🏢</span> <span>Baustellenübersicht</span>
                             </span>
-                            <span class="text-[10px] opacity-80 font-mono">{{ \App\Models\Project::where('status', 'active')->count() }}</span>
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded-full {{ request()->routeIs('dashboard') ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600' }}">{{ \App\Models\Project::where('status', 'active')->count() }}</span>
                         </a>
 
-                        <a href="/einsatzplan" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('work-schedule') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
+                        <a href="/einsatzplan" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('work-schedule') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">👷</span> <span>Einsatzplaner</span>
                             </span>
                         </a>
 
-                        <a href="/planung" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('planning') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
+                        <a href="/planung" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('planning') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">📅</span> <span>Bauzeitenplaner</span>
                             </span>
                         </a>
 
-                        <a href="/bautagebuch" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('daily-logs') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
+                        <a href="/bautagebuch" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('daily-logs') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">🎙️</span> <span>Bautagebuch</span>
                             </span>
                         </a>
 
-                        <a href="/maengel" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('defects') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
+                        <a href="/maengel" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('defects') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600' }}">
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">⚠️</span> <span>Mängel-Verwaltung</span>
                             </span>
@@ -66,34 +66,34 @@ new class extends Component {
             @elseif ($isFinanzen)
                 <!-- Finanzen & Controlling Sidebar -->
                 <div class="space-y-4">
-                    <div class="px-3 py-2 bg-emerald-50/80 border border-emerald-200/60 rounded-xl flex items-center justify-between">
+                    <div class="px-3.5 py-2.5 bg-emerald-50/90 border border-emerald-200/70 rounded-2xl flex items-center justify-between shadow-2xs">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
                             <span class="text-xs font-black uppercase tracking-wider text-emerald-900">Finanzen</span>
                         </div>
-                        <span class="text-[10px] font-extrabold text-emerald-700 bg-white px-2 py-0.5 rounded-md border border-emerald-200 shadow-2xs">HUB</span>
+                        <span class="text-[10px] font-extrabold text-emerald-700 bg-white px-2 py-0.5 rounded-lg border border-emerald-200 shadow-2xs">HUB</span>
                     </div>
 
-                    <nav class="space-y-1 text-xs">
-                        <a href="/rechnungen" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('invoices') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-emerald-600' }}">
+                    <nav class="space-y-1.5 text-xs xl:text-[13px]">
+                        <a href="/rechnungen" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('invoices') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-emerald-600' }}">
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">📄</span> <span>Rechnungen & Angebote</span>
                             </span>
                         </a>
 
-                        <a href="/baukosten" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('subcontractor-invoices') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-emerald-600' }}">
+                        <a href="/baukosten" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('subcontractor-invoices') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-emerald-600' }}">
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">🏗️</span> <span>Subunternehmer-Kosten</span>
                             </span>
                         </a>
 
-                        <a href="/materialien" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('materials') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-emerald-600' }}">
+                        <a href="/materialien" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('materials') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-emerald-600' }}">
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">📦</span> <span>Materialkatalog</span>
                             </span>
                         </a>
 
-                        <a href="/analytics" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('analytics') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-emerald-600' }}">
+                        <a href="/analytics" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('analytics') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-emerald-600' }}">
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">📈</span> <span>Finanz-Analytics</span>
                             </span>
@@ -104,23 +104,23 @@ new class extends Component {
             @elseif ($isCrm)
                 <!-- CRM & Firmen-Verwaltung Sidebar -->
                 <div class="space-y-4">
-                    <div class="px-3 py-2 bg-purple-50/80 border border-purple-200/60 rounded-xl flex items-center justify-between">
+                    <div class="px-3.5 py-2.5 bg-purple-50/90 border border-purple-200/70 rounded-2xl flex items-center justify-between shadow-2xs">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-purple-600 animate-pulse"></span>
                             <span class="text-xs font-black uppercase tracking-wider text-purple-900">CRM & Firma</span>
                         </div>
-                        <span class="text-[10px] font-extrabold text-purple-700 bg-white px-2 py-0.5 rounded-md border border-purple-200 shadow-2xs">HUB</span>
+                        <span class="text-[10px] font-extrabold text-purple-700 bg-white px-2 py-0.5 rounded-lg border border-purple-200 shadow-2xs">HUB</span>
                     </div>
 
-                    <nav class="space-y-1 text-xs">
-                        <a href="/kontakte" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('contacts') ? 'bg-purple-600 text-white shadow-md shadow-purple-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-purple-600' }}">
+                    <nav class="space-y-1.5 text-xs xl:text-[13px]">
+                        <a href="/kontakte" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('contacts') ? 'bg-purple-600 text-white shadow-md shadow-purple-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-purple-600' }}">
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">👥</span> <span>Kunden & Partner</span>
                             </span>
-                            <span class="text-[10px] opacity-80 font-mono">{{ \App\Models\Contact::count() }}</span>
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded-full {{ request()->routeIs('contacts') ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600' }}">{{ \App\Models\Contact::count() }}</span>
                         </a>
 
-                        <a href="/firmeneinstellungen" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition {{ request()->routeIs('company-settings') ? 'bg-purple-600 text-white shadow-md shadow-purple-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-purple-600' }}">
+                        <a href="/firmeneinstellungen" wire:navigate class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold transition btn-press {{ request()->routeIs('company-settings') ? 'bg-purple-600 text-white shadow-md shadow-purple-500/20' : 'text-slate-700 hover:bg-slate-100 hover:text-purple-600' }}">
                             <span class="flex items-center gap-2.5">
                                 <span class="text-base">⚙️</span> <span>Firmeneinstellungen</span>
                             </span>

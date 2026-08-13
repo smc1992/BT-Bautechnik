@@ -1,17 +1,51 @@
 {
-  "name": "BT Bautechnik UG - Cockpit & Baustellen-App",
+  "name": "BT Bautechnik - Digitale Bauleitung & Handwerker ERP",
   "short_name": "BT Bautechnik",
-  "description": "Bautagebuch, Einsatzplaner, Massenermittlung & Mängelverwaltung",
+  "description": "Bautagebuch, Nachtragsmanagement, Digitales Aufmaß, Mobile Zeiterfassung & Gerätepark",
   "start_url": "/dashboard",
+  "scope": "/",
   "display": "standalone",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "background_color": "#0f172a",
   "theme_color": "#2563eb",
+  "categories": ["business", "productivity", "utilities"],
   "icons": [
     {
       "src": "/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Bautagebuch (Audio)",
+      "short_name": "Bautagebuch",
+      "url": "/bautagebuch",
+      "icons": [{ "src": "/favicon.ico", "sizes": "64x64" }]
+    },
+    {
+      "name": "Zeiterfassung (Stempeluhr)",
+      "short_name": "Stempeluhr",
+      "url": "/zeiterfassung",
+      "icons": [{ "src": "/favicon.ico", "sizes": "64x64" }]
+    },
+    {
+      "name": "Digitales Aufmaß",
+      "short_name": "Aufmaß",
+      "url": "/aufmass",
+      "icons": [{ "src": "/favicon.ico", "sizes": "64x64" }]
+    },
+    {
+      "name": "Nachträge (VOB/B)",
+      "short_name": "Nachträge",
+      "url": "/nachtraege",
+      "icons": [{ "src": "/favicon.ico", "sizes": "64x64" }]
     }
   ]
 }

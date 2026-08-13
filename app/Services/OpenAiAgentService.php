@@ -528,6 +528,69 @@ class OpenAiAgentService
                         'required' => ['project_name', 'work_type']
                     ]
                 ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'create_supplement',
+                    'description' => 'Erfasst einen VOB/B Nachtrag (Leistungsänderung gem. § 2 Abs. 5 oder unvorhersehbare Bausituation gem. § 2 Abs. 6) für eine Baustelle.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'project_name' => ['type' => 'string', 'description' => 'Name der Baustelle'],
+                            'title' => ['type' => 'string', 'description' => 'Kurztitel des Nachtrags (z.B. Zusätzliche Abdichtung KG)'],
+                            'amount_net' => ['type' => 'number', 'description' => 'Nettobetrag in Euro'],
+                            'reason' => ['type' => 'string', 'enum' => ['vob_b_2_5', 'vob_b_2_6', 'client_request', 'obstruction', 'other'], 'description' => 'VOB/B Rechtsbegründung'],
+                            'description' => ['type' => 'string', 'description' => 'Ausführliche Begründung des Mehraufwands']
+                        ],
+                        'required' => ['project_name', 'title', 'amount_net']
+                    ]
+                ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'get_project_supplements',
+                    'description' => 'Fragt alle Nachträge einer Baustelle ab (genehmigtes Volumen, offene Nachträge).',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'project_name' => ['type' => 'string', 'description' => 'Name der Baustelle']
+                        ],
+                        'required' => ['project_name']
+                    ]
+                ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'record_time_clock',
+                    'description' => 'Erfasst einen Stundenzettel-Eintrag für die mobile Zeiterfassung (MiLoG) für einen Mitarbeiter auf einer Baustelle.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'project_name' => ['type' => 'string', 'description' => 'Name der Baustelle'],
+                            'worker_name' => ['type' => 'string', 'description' => 'Name des Mitarbeiters oder Monteurs'],
+                            'hours' => ['type' => 'number', 'description' => 'Geleistete Arbeitsstunden (z.B. 8.0)'],
+                            'activity' => ['type' => 'string', 'description' => 'Tätigkeit (z.B. Ausführung Bauleistung, Regiearbeit, Anfahrt)'],
+                            'date' => ['type' => 'string', 'description' => 'Datum im Format YYYY-MM-DD (Standard: heute)']
+                        ],
+                        'required' => ['project_name', 'worker_name', 'hours']
+                    ]
+                ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'get_equipment_compliance',
+                    'description' => 'Prüft UVV / DGUV V3 Prüffristen und Baustellen-Standorte aller Maschinen, Werkzeuge und Fahrzeuge.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'filter' => ['type' => 'string', 'enum' => ['all', 'due_only', 'on_site'], 'description' => 'Filter für Prüfung (fällige UVV oder Standort)']
+                        ]
+                    ]
+                ]
             ]
         ];
     }
@@ -1131,6 +1194,138 @@ class OpenAiAgentService
                 return [
                     'success' => true,
                     'summary' => $warning
+                ];
+
+            case 'create_supplement':
+                $projectName = $args['project_name'] ?? '';
+                $project = Project::where('name', 'LIKE', "%{$projectName}%")->first() ?: Project::first();
+                if (!$project) {
+                    return ['success' => false, 'summary' => "Keine Baustelle für '{$projectName}' gefunden."];
+                }
+
+                $count = \App\Models\Supplement::where('project_id', $project->id)->count() + 1;
+                $supplementNumber = 'NT-' . str_pad((string)$count, 2, '0', STR_PAD_LEFT);
+                $net = floatval($args['amount_net'] ?? 0.0);
+                $gross = round($net * 1.19, 2);
+
+                $supplement = \App\Models\Supplement::create([
+                    'project_id' => $project->id,
+                    'supplement_number' => $supplementNumber,
+                    'title' => $args['title'] ?? 'Nachtrag',
+                    'reason' => $args['reason'] ?? 'vob_b_2_5',
+                    'description' => $args['description'] ?? 'Zusätzliche Leistung gemäß VOB/B.',
+                    'amount_net' => $net,
+                    'vat_rate' => 19.00,
+                    'amount_gross' => $gross,
+                    'status' => 'draft',
+                    'submission_date' => date('Y-m-d'),
+                ]);
+
+                return [
+                    'success' => true,
+                    'supplement_id' => $supplement->id,
+                    'summary' => "📑 **VOB/B Nachtrag {$supplementNumber} angelegt:**\n" .
+                                 "• **Baustelle:** {$project->name}\n" .
+                                 "• **Titel:** {$supplement->title}\n" .
+                                 "• **Nettobetrag:** " . number_format($net, 2, ',', '.') . " € (Brutto: " . number_format($gross, 2, ',', '.') . " €)\n" .
+                                 "• **Status:** Entwurf\n\n" .
+                                 "[Zum Nachtragsmanagement](/nachtraege) | [PDF herunterladen](/nachtraege/{$supplement->id}/pdf)"
+                ];
+
+            case 'get_project_supplements':
+                $projectName = $args['project_name'] ?? '';
+                $project = Project::where('name', 'LIKE', "%{$projectName}%")->first() ?: Project::first();
+                if (!$project) {
+                    return ['success' => false, 'summary' => "Keine Baustelle gefunden."];
+                }
+
+                $supplements = \App\Models\Supplement::where('project_id', $project->id)->get();
+                if ($supplements->isEmpty()) {
+                    return [
+                        'success' => true,
+                        'summary' => "Für das Bauvorhaben **{$project->name}** liegen aktuell keine Nachträge vor. [Nachtrag erfassen](/nachtraege)"
+                    ];
+                }
+
+                $approvedTotal = $supplements->where('status', 'approved')->sum('amount_net');
+                $pendingTotal = $supplements->whereIn('status', ['draft', 'submitted'])->sum('amount_net');
+
+                $list = [];
+                foreach ($supplements as $sup) {
+                    $list[] = "• **{$sup->supplement_number}**: {$sup->title} - " . number_format($sup->amount_net, 2, ',', '.') . " € (Status: {$sup->status})";
+                }
+
+                return [
+                    'success' => true,
+                    'summary' => "📑 **Nachtragsübersicht für {$project->name}:**\n\n" .
+                                 implode("\n", $list) . "\n\n" .
+                                 "-----------------------------------------\n" .
+                                 "• **Genehmigtes Nachtragsvolumen:** " . number_format($approvedTotal, 2, ',', '.') . " € (Netto)\n" .
+                                 "• **In Prüfung / Offen:** " . number_format($pendingTotal, 2, ',', '.') . " € (Netto)\n\n" .
+                                 "[Zum Nachtragsmanagement](/nachtraege)"
+                ];
+
+            case 'record_time_clock':
+                $projectName = $args['project_name'] ?? '';
+                $project = Project::where('name', 'LIKE', "%{$projectName}%")->first() ?: Project::first();
+                $workerName = $args['worker_name'] ?? 'Mitarbeiter';
+                $hours = floatval($args['hours'] ?? 8.0);
+                $entryDate = !empty($args['date']) ? $args['date'] : date('Y-m-d');
+
+                $user = \App\Models\User::where('name', 'LIKE', "%{$workerName}%")->first();
+                $hourlyRate = $user && $user->hourly_rate ? $user->hourly_rate : 45.00;
+                $cost = round($hours * $hourlyRate, 2);
+
+                $entry = \App\Models\TimeEntry::create([
+                    'user_id' => $user ? $user->id : (auth()->id() ?: 1),
+                    'project_id' => $project ? $project->id : null,
+                    'entry_date' => $entryDate,
+                    'start_time' => '07:30',
+                    'end_time' => date('H:i', strtotime('07:30 +' . ($hours + 0.5) . ' hours')),
+                    'break_minutes' => 30,
+                    'hours' => $hours,
+                    'activity_type' => 'execution',
+                    'description' => $args['activity'] ?? 'Arbeitsleistung Baustelle',
+                    'hourly_rate' => $hourlyRate,
+                    'total_cost' => $cost,
+                    'status' => 'approved',
+                ]);
+
+                return [
+                    'success' => true,
+                    'summary' => "⏱️ **Zeiterfassung gebucht (MiLoG):**\n" .
+                                 "• **Mitarbeiter:** {$workerName}\n" .
+                                 "• **Baustelle:** " . ($project ? $project->name : 'Allgemein') . "\n" .
+                                 "• **Datum:** " . date('d.m.Y', strtotime($entryDate)) . "\n" .
+                                 "• **Arbeitszeit:** " . number_format($hours, 2, ',', '.') . " Std. (Kosten: " . number_format($cost, 2, ',', '.') . " €)\n\n" .
+                                 "[Zur Zeiterfassung & Stundenzettel](/zeiterfassung)"
+                ];
+
+            case 'get_equipment_compliance':
+                $filter = $args['filter'] ?? 'all';
+                $equip = \App\Models\Equipment::with('currentProject')->get();
+
+                if ($filter === 'due_only') {
+                    $equip = $equip->filter(fn($e) => $e->next_uvv_inspection && $e->next_uvv_inspection->isPast());
+                } elseif ($filter === 'on_site') {
+                    $equip = $equip->where('status', 'on_site');
+                }
+
+                $list = [];
+                foreach ($equip as $e) {
+                    $loc = $e->currentProject ? $e->currentProject->name : '🏢 Zentrales Lager';
+                    $uvv = $e->next_uvv_inspection ? $e->next_uvv_inspection->format('d.m.Y') : 'Keine';
+                    $isPast = $e->next_uvv_inspection && $e->next_uvv_inspection->isPast();
+                    $alert = $isPast ? ' ⚠️ UVV ABGELAUFEN!' : '';
+                    $list[] = "• **{$e->inventory_number}** - {$e->name} (Standort: {$loc} | UVV: {$uvv}{$alert})";
+                }
+
+                return [
+                    'success' => true,
+                    'count' => $equip->count(),
+                    'summary' => "🚜 **Gerätepark & UVV-Prüfstatus:**\n\n" .
+                                 (empty($list) ? "Keine Geräte für diesen Filter gefunden." : implode("\n", $list)) . "\n\n" .
+                                 "[Zum Gerätepark](/geraetepark)"
                 ];
 
             default:

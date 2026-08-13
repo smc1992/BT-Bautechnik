@@ -64,5 +64,8 @@
 
         <!-- Global Command Palette -->
         <x-command-palette />
+
+        <!-- Mobile Bottom Navigation & Quick Action Center -->
+        <x-mobile-quick-action />
     </body>
 </html>

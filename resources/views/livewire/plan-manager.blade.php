@@ -258,7 +258,7 @@ new class extends Component {
                 <form wire:submit="save" class="space-y-4 text-xs">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Baustelle *</label>
-                        <select wire:model="projectId" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold focus:bg-white focus:border-blue-600">
+                        <select wire:model="projectId" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-bold shadow-2xs focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20">
                             @foreach ($projects as $p)
                                 <option value="{{ $p->id }}">{{ $p->name }}</option>
                             @endforeach
@@ -268,23 +268,23 @@ new class extends Component {
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Plannummer</label>
-                            <input wire:model="planNumber" type="text" placeholder="z.B. AR-101" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold font-mono focus:bg-white focus:border-blue-600">
+                            <input wire:model="planNumber" type="text" placeholder="z.B. AR-101" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-bold shadow-2xs focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20">
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Revisions-Index *</label>
-                            <input wire:model="revisionIndex" type="text" placeholder="z.B. Index 0 / Index A" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold font-mono focus:bg-white focus:border-blue-600">
+                            <input wire:model="revisionIndex" type="text" placeholder="z.B. Index 0 / Index A" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-bold shadow-2xs focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20">
                         </div>
                     </div>
 
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Plan-Bezeichnung / Titel *</label>
-                        <input wire:model="title" type="text" placeholder="z.B. Grundriss Tiefgarage WGB 11c" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold focus:bg-white focus:border-blue-600">
+                        <input wire:model="title" type="text" placeholder="z.B. Grundriss Tiefgarage WGB 11c" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-bold shadow-2xs focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20">
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Kategorie</label>
-                            <select wire:model="category" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-medium focus:bg-white focus:border-blue-600">
+                            <select wire:model="category" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-semibold shadow-2xs focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20">
                                 <option value="architecture">Architektur & Grundriss</option>
                                 <option value="structural">Statik & Bewehrung</option>
                                 <option value="tga">TGA / Haustechnik</option>
@@ -294,13 +294,13 @@ new class extends Component {
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Plandatum</label>
-                            <input wire:model="planDate" type="date" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-medium focus:bg-white focus:border-blue-600">
+                            <input wire:model="planDate" type="date" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-semibold shadow-2xs focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20">
                         </div>
                     </div>
 
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Datei-Upload (PDF / Bild) *</label>
-                        <input wire:model="fileUpload" type="file" accept=".pdf,.png,.jpg,.jpeg,.dwg" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 focus:bg-white focus:border-blue-600 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-600 file:text-white cursor-pointer">
+                        <input wire:model="fileUpload" type="file" accept=".pdf,.png,.jpg,.jpeg,.dwg" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2 shadow-2xs focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-600 file:text-white cursor-pointer">
                         <x-input-error :messages="$errors->get('fileUpload')" class="mt-1" />
                     </div>
 

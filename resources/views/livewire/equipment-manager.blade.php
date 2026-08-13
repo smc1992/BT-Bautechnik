@@ -327,11 +327,11 @@ new class extends Component {
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Inventarnummer *</label>
-                            <input wire:model="inventoryNumber" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold font-mono focus:bg-white focus:border-amber-600">
+                            <input wire:model="inventoryNumber" type="text" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-bold shadow-2xs focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20">
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Kategorie *</label>
-                            <select wire:model="category" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold focus:bg-white focus:border-amber-600">
+                            <select wire:model="category" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-bold shadow-2xs focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20">
                                 <option value="machine">🚜 Baumaschine</option>
                                 <option value="tool">🛠️ Werkzeug / Elektrowerkzeug</option>
                                 <option value="vehicle">🚗 Baufahrzeug / Transporter</option>
@@ -343,34 +343,34 @@ new class extends Component {
 
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Gerätename / Bezeichnung *</label>
-                        <input wire:model="name" type="text" placeholder="z.B. Hilti TE 70 Bohrhammer oder Rüttelplatte" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold focus:bg-white focus:border-amber-600">
+                        <input wire:model="name" type="text" placeholder="z.B. Hilti TE 70 Bohrhammer oder Rüttelplatte" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-bold shadow-2xs focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20">
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Hersteller</label>
-                            <input wire:model="manufacturer" type="text" placeholder="z.B. Hilti, Wacker Neuson, Bosch" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 focus:bg-white focus:border-amber-600">
+                            <input wire:model="manufacturer" type="text" placeholder="z.B. Hilti, Wacker Neuson, Bosch" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-medium shadow-2xs focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20">
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Modell / Typ</label>
-                            <input wire:model="model" type="text" placeholder="z.B. TE 70-ATC" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 focus:bg-white focus:border-amber-600">
+                            <input wire:model="model" type="text" placeholder="z.B. TE 70-ATC" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-medium shadow-2xs focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Seriennummer</label>
-                            <input wire:model="serialNumber" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-mono focus:bg-white focus:border-amber-600">
+                            <input wire:model="serialNumber" type="text" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-medium shadow-2xs focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20">
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Nächste UVV-Prüfung</label>
-                            <input wire:model="nextUvvInspection" type="date" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold text-amber-900 focus:bg-white focus:border-amber-600">
+                            <input wire:model="nextUvvInspection" type="date" class="w-full bg-white border border-slate-300 text-amber-900 rounded-xl p-2.5 font-bold shadow-2xs focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20">
                         </div>
                     </div>
 
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Aktueller Standort / Baustelle</label>
-                        <select wire:model="currentProjectId" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold focus:bg-white focus:border-amber-600">
+                        <select wire:model="currentProjectId" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-bold shadow-2xs focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20">
                             <option value="">🏢 Zentrales Lager / Werkstatt</option>
                             @foreach ($projects as $p)
                                 <option value="{{ $p->id }}">{{ $p->name }}</option>

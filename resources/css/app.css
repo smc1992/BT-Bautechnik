@@ -7,7 +7,22 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-rendering: optimizeLegibility;
-        font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'tnum';
+    }
+
+    /* Clean number inputs without browser stepper arrow clipping */
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+
+    /* High contrast input styling for crystal-clear readability */
+    input, select, textarea {
+        font-family: inherit;
+        color: #0f172a;
     }
 
     /* Custom Modern Slim Scrollbars */

@@ -352,7 +352,7 @@ new class extends Component {
                 <form wire:submit="save" class="space-y-4 text-xs">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Baustelle *</label>
-                        <select wire:model="projectId" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold text-slate-900 focus:bg-white focus:border-indigo-600">
+                        <select wire:model="projectId" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 font-bold text-slate-900 shadow-2xs focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20">
                             @foreach ($projects as $p)
                                 <option value="{{ $p->id }}">{{ $p->name }}</option>
                             @endforeach
@@ -362,11 +362,11 @@ new class extends Component {
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Nachtrags-Nr. *</label>
-                            <input wire:model="supplementNumber" type="text" placeholder="z.B. NT-01" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold font-mono focus:bg-white focus:border-indigo-600">
+                            <input wire:model="supplementNumber" type="text" placeholder="z.B. NT-01" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-bold shadow-2xs focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20">
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Begründung (VOB/B)</label>
-                            <select wire:model="reason" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-medium focus:bg-white focus:border-indigo-600">
+                            <select wire:model="reason" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-semibold shadow-2xs focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20">
                                 <option value="scope_change">Leistungsänderung (§ 2 Abs. 5)</option>
                                 <option value="unforeseen">Unvorhergesehenes (§ 2 Abs. 6)</option>
                                 <option value="client_request">Bauherren-Zusatzwunsch</option>
@@ -377,29 +377,29 @@ new class extends Component {
 
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Titel / Bezeichnung *</label>
-                        <input wire:model="title" type="text" placeholder="z.B. Zusätzliche Hohlkehlenausbildung TG-Rampe" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold focus:bg-white focus:border-indigo-600">
+                        <input wire:model="title" type="text" placeholder="z.B. Zusätzliche Hohlkehlenausbildung TG-Rampe" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-bold shadow-2xs focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20">
                     </div>
 
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Leistungsbeschreibung / Begründungstext</label>
-                        <textarea wire:model="description" rows="3" placeholder="Detaillierte Beschreibung der Mehrleistung gemäß VOB..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 focus:bg-white focus:border-indigo-600"></textarea>
+                        <textarea wire:model="description" rows="3" placeholder="Detaillierte Beschreibung der Mehrleistung gemäß VOB..." class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-medium shadow-2xs focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20"></textarea>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Nettobetrag (€) *</label>
-                            <input wire:model="amountNet" type="number" step="0.01" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold font-mono text-slate-900 focus:bg-white focus:border-indigo-600">
+                            <input wire:model="amountNet" type="number" step="0.01" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 font-bold text-slate-900 tabular-nums shadow-2xs focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20">
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">MwSt.-Satz (%)</label>
-                            <input wire:model="vatRate" type="number" step="0.5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold font-mono focus:bg-white focus:border-indigo-600">
+                            <input wire:model="vatRate" type="number" step="0.5" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-bold tabular-nums shadow-2xs focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Status</label>
-                            <select wire:model="status" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold focus:bg-white focus:border-indigo-600">
+                            <select wire:model="status" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-bold shadow-2xs focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20">
                                 <option value="draft">Entwurf</option>
                                 <option value="submitted">Eingereicht / In Prüfung</option>
                                 <option value="approved">Genehmigt</option>
@@ -409,7 +409,7 @@ new class extends Component {
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Einreichungsdatum</label>
-                            <input wire:model="submissionDate" type="date" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-medium focus:bg-white focus:border-indigo-600">
+                            <input wire:model="submissionDate" type="date" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-semibold shadow-2xs focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20">
                         </div>
                     </div>
 

@@ -362,66 +362,66 @@ new class extends Component {
                 </div>
 
                 <!-- Header inputs -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3.5 text-xs">
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Baustelle *</label>
-                        <select wire:model="projectId" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-bold focus:bg-white focus:border-cyan-600">
+                        <label class="block font-bold text-slate-700 mb-1.5">Baustelle *</label>
+                        <select wire:model="projectId" class="w-full bg-white border border-slate-300 text-slate-900 font-bold rounded-xl px-3 py-2.5 text-xs shadow-2xs focus:border-cyan-600 focus:ring-2 focus:ring-cyan-500/20">
                             @foreach ($projects as $p)
                                 <option value="{{ $p->id }}">{{ $p->name }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Aufmaß-Nr. *</label>
-                        <input wire:model="measurementNumber" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-mono font-bold focus:bg-white focus:border-cyan-600">
+                        <label class="block font-bold text-slate-700 mb-1.5">Aufmaß-Nr. *</label>
+                        <input wire:model="measurementNumber" type="text" class="w-full bg-white border border-slate-300 text-slate-900 font-bold rounded-xl px-3 py-2.5 text-xs shadow-2xs focus:border-cyan-600 focus:ring-2 focus:ring-cyan-500/20">
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Titel / Gewerk</label>
-                        <input wire:model="title" type="text" placeholder="z.B. Abdichtung Tiefgarage" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-bold focus:bg-white focus:border-cyan-600">
+                        <label class="block font-bold text-slate-700 mb-1.5">Titel / Gewerk</label>
+                        <input wire:model="title" type="text" placeholder="z.B. Abdichtung Tiefgarage" class="w-full bg-white border border-slate-300 text-slate-900 font-semibold rounded-xl px-3 py-2.5 text-xs shadow-2xs focus:border-cyan-600 focus:ring-2 focus:ring-cyan-500/20">
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Aufmaßdatum</label>
-                        <input wire:model="measurementDate" type="date" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-medium focus:bg-white focus:border-cyan-600">
+                        <label class="block font-bold text-slate-700 mb-1.5">Aufmaßdatum</label>
+                        <input wire:model="measurementDate" type="date" class="w-full bg-white border border-slate-300 text-slate-900 font-semibold rounded-xl px-3 py-2.5 text-xs shadow-2xs focus:border-cyan-600 focus:ring-2 focus:ring-cyan-500/20">
                     </div>
                 </div>
 
                 <!-- Items Table with live formulas -->
                 <div class="space-y-3 pt-2">
                     <div class="flex items-center justify-between">
-                        <h4 class="text-xs font-black uppercase text-slate-700">Aufmaßzeilen & Raummaße</h4>
-                        <button type="button" wire:click="addItem" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer btn-press flex items-center gap-1">
+                        <h4 class="text-xs font-black uppercase tracking-wider text-slate-700">Aufmaßzeilen & Raummaße (VOB/C Formelberechnung)</h4>
+                        <button type="button" wire:click="addItem" class="px-3.5 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-extrabold text-xs rounded-xl shadow-md shadow-cyan-500/20 cursor-pointer btn-press flex items-center gap-1.5">
                             <span>➕ Zeile hinzufügen</span>
                         </button>
                     </div>
 
-                    <div class="overflow-x-auto border border-slate-200 rounded-2xl">
-                        <table class="w-full text-left text-xs divide-y divide-slate-100 min-w-[750px]">
-                            <thead class="bg-slate-50 text-slate-600 font-bold uppercase text-[10px]">
+                    <div class="overflow-x-auto border border-slate-200/90 rounded-2xl shadow-2xs">
+                        <table class="w-full text-left text-xs divide-y divide-slate-200 min-w-[850px]">
+                            <thead class="bg-slate-100/80 text-slate-700 font-extrabold uppercase text-[10px] tracking-wider">
                                 <tr>
-                                    <th class="p-2.5">Pos. / Raum / Achse</th>
-                                    <th class="p-2.5">Leistungsbeschreibung</th>
-                                    <th class="p-2.5 text-center">Einh.</th>
-                                    <th class="p-2.5 text-center">L (m)</th>
-                                    <th class="p-2.5 text-center">B (m)</th>
-                                    <th class="p-2.5 text-center">Faktor</th>
-                                    <th class="p-2.5 text-center">Abzug</th>
-                                    <th class="p-2.5 text-right">Menge</th>
-                                    <th class="p-2.5 text-right">EP (€)</th>
-                                    <th class="p-2.5 text-right">Gesamt (€)</th>
-                                    <th class="p-2.5 text-center"></th>
+                                    <th class="px-3 py-2.5">Pos. / Raum / Achse</th>
+                                    <th class="px-3 py-2.5">Leistungsbeschreibung</th>
+                                    <th class="px-2 py-2.5 text-center">Einh.</th>
+                                    <th class="px-2 py-2.5 text-center">L (m)</th>
+                                    <th class="px-2 py-2.5 text-center">B (m)</th>
+                                    <th class="px-2 py-2.5 text-center">Faktor</th>
+                                    <th class="px-2 py-2.5 text-center">Abzug</th>
+                                    <th class="px-3 py-2.5 text-right">Menge</th>
+                                    <th class="px-2 py-2.5 text-right">EP (€)</th>
+                                    <th class="px-3 py-2.5 text-right">Gesamt (€)</th>
+                                    <th class="px-2 py-2.5 text-center"></th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-100">
+                            <tbody class="divide-y divide-slate-100 bg-white">
                                 @foreach ($items as $idx => $it)
-                                    <tr class="hover:bg-slate-50/50">
-                                        <td class="p-2 w-32">
-                                            <input wire:model="items.{{ $idx }}.room_or_axis" type="text" placeholder="Raum / Achse" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-1.5 text-xs font-bold">
+                                    <tr class="hover:bg-cyan-50/30 transition-colors">
+                                        <td class="px-2 py-2 w-36">
+                                            <input wire:model="items.{{ $idx }}.room_or_axis" type="text" placeholder="z.B. Raum 01 / TG" class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-2.5 py-1.5 text-xs font-bold focus:border-cyan-600 focus:ring-1 focus:ring-cyan-500">
                                         </td>
-                                        <td class="p-2">
-                                            <input wire:model="items.{{ $idx }}.description" type="text" placeholder="Bezeichnung der Leistung..." class="w-full bg-slate-50 border border-slate-200 rounded-lg p-1.5 text-xs">
+                                        <td class="px-2 py-2">
+                                            <input wire:model="items.{{ $idx }}.description" type="text" placeholder="Leistungsbeschreibung..." class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-2.5 py-1.5 text-xs font-medium focus:border-cyan-600 focus:ring-1 focus:ring-cyan-500">
                                         </td>
-                                        <td class="p-2 w-16 text-center">
-                                            <select wire:model="items.{{ $idx }}.unit" wire:change="recalculateRow({{ $idx }})" class="bg-slate-50 border border-slate-200 rounded-lg p-1 text-xs">
+                                        <td class="px-1.5 py-2 w-20 text-center">
+                                            <select wire:model="items.{{ $idx }}.unit" wire:change="recalculateRow({{ $idx }})" class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-1.5 py-1.5 text-xs font-bold focus:border-cyan-600 focus:ring-1 focus:ring-cyan-500 text-center cursor-pointer">
                                                 <option value="m²">m²</option>
                                                 <option value="m">m</option>
                                                 <option value="m³">m³</option>
@@ -429,29 +429,29 @@ new class extends Component {
                                                 <option value="Std.">Std.</option>
                                             </select>
                                         </td>
-                                        <td class="p-2 w-16">
-                                            <input wire:model="items.{{ $idx }}.length" wire:change="recalculateRow({{ $idx }})" type="number" step="0.01" class="w-full text-center bg-slate-50 border border-slate-200 rounded-lg p-1 text-xs font-mono font-bold">
+                                        <td class="px-1.5 py-2 w-20">
+                                            <input wire:model="items.{{ $idx }}.length" wire:change="recalculateRow({{ $idx }})" type="number" step="0.01" class="w-full text-center bg-white border border-slate-300 text-slate-900 rounded-lg px-1.5 py-1.5 text-xs font-bold tabular-nums focus:border-cyan-600 focus:ring-1 focus:ring-cyan-500">
                                         </td>
-                                        <td class="p-2 w-16">
-                                            <input wire:model="items.{{ $idx }}.width" wire:change="recalculateRow({{ $idx }})" type="number" step="0.01" class="w-full text-center bg-slate-50 border border-slate-200 rounded-lg p-1 text-xs font-mono font-bold">
+                                        <td class="px-1.5 py-2 w-20">
+                                            <input wire:model="items.{{ $idx }}.width" wire:change="recalculateRow({{ $idx }})" type="number" step="0.01" class="w-full text-center bg-white border border-slate-300 text-slate-900 rounded-lg px-1.5 py-1.5 text-xs font-bold tabular-nums focus:border-cyan-600 focus:ring-1 focus:ring-cyan-500">
                                         </td>
-                                        <td class="p-2 w-14">
-                                            <input wire:model="items.{{ $idx }}.factor" wire:change="recalculateRow({{ $idx }})" type="number" step="1" class="w-full text-center bg-slate-50 border border-slate-200 rounded-lg p-1 text-xs font-mono">
+                                        <td class="px-1.5 py-2 w-16">
+                                            <input wire:model="items.{{ $idx }}.factor" wire:change="recalculateRow({{ $idx }})" type="number" step="1" class="w-full text-center bg-white border border-slate-300 text-slate-900 rounded-lg px-1.5 py-1.5 text-xs font-bold tabular-nums focus:border-cyan-600 focus:ring-1 focus:ring-cyan-500">
                                         </td>
-                                        <td class="p-2 w-16">
-                                            <input wire:model="items.{{ $idx }}.deduction" wire:change="recalculateRow({{ $idx }})" type="number" step="0.01" placeholder="0" class="w-full text-center bg-slate-50 border border-slate-200 rounded-lg p-1 text-xs font-mono text-rose-600">
+                                        <td class="px-1.5 py-2 w-20">
+                                            <input wire:model="items.{{ $idx }}.deduction" wire:change="recalculateRow({{ $idx }})" type="number" step="0.01" placeholder="0" class="w-full text-center bg-white border border-slate-300 text-rose-600 font-bold rounded-lg px-1.5 py-1.5 text-xs tabular-nums focus:border-cyan-600 focus:ring-1 focus:ring-cyan-500">
                                         </td>
-                                        <td class="p-2 w-20 text-right font-mono font-bold text-slate-900 tabular-nums">
+                                        <td class="px-3 py-2 w-24 text-right font-bold text-slate-900 tabular-nums">
                                             {{ number_format($items[$idx]['quantity'] ?? 0, 2, ',', '.') }}
                                         </td>
-                                        <td class="p-2 w-20">
-                                            <input wire:model="items.{{ $idx }}.unit_price" wire:change="recalculateRow({{ $idx }})" type="number" step="0.5" class="w-full text-right bg-slate-50 border border-slate-200 rounded-lg p-1 text-xs font-mono font-bold">
+                                        <td class="px-1.5 py-2 w-24">
+                                            <input wire:model="items.{{ $idx }}.unit_price" wire:change="recalculateRow({{ $idx }})" type="number" step="0.5" class="w-full text-right bg-white border border-slate-300 text-slate-900 rounded-lg px-2 py-1.5 text-xs font-bold tabular-nums focus:border-cyan-600 focus:ring-1 focus:ring-cyan-500">
                                         </td>
-                                        <td class="p-2 w-24 text-right font-mono font-black text-cyan-900 tabular-nums">
+                                        <td class="px-3 py-2 w-28 text-right font-black text-cyan-900 tabular-nums text-xs">
                                             {{ number_format($items[$idx]['total_price'] ?? 0, 2, ',', '.') }} €
                                         </td>
-                                        <td class="p-2 text-center">
-                                            <button type="button" wire:click="removeItem({{ $idx }})" class="text-rose-500 hover:text-rose-700 font-bold text-sm cursor-pointer">✕</button>
+                                        <td class="px-2 py-2 text-center w-8">
+                                            <button type="button" wire:click="removeItem({{ $idx }})" title="Zeile löschen" class="p-1 text-slate-400 hover:text-rose-600 font-bold text-sm cursor-pointer rounded-md hover:bg-rose-50 transition">✕</button>
                                         </td>
                                     </tr>
                                 @endforeach

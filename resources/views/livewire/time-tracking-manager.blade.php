@@ -334,7 +334,7 @@ new class extends Component {
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Mitarbeiter *</label>
-                            <select wire:model="userId" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold focus:bg-white focus:border-emerald-600">
+                            <select wire:model="userId" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-bold shadow-2xs focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20">
                                 @foreach ($users as $u)
                                     <option value="{{ $u->id }}">{{ $u->name }}</option>
                                 @endforeach
@@ -342,13 +342,13 @@ new class extends Component {
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Datum *</label>
-                            <input wire:model="entryDate" type="date" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-medium focus:bg-white focus:border-emerald-600">
+                            <input wire:model="entryDate" type="date" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-semibold shadow-2xs focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20">
                         </div>
                     </div>
 
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Baustelle</label>
-                        <select wire:model="projectId" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold focus:bg-white focus:border-emerald-600">
+                        <select wire:model="projectId" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-bold shadow-2xs focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20">
                             <option value="">-- Allgemein / Werkstatt / Fahrzeit --</option>
                             @foreach ($projects as $p)
                                 <option value="{{ $p->id }}">{{ $p->name }}</option>
@@ -359,26 +359,26 @@ new class extends Component {
                     <div class="grid grid-cols-3 gap-2.5">
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Beginn</label>
-                            <input wire:model="startTime" wire:change="calculateHours" type="time" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-mono text-center focus:bg-white focus:border-emerald-600">
+                            <input wire:model="startTime" wire:change="calculateHours" type="time" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2 font-bold text-center shadow-2xs focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20">
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Ende</label>
-                            <input wire:model="endTime" wire:change="calculateHours" type="time" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-mono text-center focus:bg-white focus:border-emerald-600">
+                            <input wire:model="endTime" wire:change="calculateHours" type="time" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2 font-bold text-center shadow-2xs focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20">
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Pause (Min)</label>
-                            <input wire:model="breakMinutes" wire:change="calculateHours" type="number" step="5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-mono text-center focus:bg-white focus:border-emerald-600">
+                            <input wire:model="breakMinutes" wire:change="calculateHours" type="number" step="5" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2 font-bold text-center tabular-nums shadow-2xs focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Arbeitsstunden (Netto) *</label>
-                            <input wire:model="hours" type="number" step="0.25" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-black text-emerald-900 font-mono text-sm focus:bg-white focus:border-emerald-600">
+                            <input wire:model="hours" type="number" step="0.25" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 font-black text-emerald-900 text-sm tabular-nums shadow-2xs focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20">
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Tätigkeitsart</label>
-                            <select wire:model="activityType" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-medium focus:bg-white focus:border-emerald-600">
+                            <select wire:model="activityType" class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-semibold shadow-2xs focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20">
                                 <option value="construction">Ausführung Bauleistung</option>
                                 <option value="travel">Anfahrt / Rüstzeit</option>
                                 <option value="regie">Regiearbeit nach Aufwand</option>
@@ -390,7 +390,7 @@ new class extends Component {
 
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Tätigkeitsbericht / Notizen</label>
-                        <textarea wire:model="description" rows="2" placeholder="z.B. Tiefgarage Abdichtung Lage 1 verlegt, 50m Hohlkehle erstellt..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 focus:bg-white focus:border-emerald-600"></textarea>
+                        <textarea wire:model="description" rows="2" placeholder="z.B. Tiefgarage Abdichtung Lage 1 verlegt, 50m Hohlkehle erstellt..." class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl p-2.5 font-medium shadow-2xs focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20"></textarea>
                     </div>
 
                     <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">

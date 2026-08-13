@@ -24,65 +24,98 @@ new #[Layout('layouts.guest')] class extends Component
     }
 }; ?>
 
-<div>
+<div class="space-y-6">
+    <!-- Header inside Card -->
+    <div class="space-y-1">
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight">
+            Willkommen zurück 👋
+        </h2>
+        <p class="text-xs text-slate-500 font-medium">
+            Melden Sie sich mit Ihren Zugangsdaten an, um fortzufahren.
+        </p>
+    </div>
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form wire:submit="login">
+    <form wire:submit="login" class="space-y-4">
         <!-- Email Address -->
-        <div>
-            <x-input-label for="email" value="E-Mail-Adresse" />
-            <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full" type="email" name="email" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('form.email')" class="mt-2" />
+        <div class="space-y-1.5">
+            <label for="email" class="block text-xs font-bold text-slate-700">
+                E-Mail-Adresse
+            </label>
+            <div class="relative">
+                <input wire:model="form.email" id="email" 
+                       type="email" name="email" 
+                       required autofocus autocomplete="username" 
+                       placeholder="name@bt-bautechnik.de"
+                       class="w-full bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 rounded-xl pl-10 pr-4 py-2.5 text-xs font-medium transition shadow-2xs">
+                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">✉️</span>
+            </div>
+            <x-input-error :messages="$errors->get('form.email')" class="mt-1" />
         </div>
 
         <!-- Password -->
-        <div class="mt-4" x-data="{ showPassword: false }">
-            <x-input-label for="password" value="Passwort" />
+        <div class="space-y-1.5" x-data="{ showPassword: false }">
+            <div class="flex items-center justify-between">
+                <label for="password" class="block text-xs font-bold text-slate-700">
+                    Passwort
+                </label>
+                @if (Route::has('password.request'))
+                    <a class="text-[11px] font-bold text-blue-600 hover:text-blue-700 hover:underline" href="{{ route('password.request') }}" wire:navigate>
+                        Passwort vergessen?
+                    </a>
+                @endif
+            </div>
 
-            <div class="relative mt-1">
+            <div class="relative">
                 <input wire:model="form.password" id="password" 
                        :type="showPassword ? 'text' : 'password'"
                        name="password"
                        required autocomplete="current-password" 
-                       class="w-full bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 rounded-xl pl-3.5 pr-10 py-2.5 text-sm font-medium transition shadow-2xs">
+                       placeholder="••••••••••••"
+                       class="w-full bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 rounded-xl pl-10 pr-10 py-2.5 text-xs font-medium transition shadow-2xs">
+                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔒</span>
                 
                 <button type="button" @click="showPassword = !showPassword" 
-                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 focus:outline-none">
+                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer">
                     <!-- Eye Open Icon -->
-                    <svg x-show="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg x-show="!showPassword" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                     </svg>
                     <!-- Eye Closed Icon -->
-                    <svg x-show="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                    <svg x-show="showPassword" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.908a9.967 9.967 0 013.682-.763c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m-2.585-2.585a3 3 0 11-4.243-4.243"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18"/>
                     </svg>
                 </button>
             </div>
 
-            <x-input-error :messages="$errors->get('form.password')" class="mt-2" />
+            <x-input-error :messages="$errors->get('form.password')" class="mt-1" />
         </div>
 
         <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember" class="inline-flex items-center">
-                <input wire:model="form.remember" id="remember" type="checkbox" class="rounded border-slate-300 text-blue-600 shadow-sm focus:ring-blue-500" name="remember">
-                <span class="ms-2 text-sm text-slate-600">Angemeldet bleiben</span>
+        <div class="flex items-center justify-between pt-1">
+            <label for="remember" class="inline-flex items-center cursor-pointer">
+                <input wire:model="form.remember" id="remember" type="checkbox" class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 shadow-xs cursor-pointer" name="remember">
+                <span class="ms-2 text-xs font-semibold text-slate-600 select-none">Angemeldet bleiben</span>
             </label>
         </div>
 
-        <div class="flex items-center justify-end mt-6">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-slate-600 hover:text-slate-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" href="{{ route('password.request') }}" wire:navigate>
-                    Passwort vergessen?
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 focus:ring-blue-500 font-bold px-5 py-2.5 rounded-xl shadow-md shadow-blue-500/10">
-                Anmelden
-            </x-primary-button>
+        <!-- Primary Submit Button -->
+        <div class="pt-2">
+            <button type="submit" wire:loading.attr="disabled"
+                    class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98] text-white font-extrabold text-xs rounded-xl shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer btn-press disabled:opacity-50">
+                <span wire:loading.remove wire:target="login" class="flex items-center gap-2">
+                    <span>Anmelden</span>
+                    <span>➔</span>
+                </span>
+                <span wire:loading wire:target="login" class="flex items-center gap-2">
+                    <span class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    <span>Authentifiziere...</span>
+                </span>
+            </button>
         </div>
     </form>
 </div>

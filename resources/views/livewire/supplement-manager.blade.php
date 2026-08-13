@@ -304,6 +304,9 @@ new class extends Component {
                             </td>
                             <td class="p-3.5 text-right whitespace-nowrap">
                                 <div class="flex items-center justify-end gap-1.5">
+                                    <a href="/nachtraege/{{ $sup->id }}/pdf" target="_blank" title="Nachtragsangebot PDF exportieren" class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg border border-indigo-200 cursor-pointer btn-press">
+                                        📄 PDF
+                                    </a>
                                     @if ($sup->status !== 'approved')
                                         <button wire:click="updateStatus('{{ $sup->id }}', 'approved')" title="Als genehmigt markieren" class="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200 cursor-pointer btn-press">
                                             ✓ Freigabe

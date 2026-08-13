@@ -97,12 +97,36 @@ Route::get('/bautagebuch/freigabe/{token}', App\Livewire\PublicDailyLogApproval:
     ->name('daily-log.public-approval');
 
 Route::get('/projects/{project}/abnahmeprotokoll-pdf', function (\App\Models\Project $project) {
+    $company = \App\Models\CompanySetting::getSettings();
     $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.abnahmeprotokoll', [
         'project' => $project,
         'defects' => $project->defects ?? collect(),
+        'company' => $company,
         'date' => date('d.m.Y'),
     ]);
     return $pdf->download('VOB_Abnahmeprotokoll_' . \Illuminate\Support\Str::slug($project->name) . '.pdf');
 })->middleware(['auth', 'verified'])->name('project.abnahmeprotokoll-pdf');
+
+Route::get('/nachtraege/{supplement}/pdf', function (\App\Models\Supplement $supplement) {
+    $company = \App\Models\CompanySetting::getSettings();
+    $project = $supplement->project;
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.nachtragsangebot', [
+        'supplement' => $supplement,
+        'project' => $project,
+        'company' => $company,
+    ]);
+    return $pdf->download('Nachtragsangebot_' . $supplement->supplement_number . '_' . \Illuminate\Support\Str::slug($project->name) . '.pdf');
+})->middleware(['auth', 'verified'])->name('supplement.pdf');
+
+Route::get('/aufmass/{measurement}/pdf', function (\App\Models\Measurement $measurement) {
+    $company = \App\Models\CompanySetting::getSettings();
+    $project = $measurement->project;
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.aufmassblatt', [
+        'measurement' => $measurement->load('items'),
+        'project' => $project,
+        'company' => $company,
+    ]);
+    return $pdf->download('Aufmassblatt_' . $measurement->measurement_number . '_' . \Illuminate\Support\Str::slug($project->name) . '.pdf');
+})->middleware(['auth', 'verified'])->name('measurement.pdf');
 
 require __DIR__.'/auth.php';

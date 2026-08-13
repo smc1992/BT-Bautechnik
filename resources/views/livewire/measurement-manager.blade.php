@@ -326,6 +326,9 @@ new class extends Component {
                     </div>
 
                     <div class="flex items-center gap-1.5">
+                        <a href="/aufmass/{{ $m->id }}/pdf" target="_blank" title="Aufmaßblatt PDF exportieren" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 cursor-pointer btn-press">
+                            📄 PDF
+                        </a>
                         <button wire:click="openEditSheet('{{ $m->id }}')" class="px-3 py-1.5 bg-cyan-50 hover:bg-cyan-100 text-cyan-800 font-extrabold text-xs rounded-xl border border-cyan-200 cursor-pointer btn-press">
                             ✏️ Öffnen
                         </button>

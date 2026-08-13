@@ -56,10 +56,13 @@
             <div class="flex-1 w-full flex items-start">
                 <livewire:layout.sidebar />
 
-                <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 w-full overflow-x-hidden">
+                <main class="flex-1 min-w-0 {{ request()->routeIs('ai-agent') ? 'p-0 h-[calc(100vh-4rem)] overflow-hidden flex flex-col' : 'p-4 sm:p-6 lg:p-8 w-full overflow-x-hidden' }}">
                     {{ $slot }}
                 </main>
             </div>
         </div>
+
+        <!-- Global Command Palette -->
+        <x-command-palette />
     </body>
 </html>

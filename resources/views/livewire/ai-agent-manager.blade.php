@@ -5,6 +5,7 @@ use Livewire\WithFileUploads;
 use App\Services\OpenAiAgentService;
 use App\Models\AgentChat;
 use App\Models\AgentChatMessage;
+use Illuminate\Support\Str;
 
 new class extends Component {
     use WithFileUploads;
@@ -14,6 +15,11 @@ new class extends Component {
     public bool $isProcessing = false;
     public $audioFile;
     public $photoFile;
+    public string $searchQuery = '';
+
+    public ?string $editingChatId = null;
+    public string $editingChatTitle = '';
+    public bool $showRenameModal = false;
 
     public function mount()
     {
@@ -50,10 +56,6 @@ new class extends Component {
             $this->userMessage = '';
         }
     }
-
-    public ?string $editingChatId = null;
-    public string $editingChatTitle = '';
-    public bool $showRenameModal = false;
 
     public function openRenameModal(string $chatId)
     {
@@ -102,7 +104,13 @@ new class extends Component {
 
     public function getChatsProperty()
     {
-        return AgentChat::withCount('messages')->orderBy('updated_at', 'desc')->get();
+        $query = AgentChat::withCount('messages')->orderBy('updated_at', 'desc');
+        
+        if (!empty(trim($this->searchQuery))) {
+            $query->where('title', 'like', '%' . trim($this->searchQuery) . '%');
+        }
+
+        return $query->get();
     }
 
     public function getActiveChatProperty()
@@ -185,12 +193,12 @@ new class extends Component {
         $chat = AgentChat::find($this->activeChatId);
         if (!$chat) return;
 
-        // Auto-generate title from first prompt if title is "Neue Unterhaltung"
+        // Auto-generate title from first prompt if title is default
         if ($chat->title === 'Neue Unterhaltung') {
-            $title = \Illuminate\Support\Str::limit($prompt, 38, '...');
+            $title = Str::limit($prompt, 36, '...');
             $chat->update(['title' => $title]);
         } else {
-            $chat->touch(); // update updated_at timestamp
+            $chat->touch();
         }
 
         // Save user message to database
@@ -241,9 +249,12 @@ new class extends Component {
         }
     }
 
-    public function runQuickAction(string $actionText)
+    public function runQuickAction(string $actionText, bool $autoSend = true, ?OpenAiAgentService $agentService = null)
     {
         $this->userMessage = $actionText;
+        if ($autoSend) {
+            $this->sendPrompt($agentService ?? app(OpenAiAgentService::class));
+        }
     }
 
     public function exportChatMarkdown()
@@ -275,7 +286,7 @@ new class extends Component {
             $md .= "---\n\n";
         }
 
-        $filename = 'KI-Protokoll-' . \Illuminate\Support\Str::slug($chat->title) . '-' . date('Y-m-d') . '.md';
+        $filename = 'KI-Protokoll-' . Str::slug($chat->title) . '-' . date('Y-m-d') . '.md';
 
         return response()->streamDownload(function () use ($md) {
             echo $md;
@@ -283,537 +294,745 @@ new class extends Component {
     }
 }; ?>
 
-<div x-data="{ showHistoryMobile: false }" class="space-y-6 font-sans max-w-full overflow-x-hidden">
-    <!-- Header Command Center Banner (BT Bautechnik CI Colors: Deep Slate & Blue) -->
-    <div class="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white rounded-2xl p-4 sm:p-6 shadow-xl border border-blue-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative overflow-hidden">
-        <!-- Background Ambient Glow -->
-        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
-
-        <div class="flex items-center gap-3.5 relative z-10">
-            <div class="relative flex items-center justify-center w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 shadow-lg shadow-blue-500/30 text-2xl shrink-0 border border-blue-400/30">
-                🤖
-                <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-slate-900"></span>
-                </span>
-            </div>
-            <div class="space-y-0.5">
-                <h2 class="text-lg sm:text-xl font-black text-white tracking-tight flex items-center gap-2">
-                    BT Bautechnik KI-Agent Steuerzentrale
-                </h2>
-                <p class="text-xs text-slate-300 font-medium leading-relaxed">Autonomer Betriebs-Assistent • Baustellen, Bautagebücher, Angebote & Belege steuern</p>
-            </div>
-        </div>
-
-        <div class="flex items-center justify-between sm:justify-end gap-2 w-full md:w-auto relative z-10 shrink-0">
-            <!-- Mobile Toggle Button for Chat History -->
-            <button @click="showHistoryMobile = !showHistoryMobile" 
-                    class="lg:hidden px-3 py-2 bg-slate-800 hover:bg-slate-700 text-blue-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs">
-                <span>💬</span>
-                <span>Verlauf ({{ count($this->chats) }})</span>
-            </button>
-
-            <span class="hidden sm:flex px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 items-center gap-2 shadow-xs backdrop-blur-md">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>System Aktiv</span>
-            </span>
-
-            <button wire:click="createNewChat" @click="showHistoryMobile = false"
-                    title="Neue Unterhaltung starten"
-                    class="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md shadow-blue-500/20 cursor-pointer">
-                <span>➕</span>
-                <span class="hidden sm:inline">Neuer Chat</span>
-                <span class="sm:hidden">Neu</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Main Grid: Sidebar History & Active Chat -->
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+<div x-data="{
+        sidebarOpen: window.innerWidth >= 1024,
+        mobileSidebar: false,
+        copiedMsgId: null,
+        toggleSidebar() {
+            if (window.innerWidth < 1024) {
+                this.mobileSidebar = !this.mobileSidebar;
+            } else {
+                this.sidebarOpen = !this.sidebarOpen;
+            }
+        },
+        copyText(text, id) {
+            navigator.clipboard.writeText(text);
+            this.copiedMsgId = id;
+            setTimeout(() => { this.copiedMsgId = null; }, 2000);
+        },
+        scrollToBottom() {
+            this.$nextTick(() => {
+                const el = document.getElementById('chat-scroll-container');
+                if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+            });
+        }
+     }"
+     x-init="
+        scrollToBottom();
+        const observer = new MutationObserver(() => scrollToBottom());
+        const container = document.getElementById('chat-scroll-container');
+        if (container) observer.observe(container, { childList: true, subtree: true });
         
-        <!-- Left Sidebar: Past Conversations (BT Bautechnik CI Colors) -->
-        <div :class="showHistoryMobile ? 'block' : 'hidden lg:block'"
-             class="lg:col-span-1 bg-white border border-slate-200/90 rounded-2xl shadow-sm overflow-hidden flex flex-col h-[380px] sm:h-[520px] lg:h-[680px] transition-all">
-            <div class="p-3.5 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800 shrink-0">
-                <h3 class="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
-                    <span>💬</span>
-                    <span>Vergangene Chats</span>
-                </h3>
-                <div class="flex items-center gap-2">
-                    <button wire:click="createNewChat" @click="showHistoryMobile = false" class="text-xs font-bold text-blue-400 hover:text-white transition cursor-pointer">
-                        + Neu
-                    </button>
-                    <button @click="showHistoryMobile = false" class="lg:hidden text-xs text-slate-400 hover:text-white cursor-pointer px-1">
-                        ✕
-                    </button>
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) mobileSidebar = false;
+        });
+     "
+     class="h-full w-full flex overflow-hidden bg-slate-950 font-sans relative">
+
+    <!-- Backdrop for Mobile Sidebar Drawer -->
+    <div x-show="mobileSidebar" 
+         x-cloak
+         x-transition:enter="transition-opacity ease-linear duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition-opacity ease-linear duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click="mobileSidebar = false" 
+         class="fixed inset-0 bg-slate-950/80 backdrop-blur-xs z-40 lg:hidden"></div>
+
+    <!-- ========================================== -->
+    <!-- CHATGPT-STYLE SIDEBAR (Sessions & History)  -->
+    <!-- ========================================== -->
+    <aside :class="{
+               'translate-x-0': mobileSidebar,
+               '-translate-x-full': !mobileSidebar,
+               'lg:translate-x-0 lg:w-72 xl:w-80': sidebarOpen,
+               'lg:-translate-x-full lg:w-0': !sidebarOpen
+           }"
+           class="fixed lg:static inset-y-0 left-0 z-50 flex flex-col bg-slate-950 text-slate-200 border-r border-slate-800/80 transition-all duration-300 ease-in-out w-72 sm:w-80 shrink-0 h-full overflow-hidden shadow-2xl lg:shadow-none">
+        
+        <!-- Sidebar Top Header & New Chat Button -->
+        <div class="p-3.5 space-y-3 border-b border-slate-800/80 shrink-0">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center text-base font-bold shadow-md shadow-blue-500/20 text-white">
+                        🤖
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-xs font-black text-white tracking-wide">BT Agent</span>
+                            <span class="px-1.5 py-0.2 text-[9px] font-black uppercase tracking-wider rounded bg-blue-500/20 text-cyan-300 border border-cyan-500/30">PRO</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400 font-medium">Betriebs-Assistent</p>
+                    </div>
                 </div>
+
+                <!-- Close Button (Mobile) or Collapse Button (Desktop) -->
+                <button @click="toggleSidebar()" 
+                        title="Seitenleiste schließen"
+                        class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800/80 transition cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+                    </svg>
+                </button>
             </div>
 
-            <div class="flex-1 overflow-y-auto p-2 space-y-1.5 bg-slate-50/50">
-                @forelse ($this->chats as $c)
-                    <div wire:click="loadChat('{{ $c->id }}'); showHistoryMobile = false;"
-                         class="group p-3 rounded-xl border transition-all cursor-pointer relative flex flex-col gap-1 {{ $activeChatId === $c->id ? 'bg-slate-900 text-white border-blue-500 shadow-md' : 'bg-white text-slate-800 border-slate-200/80 hover:border-blue-300 hover:bg-blue-50/40' }}">
-                        
-                        <div class="flex items-center justify-between gap-1 pr-14">
-                            <p class="font-bold text-xs truncate leading-snug flex-1 {{ $activeChatId === $c->id ? 'text-white' : 'text-slate-900' }}">
-                                {{ $c->title }}
-                            </p>
+            <!-- New Chat Primary Action Button -->
+            <button wire:click="createNewChat" 
+                    @click="if (window.innerWidth < 1024) mobileSidebar = false;"
+                    class="w-full group py-2.5 px-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-600/25 transition-all duration-150 flex items-center justify-between cursor-pointer btn-press border border-blue-400/30">
+                <span class="flex items-center gap-2">
+                    <span class="text-sm font-black">+</span>
+                    <span>Neuer Chat</span>
+                </span>
+                <span class="text-[10px] font-mono opacity-70 group-hover:opacity-100 bg-black/20 px-1.5 py-0.5 rounded">Neu</span>
+            </button>
 
-                            <div class="absolute right-2 top-2 flex items-center gap-1 opacity-80 lg:opacity-0 group-hover:opacity-100 transition">
-                                <!-- Rename Chat Button -->
-                                <button wire:click.stop="openRenameModal('{{ $c->id }}')" 
-                                        title="Unterhaltung umbenennen"
-                                        class="p-1 text-slate-400 hover:text-blue-400 rounded transition cursor-pointer">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                                </button>
-
-                                <!-- Delete Chat Button -->
-                                <button wire:click.stop="deleteChat('{{ $c->id }}')" 
-                                        title="Unterhaltung löschen"
-                                        class="p-1 text-slate-400 hover:text-rose-500 rounded transition cursor-pointer">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between text-[10px] {{ $activeChatId === $c->id ? 'text-blue-200' : 'text-slate-400' }}">
-                            <span>{{ $c->updated_at->format('d.m.Y H:i') }}</span>
-                            <span class="font-semibold px-1.5 py-0.5 rounded-md {{ $activeChatId === $c->id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600' }}">
-                                {{ $c->messages_count }} Msg
-                            </span>
-                        </div>
-                    </div>
-                @empty
-                    <div class="p-4 text-center text-xs text-slate-400 italic">
-                        Keine vergangenen Chats.
-                    </div>
-                @endforelse
+            <!-- Search Sessions Input -->
+            <div class="relative">
+                <input wire:model.live.debounce.250ms="searchQuery" 
+                       type="text" 
+                       placeholder="Chats durchsuchen..." 
+                       class="w-full bg-slate-900/90 text-slate-200 placeholder-slate-500 border border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-[11px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition shadow-inner">
+                <svg class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
             </div>
         </div>
 
-        <!-- Right Main Column: Chat Console & Quick Actions -->
-        <div class="lg:col-span-3 space-y-6">
-            
-            <!-- Quick Action Chips (8-Card Grid) -->
-            <div class="space-y-2">
-                <div class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-                    <span>⚡ Schnellauswahl für typische Aufgaben:</span>
+        <!-- Chat History List Grouped by Time Periods (ChatGPT Standard) -->
+        <div class="flex-1 overflow-y-auto p-2 space-y-4">
+            @php
+                $chats = $this->chats;
+                $today = $chats->filter(fn($c) => $c->updated_at->isToday());
+                $yesterday = $chats->filter(fn($c) => $c->updated_at->isYesterday());
+                $lastWeek = $chats->filter(fn($c) => $c->updated_at->greaterThanOrEqualTo(now()->subDays(7)) && !$c->updated_at->isToday() && !$c->updated_at->isYesterday());
+                $older = $chats->filter(fn($c) => $c->updated_at->lessThan(now()->subDays(7)));
+            @endphp
+
+            <!-- Group: Heute -->
+            @if ($today->isNotEmpty())
+                <div class="space-y-1">
+                    <div class="px-2.5 py-1 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                        <span>Heute</span>
+                        <span class="text-[9px] font-mono text-slate-400">{{ $today->count() }}</span>
+                    </div>
+                    @foreach ($today as $c)
+                        @include('livewire.partials.agent-chat-list-item', ['chatItem' => $c, 'isActive' => $activeChatId === $c->id])
+                    @endforeach
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-                    <button wire:click="runQuickAction('Trage für heute im Bautagebuch ein: 3 Mann auf Baustelle Berching, 40m² Bitumenabdichtung verlegt bei 22 Grad sonnig.')" 
-                            class="group p-2.5 sm:p-3 bg-white hover:bg-blue-50/50 text-slate-700 hover:text-blue-900 font-semibold text-xs rounded-xl border border-slate-200/90 hover:border-blue-300 shadow-2xs hover:shadow-md transition-all duration-200 flex items-center gap-2 cursor-pointer text-left">
-                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-blue-100 group-hover:bg-blue-600 text-blue-700 group-hover:text-white flex items-center justify-center text-xs transition-colors shrink-0 font-bold">🎙️</span>
-                        <span class="truncate">Bautagebuch</span>
-                    </button>
+            @endif
 
-                    <button wire:click="runQuickAction('Erfasse einen Mangel: Dachdurchführung undicht im Dachgeschoss Haus A, Frist 7 Tage.')" 
-                            class="group p-2.5 sm:p-3 bg-white hover:bg-amber-50/50 text-slate-700 hover:text-amber-900 font-semibold text-xs rounded-xl border border-slate-200/90 hover:border-amber-300 shadow-2xs hover:shadow-md transition-all duration-200 flex items-center gap-2 cursor-pointer text-left">
-                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-amber-100 group-hover:bg-amber-600 text-amber-700 group-hover:text-white flex items-center justify-center text-xs transition-colors shrink-0 font-bold">⚠️</span>
-                        <span class="truncate">Mangel erfassen</span>
-                    </button>
-
-                    <button wire:click="runQuickAction('Erstelle einen Rechnungs-Entwurf über 4500 Euro für die Baustelle Berching für Flachdachabdichtung.')" 
-                            class="group p-2.5 sm:p-3 bg-white hover:bg-blue-50/50 text-slate-700 hover:text-blue-900 font-semibold text-xs rounded-xl border border-slate-200/90 hover:border-blue-300 shadow-2xs hover:shadow-md transition-all duration-200 flex items-center gap-2 cursor-pointer text-left">
-                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-slate-100 group-hover:bg-blue-600 text-slate-700 group-hover:text-white flex items-center justify-center text-xs transition-colors shrink-0 font-bold">📄</span>
-                        <span class="truncate">Rechnung</span>
-                    </button>
-
-                    <button wire:click="runQuickAction('Verbuchen wir Baukosten von 2800 Euro von Nachunternehmer Spenglerei Meier für Baustelle Berching.')" 
-                            class="group p-2.5 sm:p-3 bg-white hover:bg-emerald-50/50 text-slate-700 hover:text-emerald-900 font-semibold text-xs rounded-xl border border-slate-200/90 hover:border-emerald-300 shadow-2xs hover:shadow-md transition-all duration-200 flex items-center gap-2 cursor-pointer text-left">
-                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-100 group-hover:bg-emerald-600 text-emerald-700 group-hover:text-white flex items-center justify-center text-xs transition-colors shrink-0 font-bold">🏗️</span>
-                        <span class="truncate">Baukosten</span>
-                    </button>
-
-                    <button wire:click="runQuickAction('Teile Subunternehmer Meier Bausanierung für morgen ganztags auf Baustelle Berching ein.')" 
-                            class="group p-2.5 sm:p-3 bg-white hover:bg-indigo-50/50 text-slate-700 hover:text-indigo-900 font-semibold text-xs rounded-xl border border-slate-200/90 hover:border-indigo-300 shadow-2xs hover:shadow-md transition-all duration-200 flex items-center gap-2 cursor-pointer text-left">
-                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-indigo-100 group-hover:bg-indigo-600 text-indigo-700 group-hover:text-white flex items-center justify-center text-xs transition-colors shrink-0 font-bold">👷</span>
-                        <span class="truncate">Einsatzplaner</span>
-                    </button>
-
-                    <button wire:click="runQuickAction('Wie steht Baustelle Berching finanziell da? Berechne Rohgewinn und Marge.')" 
-                            class="group p-2.5 sm:p-3 bg-white hover:bg-emerald-50/50 text-slate-700 hover:text-emerald-900 font-semibold text-xs rounded-xl border border-slate-200/90 hover:border-emerald-300 shadow-2xs hover:shadow-md transition-all duration-200 flex items-center gap-2 cursor-pointer text-left">
-                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-100 group-hover:bg-emerald-600 text-emerald-700 group-hover:text-white flex items-center justify-center text-xs transition-colors shrink-0 font-bold">📊</span>
-                        <span class="truncate">Gewinn-Check</span>
-                    </button>
-
-                    <button wire:click="runQuickAction('Gib mir die Kontaktdaten und Telefonnummer von Immo Köhler.')" 
-                            class="group p-2.5 sm:p-3 bg-white hover:bg-blue-50/50 text-slate-700 hover:text-blue-900 font-semibold text-xs rounded-xl border border-slate-200/90 hover:border-blue-300 shadow-2xs hover:shadow-md transition-all duration-200 flex items-center gap-2 cursor-pointer text-left">
-                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-blue-100 group-hover:bg-blue-600 text-blue-700 group-hover:text-white flex items-center justify-center text-xs transition-colors shrink-0 font-bold">📇</span>
-                        <span class="truncate">Kontakte</span>
-                    </button>
-
-                    <button wire:click="runQuickAction('Können wir auf Baustelle Berching Bitumenabdichtungen verlegen oder gibt es Wetter-Warnungen?')" 
-                            class="group p-2.5 sm:p-3 bg-white hover:bg-amber-50/50 text-slate-700 hover:text-amber-900 font-semibold text-xs rounded-xl border border-slate-200/90 hover:border-amber-300 shadow-2xs hover:shadow-md transition-all duration-200 flex items-center gap-2 cursor-pointer text-left">
-                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-amber-100 group-hover:bg-amber-600 text-amber-700 group-hover:text-white flex items-center justify-center text-xs transition-colors shrink-0 font-bold">☀️</span>
-                        <span class="truncate">Wetter-Check</span>
-                    </button>
+            <!-- Group: Gestern -->
+            @if ($yesterday->isNotEmpty())
+                <div class="space-y-1">
+                    <div class="px-2.5 py-1 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                        <span>Gestern</span>
+                        <span class="text-[9px] font-mono text-slate-400">{{ $yesterday->count() }}</span>
+                    </div>
+                    @foreach ($yesterday as $c)
+                        @include('livewire.partials.agent-chat-list-item', ['chatItem' => $c, 'isActive' => $activeChatId === $c->id])
+                    @endforeach
                 </div>
+            @endif
+
+            <!-- Group: Letzte 7 Tage -->
+            @if ($lastWeek->isNotEmpty())
+                <div class="space-y-1">
+                    <div class="px-2.5 py-1 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                        <span>Letzte 7 Tage</span>
+                        <span class="text-[9px] font-mono text-slate-400">{{ $lastWeek->count() }}</span>
+                    </div>
+                    @foreach ($lastWeek as $c)
+                        @include('livewire.partials.agent-chat-list-item', ['chatItem' => $c, 'isActive' => $activeChatId === $c->id])
+                    @endforeach
+                </div>
+            @endif
+
+            <!-- Group: Ältere Chats -->
+            @if ($older->isNotEmpty())
+                <div class="space-y-1">
+                    <div class="px-2.5 py-1 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                        <span>Ältere Chats</span>
+                        <span class="text-[9px] font-mono text-slate-400">{{ $older->count() }}</span>
+                    </div>
+                    @foreach ($older as $c)
+                        @include('livewire.partials.agent-chat-list-item', ['chatItem' => $c, 'isActive' => $activeChatId === $c->id])
+                    @endforeach
+                </div>
+            @endif
+
+            @if ($chats->isEmpty())
+                <div class="p-6 text-center text-xs text-slate-500 space-y-2">
+                    <p class="text-2xl">💬</p>
+                    <p class="font-medium">Keine Unterhaltungen gefunden.</p>
+                </div>
+            @endif
+        </div>
+
+        <!-- Sidebar Footer Info & Status -->
+        <div class="p-3 bg-slate-900/90 border-t border-slate-800/80 shrink-0 space-y-2">
+            <div class="flex items-center justify-between text-[11px] text-slate-300">
+                <span class="flex items-center gap-1.5 font-bold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Modell: GPT-4o Agent</span>
+                </span>
+                <span class="text-[10px] font-mono text-slate-400">VOB/B & ERP</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 pt-1">
+                <a href="/wissen" wire:navigate class="px-2 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-bold transition flex items-center justify-center gap-1 text-center">
+                    <span>📚</span> <span>Wissensbasis</span>
+                </a>
+                <a href="/dashboard" wire:navigate class="px-2 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-bold transition flex items-center justify-center gap-1 text-center">
+                    <span>📊</span> <span>Cockpit</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ========================================== -->
+    <!-- MAIN CHAT CANVAS & CONVERSATION FEED       -->
+    <!-- ========================================== -->
+    <main class="flex-1 flex flex-col h-full min-w-0 bg-slate-50 relative overflow-hidden">
+        
+        <!-- Top Sticky Header Navigation Bar -->
+        <header class="h-14 sm:h-16 px-3.5 sm:px-6 bg-white/95 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between shrink-0 z-10 shadow-2xs">
+            <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <!-- Sidebar Toggle Button -->
+                <button @click="toggleSidebar()" 
+                        title="Seitenleiste umschalten"
+                        class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition cursor-pointer btn-press">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
+                    </svg>
+                </button>
+
+                <!-- Model Indicator Pill -->
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-100/90 rounded-full border border-slate-200/80">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-xs font-black text-slate-800 tracking-tight">BT Bau-Agent PRO</span>
+                    <span class="text-[10px] font-medium text-slate-500 border-l border-slate-300 pl-2">GPT-4o</span>
+                </div>
+
+                <!-- Active Chat Title with Quick Edit Icon -->
+                @if ($this->activeChat)
+                    <div class="flex items-center gap-1.5 min-w-0">
+                        <h1 class="text-xs sm:text-sm font-bold text-slate-900 truncate max-w-[140px] sm:max-w-xs md:max-w-md">
+                            {{ $this->activeChat->title }}
+                        </h1>
+                        <button wire:click="openRenameModal('{{ $this->activeChat->id }}')" 
+                                title="Titel bearbeiten"
+                                class="p-1 text-slate-400 hover:text-blue-600 transition cursor-pointer rounded">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                            </svg>
+                        </button>
+                    </div>
+                @endif
             </div>
 
-            <!-- Chat Console Area -->
-            <div class="bg-white border border-slate-200/90 rounded-2xl shadow-sm overflow-hidden flex flex-col h-[520px] sm:h-[600px]">
+            <!-- Right Controls: Export & Actions -->
+            <div class="flex items-center gap-1.5 sm:gap-2">
+                <button wire:click="exportChatMarkdown" 
+                        title="Unterhaltung als Markdown-Protokoll exportieren"
+                        class="px-2.5 sm:px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 font-bold text-xs rounded-xl border border-slate-200 transition flex items-center gap-1.5 cursor-pointer btn-press">
+                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    <span class="hidden sm:inline">Exportieren</span>
+                </button>
+
+                <button wire:click="createNewChat" 
+                        title="Neuen Chat starten"
+                        class="px-2.5 sm:px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs shadow-blue-500/20 transition flex items-center gap-1 cursor-pointer btn-press">
+                    <span class="text-sm leading-none">+</span>
+                    <span class="hidden sm:inline">Neu</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Scrollable Messages Feed -->
+        <div id="chat-scroll-container" 
+             class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 scroll-smooth">
+            
+            <div class="max-w-4xl mx-auto w-full space-y-6">
                 
-                <!-- Chat Window Header -->
-                @if ($this->activeChat)
-                    <div class="px-4 py-3 bg-slate-900 text-white border-b border-slate-800 flex justify-between items-center">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <h3 class="font-bold text-xs text-white truncate max-w-xs sm:max-w-md">
-                                {{ $this->activeChat->title }}
-                            </h3>
-                            <button wire:click="openRenameModal('{{ $this->activeChat->id }}')" 
-                                    title="Titel dieser Unterhaltung bearbeiten"
-                                    class="p-1 text-slate-400 hover:text-blue-300 transition cursor-pointer">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                            </button>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <button wire:click="exportChatMarkdown" 
-                                    title="Chat-Protokoll als Markdown herunterladen"
-                                    class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-blue-300 hover:text-white border border-slate-700 rounded-lg text-[10px] font-bold transition flex items-center gap-1 cursor-pointer">
-                                <span>📥</span> <span>Exportieren</span>
-                            </button>
-                            <span class="text-[10px] text-slate-400 font-mono hidden sm:inline">
-                                {{ $this->activeChat->created_at->format('d.m.Y H:i') }}
+                @if ($this->activeChat && $this->activeChat->messages->count() <= 1)
+                    <!-- ========================================== -->
+                    <!-- HERO EMPTY STATE (ChatGPT / Claude Style)   -->
+                    <!-- ========================================== -->
+                    <div class="py-8 sm:py-12 text-center space-y-6 animate-fade-in">
+                        <div class="relative inline-flex items-center justify-center">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center text-3xl sm:text-4xl shadow-xl shadow-blue-500/30 text-white border border-blue-400/40">
+                                🤖
+                            </div>
+                            <span class="absolute -bottom-1 -right-1 flex h-4 w-4">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-white"></span>
                             </span>
+                        </div>
+
+                        <div class="space-y-2 max-w-xl mx-auto px-4">
+                            <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                                Wie kann ich Ihr Bauprojekt heute unterstützen?
+                            </h2>
+                            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                                Ich bin Ihr autonomer KI-Betriebsassistent für die BT Bautechnik UG. Ich erstelle Bautagebücher, erfasse Mängel, berechne Aufmaße nach VOB/C und verbuche Rechnungen direkt im System.
+                            </p>
+                        </div>
+
+                        <!-- 6-Card Prompt Starter Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-4 text-left">
+                            
+                            <!-- Card 1: Bautagebuch -->
+                            <button wire:click="runQuickAction('Trage für heute im Bautagebuch ein: 3 Mann Kolonne auf Baustelle Berching, 40m² Bitumenabdichtung verlegt bei 22 Grad sonnig.')" 
+                                    class="group p-4 bg-white hover:bg-blue-50/60 rounded-2xl border border-slate-200 hover:border-blue-300 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 text-left">
+                                <div class="flex items-center justify-between">
+                                    <span class="w-9 h-9 rounded-xl bg-blue-100 group-hover:bg-blue-600 text-blue-700 group-hover:text-white flex items-center justify-center text-base transition-colors font-bold shadow-xs">🎙️</span>
+                                    <span class="text-[10px] font-bold text-blue-600 group-hover:translate-x-0.5 transition-transform">Starten ➔</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-extrabold text-xs text-slate-900 group-hover:text-blue-900">Bautagebuch erfassen</h4>
+                                    <p class="text-[11px] text-slate-500 group-hover:text-slate-600 line-clamp-2 mt-0.5">Kolonne, Witterung & Tagesleistung eintragen</p>
+                                </div>
+                            </button>
+
+                            <!-- Card 2: Mangel -->
+                            <button wire:click="runQuickAction('Erfasse einen Mangel: Dachdurchführung undicht im Dachgeschoss Haus A, Frist 7 Tage nach VOB/B.')" 
+                                    class="group p-4 bg-white hover:bg-amber-50/60 rounded-2xl border border-slate-200 hover:border-amber-300 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 text-left">
+                                <div class="flex items-center justify-between">
+                                    <span class="w-9 h-9 rounded-xl bg-amber-100 group-hover:bg-amber-600 text-amber-700 group-hover:text-white flex items-center justify-center text-base transition-colors font-bold shadow-xs">⚠️</span>
+                                    <span class="text-[10px] font-bold text-amber-600 group-hover:translate-x-0.5 transition-transform">Starten ➔</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-extrabold text-xs text-slate-900 group-hover:text-amber-900">Mangel & VOB/B Frist</h4>
+                                    <p class="text-[11px] text-slate-500 group-hover:text-slate-600 line-clamp-2 mt-0.5">Mangelrüge mit Nachfrist & Dokumentation</p>
+                                </div>
+                            </button>
+
+                            <!-- Card 3: Aufmaß -->
+                            <button wire:click="runQuickAction('Berechne Aufmaß: Kellerwand Süd 14,5m x 2,8m mit Fensteröffnung 1,20m x 1,00m nach VOB/C Übermessungsregeln.')" 
+                                    class="group p-4 bg-white hover:bg-indigo-50/60 rounded-2xl border border-slate-200 hover:border-indigo-300 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 text-left">
+                                <div class="flex items-center justify-between">
+                                    <span class="w-9 h-9 rounded-xl bg-indigo-100 group-hover:bg-indigo-600 text-indigo-700 group-hover:text-white flex items-center justify-center text-base transition-colors font-bold shadow-xs">📐</span>
+                                    <span class="text-[10px] font-bold text-indigo-600 group-hover:translate-x-0.5 transition-transform">Starten ➔</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-extrabold text-xs text-slate-900 group-hover:text-indigo-900">Aufmaß & VOB/C</h4>
+                                    <p class="text-[11px] text-slate-500 group-hover:text-slate-600 line-clamp-2 mt-0.5">Massenermittlung & Übermessungsregeln</p>
+                                </div>
+                            </button>
+
+                            <!-- Card 4: Rechnungen -->
+                            <button wire:click="runQuickAction('Erstelle einen Rechnungs-Entwurf über 4500 Euro für die Baustelle Berching für Flachdachabdichtung.')" 
+                                    class="group p-4 bg-white hover:bg-emerald-50/60 rounded-2xl border border-slate-200 hover:border-emerald-300 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 text-left">
+                                <div class="flex items-center justify-between">
+                                    <span class="w-9 h-9 rounded-xl bg-emerald-100 group-hover:bg-emerald-600 text-emerald-700 group-hover:text-white flex items-center justify-center text-base transition-colors font-bold shadow-xs">💶</span>
+                                    <span class="text-[10px] font-bold text-emerald-600 group-hover:translate-x-0.5 transition-transform">Starten ➔</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-extrabold text-xs text-slate-900 group-hover:text-emerald-900">Rechnungs-Entwurf</h4>
+                                    <p class="text-[11px] text-slate-500 group-hover:text-slate-600 line-clamp-2 mt-0.5">Abschlags- oder Schlussrechnung anlegen</p>
+                                </div>
+                            </button>
+
+                            <!-- Card 5: Marge / Deckungsbeitrag -->
+                            <button wire:click="runQuickAction('Wie steht Baustelle Berching finanziell da? Berechne Rohgewinn, Baukosten und Marge.')" 
+                                    class="group p-4 bg-white hover:bg-cyan-50/60 rounded-2xl border border-slate-200 hover:border-cyan-300 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 text-left">
+                                <div class="flex items-center justify-between">
+                                    <span class="w-9 h-9 rounded-xl bg-cyan-100 group-hover:bg-cyan-600 text-cyan-700 group-hover:text-white flex items-center justify-center text-base transition-colors font-bold shadow-xs">📊</span>
+                                    <span class="text-[10px] font-bold text-cyan-600 group-hover:translate-x-0.5 transition-transform">Starten ➔</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-extrabold text-xs text-slate-900 group-hover:text-cyan-900">Finanzielle Marge</h4>
+                                    <p class="text-[11px] text-slate-500 group-hover:text-slate-600 line-clamp-2 mt-0.5">Erlöse gegen Subunternehmer-Kosten stellen</p>
+                                </div>
+                            </button>
+
+                            <!-- Card 6: Wetter & Ausführung -->
+                            <button wire:click="runQuickAction('Können wir auf Baustelle Berching Bitumenabdichtungen verlegen oder gibt es wetterbedingte Bedenken gem. VOB/B?')" 
+                                    class="group p-4 bg-white hover:bg-amber-50/60 rounded-2xl border border-slate-200 hover:border-amber-300 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 text-left">
+                                <div class="flex items-center justify-between">
+                                    <span class="w-9 h-9 rounded-xl bg-amber-100 group-hover:bg-amber-600 text-amber-700 group-hover:text-white flex items-center justify-center text-base transition-colors font-bold shadow-xs">☀️</span>
+                                    <span class="text-[10px] font-bold text-amber-600 group-hover:translate-x-0.5 transition-transform">Starten ➔</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-extrabold text-xs text-slate-900 group-hover:text-amber-900">Wetter & Ausführung</h4>
+                                    <p class="text-[11px] text-slate-500 group-hover:text-slate-600 line-clamp-2 mt-0.5">Witterungsprüfung & Bedenkenanmeldung</p>
+                                </div>
+                            </button>
                         </div>
                     </div>
                 @endif
 
-                <!-- Messages Display with Instant Auto-Scroll to Newest Answer -->
-                <div x-data="{
-                         scrollToBottom() {
-                             this.$nextTick(() => {
-                                 $el.scrollTo({ top: $el.scrollHeight, behavior: 'smooth' });
-                             });
-                         }
-                     }"
-                     x-init="
-                         scrollToBottom();
-                         const observer = new MutationObserver(() => scrollToBottom());
-                         observer.observe($el, { childList: true, subtree: true, characterData: true });
-                     "
-                     class="flex-1 p-3.5 sm:p-6 overflow-y-auto space-y-4 sm:space-y-5 bg-slate-50/60 scroll-smooth">
-                    
-                    @if ($this->activeChat)
-                        @foreach ($this->activeChat->messages as $msg)
-                            @if ($msg->role === 'user')
-                                <!-- User Message Bubble -->
-                                <div class="flex justify-end items-end gap-2">
-                                    <div class="max-w-[92%] sm:max-w-xl">
-                                        <div class="flex justify-end items-center gap-2 mb-1 pr-1">
-                                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Sie</span>
-                                        </div>
-                                        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl rounded-tr-xs px-3.5 sm:px-5 py-2.5 sm:py-3 text-xs shadow-md shadow-blue-500/10 font-medium leading-relaxed">
-                                            {{ $msg->content }}
-                                        </div>
+                <!-- ========================================== -->
+                <!-- CONVERSATION MESSAGE BUBBLES               -->
+                <!-- ========================================== -->
+                @if ($this->activeChat)
+                    @foreach ($this->activeChat->messages as $msg)
+                        @if ($msg->role === 'user')
+                            <!-- User Message Card -->
+                            <div class="flex justify-end items-end gap-2.5 group/user">
+                                <div class="max-w-[92%] sm:max-w-2xl space-y-1">
+                                    <div class="flex items-center justify-end gap-2 pr-1">
+                                        <span class="text-[10px] font-bold text-slate-400">{{ $msg->created_at->format('H:i') }} Uhr</span>
+                                        <span class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Sie</span>
                                     </div>
-                                    <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-br from-slate-700 to-slate-900 text-white flex items-center justify-center text-xs font-bold shadow-xs shrink-0 mb-0.5">
-                                        👤
+                                    <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-slate-900 text-white rounded-3xl rounded-tr-xs px-4 sm:px-6 py-3 sm:py-3.5 text-xs sm:text-[13px] shadow-md shadow-blue-500/10 font-medium leading-relaxed whitespace-pre-wrap selection:bg-white selection:text-blue-900">
+                                        {{ $msg->content }}
                                     </div>
                                 </div>
-                            @else
-                                <!-- AI Assistant Bubble -->
-                                <div class="flex gap-2 sm:gap-3 items-start max-w-full sm:max-w-3xl">
-                                    <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white flex items-center justify-center text-xs sm:text-sm shadow-md border border-blue-500/20 shrink-0 mt-0.5">
-                                        🤖
-                                    </div>
-                                    <div class="space-y-2 flex-1 min-w-0">
-                                        <div class="flex items-center justify-between gap-2 mb-1">
-                                            <div class="flex items-center gap-2">
-                                                <span class="text-[11px] font-bold text-slate-900">BT KI-Agent</span>
-                                                <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60">Autonom</span>
-                                            </div>
+                                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-slate-700 to-slate-900 text-white flex items-center justify-center text-xs font-bold shadow-xs shrink-0 mb-1">
+                                    👤
+                                </div>
+                            </div>
+                        @else
+                            <!-- Assistant Message Card -->
+                            <div class="flex gap-3 items-start group/assistant">
+                                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 text-white flex items-center justify-center text-sm shadow-md shadow-blue-500/20 shrink-0 mt-0.5 border border-blue-300/30">
+                                    🤖
+                                </div>
 
-                                            <button onclick="navigator.clipboard.writeText(`{{ addslashes($msg->content) }}`); alert('Antwort in Zwischenablage kopiert!');"
-                                                    title="Antwort kopieren"
-                                                    class="text-[10px] text-slate-400 hover:text-blue-600 font-semibold flex items-center gap-1 transition cursor-pointer">
-                                                <span>📋</span>
-                                                <span class="hidden sm:inline">Kopieren</span>
-                                            </button>
+                                <div class="space-y-2 flex-1 min-w-0">
+                                    <!-- Assistant Header Bar -->
+                                    <div class="flex items-center justify-between gap-2">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs font-bold text-slate-900">BT KI-Agent</span>
+                                            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-50 text-blue-700 border border-blue-200/80">Autonom • VOB/B</span>
+                                            <span class="text-[10px] text-slate-400 hidden sm:inline">{{ $msg->created_at->format('H:i') }} Uhr</span>
                                         </div>
 
-                                        <!-- Executed Tools Badges -->
-                                        @if (!empty($msg->tools))
-                                            <div class="space-y-1.5 mb-2">
-                                                <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                                                    <span>⚙️ Ausgeführte Werkzeuge & System-Aktionen</span>
+                                        <!-- Copy Action -->
+                                        <button @click="copyText(`{{ addslashes($msg->content) }}`, '{{ $msg->id }}')" 
+                                                title="Antwort kopieren"
+                                                class="px-2 py-1 bg-white hover:bg-slate-100 text-slate-500 hover:text-slate-800 rounded-lg text-[10px] font-bold border border-slate-200/80 transition flex items-center gap-1 shadow-2xs cursor-pointer">
+                                            <span x-show="copiedMsgId !== '{{ $msg->id }}'">📋 Kopieren</span>
+                                            <span x-show="copiedMsgId === '{{ $msg->id }}'" class="text-emerald-600">✓ Kopiert!</span>
+                                        </button>
+                                    </div>
+
+                                    <!-- ReAct Agent System Action Drawer (if tools were executed) -->
+                                    @if (!empty($msg->tools))
+                                        <div x-data="{ openTools: false }" class="bg-slate-900 text-slate-100 rounded-2xl border border-slate-800 overflow-hidden shadow-xs">
+                                            <button @click="openTools = !openTools" 
+                                                    class="w-full px-3.5 py-2 flex items-center justify-between text-[11px] font-extrabold hover:bg-slate-800/60 transition cursor-pointer text-slate-300">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                                    <span>⚙️ {{ count($msg->tools) }} System-Aktionen autonom ausgeführt</span>
                                                 </div>
-                                                <div class="flex flex-wrap gap-2">
-                                                    @foreach ($msg->tools as $tExecuted)
-                                                        <div class="px-3 py-1.5 bg-slate-900 text-slate-100 border border-slate-800 rounded-xl text-3xs font-medium flex items-center gap-2 shadow-xs">
-                                                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                                                            <span class="font-mono text-blue-300">{{ $tExecuted['tool'] }}</span>
-                                                            <span class="text-slate-500">•</span>
-                                                            <span class="text-emerald-300 font-semibold">{!! \Illuminate\Support\Str::markdown($tExecuted['result']) !!}</span>
+                                                <div class="flex items-center gap-1.5 text-slate-400">
+                                                    <span x-text="openTools ? 'Details einklappen' : 'Details anzeigen'"></span>
+                                                    <svg :class="openTools ? 'rotate-180' : ''" class="w-3.5 h-3.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                                    </svg>
+                                                </div>
+                                            </button>
+
+                                            <div x-show="openTools" x-cloak class="p-3 border-t border-slate-800 space-y-2 bg-slate-950/60">
+                                                @foreach ($msg->tools as $tExecuted)
+                                                    <div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 text-xs space-y-1">
+                                                        <div class="flex items-center justify-between">
+                                                            <span class="font-mono text-cyan-300 font-bold">{{ $tExecuted['tool'] ?? 'Systemaktion' }}</span>
+                                                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">✓ Ausgeführt</span>
                                                         </div>
-                                                    @endforeach
-                                                </div>
+                                                        <div class="text-[11px] text-slate-300 font-medium leading-relaxed">
+                                                            {!! Str::markdown($tExecuted['result'] ?? '') !!}
+                                                        </div>
+                                                    </div>
+                                                @endforeach
                                             </div>
-                                        @endif
-
-                                        <!-- Message Content with Rendered Markdown -->
-                                        <div x-data="{ copied: false }" class="bg-white border border-slate-200/90 rounded-2xl rounded-tl-xs p-3.5 sm:p-6 text-xs text-slate-800 leading-relaxed shadow-sm font-sans relative group/msg [&_p]:mb-3 [&_p:last-child]:mb-0 [&_strong]:font-bold [&_strong]:text-slate-900 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2.5 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2.5 [&_li]:mb-1.5 [&_h1]:text-base [&_h1]:font-bold [&_h1]:text-slate-900 [&_h1]:my-2.5 [&_h2]:text-sm [&_h2]:font-bold [&_h2]:text-slate-900 [&_h2]:my-2.5 [&_h3]:text-xs [&_h3]:font-bold [&_h3]:text-slate-900 [&_h3]:my-2 [&_code]:bg-blue-50 [&_code]:text-blue-700 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded-md [&_code]:font-mono [&_code]:text-[11px] [&_pre]:bg-slate-950 [&_pre]:text-slate-100 [&_pre]:p-3.5 [&_pre]:rounded-xl [&_pre]:overflow-x-auto [&_pre]:my-2.5 [&_blockquote]:border-l-4 [&_blockquote]:border-blue-600 [&_blockquote]:pl-3.5 [&_blockquote]:italic [&_blockquote]:text-slate-600 [&_table]:w-full [&_table]:border-collapse [&_table]:my-2.5 [&_th]:bg-slate-100 [&_th]:p-2.5 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-slate-200 [&_td]:p-2.5 [&_td]:border [&_td]:border-slate-200 [&_a]:text-blue-600 [&_a]:font-bold [&_a]:underline">
-                                            
-                                            <!-- Quick Copy Button (Top Right of Bubble) -->
-                                            <button @click="navigator.clipboard.writeText($refs.msgText.innerText); copied = true; setTimeout(() => copied = false, 2000)"
-                                                    title="Antwort kopieren"
-                                                    class="absolute right-3 top-3 px-2 py-1 bg-slate-100 hover:bg-blue-50 text-slate-500 hover:text-blue-700 rounded-lg text-[10px] font-bold border border-slate-200 hover:border-blue-300 transition-all opacity-0 group-hover/msg:opacity-100 flex items-center gap-1 shadow-2xs cursor-pointer btn-press">
-                                                <span x-show="!copied">📋</span>
-                                                <span x-show="copied" class="text-emerald-600">✓</span>
-                                                <span x-text="copied ? 'Kopiert!' : 'Kopieren'"></span>
-                                            </button>
-
-                                            <div x-ref="msgText">
-                                                {!! \Illuminate\Support\Str::markdown($msg->content) !!}
-                                            </div>
-                                            
-                                            <!-- Feature 3: Interactive Direct Action Buttons -->
-                                            @php $lower = strtolower($msg->content); @endphp
-                                            @if (str_contains($lower, 'bautagebuch') || str_contains($lower, 'tagesbericht') || str_contains($lower, 'mangel') || str_contains($lower, 'rechnung') || str_contains($lower, 'einsatzplan'))
-                                                <div class="mt-3 pt-3 border-t border-slate-100 flex flex-wrap gap-2">
-                                                    @if(str_contains($lower, 'bautagebuch') || str_contains($lower, 'tagesbericht'))
-                                                        <a href="/bautagebuch" wire:navigate class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-800 font-extrabold text-[10px] rounded-lg border border-blue-200 transition flex items-center gap-1">
-                                                            <span>🎙️</span> <span>Zum Bautagebuch ➔</span>
-                                                        </a>
-                                                    @endif
-                                                    @if(str_contains($lower, 'mangel') || str_contains($lower, 'mängel'))
-                                                        <a href="/defects" wire:navigate class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 font-extrabold text-[10px] rounded-lg border border-amber-200 transition flex items-center gap-1">
-                                                            <span>⚠️</span> <span>Zur Mängel-Verwaltung ➔</span>
-                                                        </a>
-                                                    @endif
-                                                    @if(str_contains($lower, 'rechnung') || str_contains($lower, 'angebot'))
-                                                        <a href="/rechnungen" wire:navigate class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-extrabold text-[10px] rounded-lg border border-emerald-200 transition flex items-center gap-1">
-                                                            <span>📄</span> <span>Zu den Rechnungen ➔</span>
-                                                        </a>
-                                                    @endif
-                                                    @if(str_contains($lower, 'einsatzplan') || str_contains($lower, 'handwerker'))
-                                                        <a href="/einsatzplan" wire:navigate class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 font-extrabold text-[10px] rounded-lg border border-indigo-200 transition flex items-center gap-1">
-                                                            <span>👷</span> <span>Zum Einsatzplaner ➔</span>
-                                                        </a>
-                                                    @endif
-                                                </div>
-                                            @endif
                                         </div>
+                                    @endif
 
-                                        <!-- Feature 4: Smart Follow-Up Chips on Latest Message -->
-                                        @if ($loop->last)
-                                            <div class="pt-2 space-y-1.5">
-                                                <div class="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                                                    <span>💡 Vorgeschlagene Folge-Aktionen:</span>
-                                                </div>
-                                                <div class="flex flex-wrap gap-1.5">
-                                                    <button wire:click="runQuickAction('Welche Fristen oder VOB/B Bedenken sind hierbei zu beachten?')" 
-                                                            class="px-2.5 py-1 bg-white hover:bg-amber-50 text-slate-700 hover:text-amber-900 font-bold text-[11px] rounded-lg border border-slate-200 hover:border-amber-300 transition shadow-2xs cursor-pointer">
-                                                        <span>⚠️ Fristen & VOB/B prüfen</span>
-                                                    </button>
-                                                    <button wire:click="runQuickAction('Erstelle daraus einen Bautagebuch-Eintrag für heute.')" 
-                                                            class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-900 font-bold text-[11px] rounded-lg border border-slate-200 hover:border-blue-300 transition shadow-2xs cursor-pointer">
-                                                        <span>🎙️ In Bautagebuch eintragen</span>
-                                                    </button>
-                                                    <button wire:click="runQuickAction('Wie sieht die finanzielle Marge für diese Baustelle aktuell aus?')" 
-                                                            class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 font-bold text-[11px] rounded-lg border border-slate-200 hover:border-emerald-300 transition shadow-2xs cursor-pointer">
-                                                        <span>📊 Rohgewinn-Check</span>
-                                                    </button>
-                                                </div>
+                                    <!-- Assistant Markdown Response Body -->
+                                    <div class="bg-white border border-slate-200/90 rounded-3xl rounded-tl-xs p-4 sm:p-6 text-xs sm:text-[13px] text-slate-800 leading-relaxed shadow-sm font-sans [&_p]:mb-3 [&_p:last-child]:mb-0 [&_strong]:font-bold [&_strong]:text-slate-900 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2.5 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2.5 [&_li]:mb-1.5 [&_h1]:text-base [&_h1]:font-extrabold [&_h1]:text-slate-900 [&_h1]:my-3 [&_h2]:text-sm [&_h2]:font-bold [&_h2]:text-slate-900 [&_h2]:my-2.5 [&_h3]:text-xs [&_h3]:font-bold [&_h3]:text-slate-900 [&_h3]:my-2 [&_code]:bg-blue-50 [&_code]:text-blue-700 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded-md [&_code]:font-mono [&_code]:text-[11px] [&_pre]:bg-slate-950 [&_pre]:text-slate-100 [&_pre]:p-4 [&_pre]:rounded-2xl [&_pre]:overflow-x-auto [&_pre]:my-3 [&_blockquote]:border-l-4 [&_blockquote]:border-blue-600 [&_blockquote]:bg-blue-50/40 [&_blockquote]:p-3 [&_blockquote]:rounded-r-xl [&_blockquote]:italic [&_blockquote]:text-slate-700 [&_table]:w-full [&_table]:border-collapse [&_table]:my-3 [&_th]:bg-slate-100 [&_th]:p-2.5 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-slate-200 [&_td]:p-2.5 [&_td]:border [&_td]:border-slate-200 [&_a]:text-blue-600 [&_a]:font-bold [&_a]:underline">
+                                        {!! Str::markdown($msg->content) !!}
+
+                                        <!-- Interactive Navigation Buttons for context -->
+                                        @php $lower = strtolower($msg->content); @endphp
+                                        @if (str_contains($lower, 'bautagebuch') || str_contains($lower, 'tagesbericht') || str_contains($lower, 'mangel') || str_contains($lower, 'rechnung') || str_contains($lower, 'einsatzplan'))
+                                            <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap gap-2">
+                                                @if(str_contains($lower, 'bautagebuch') || str_contains($lower, 'tagesbericht'))
+                                                    <a href="/bautagebuch" wire:navigate class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 font-extrabold text-[11px] rounded-xl border border-blue-200 transition flex items-center gap-1.5 btn-press">
+                                                        <span>🎙️</span> <span>Bautagebuch öffnen ➔</span>
+                                                    </a>
+                                                @endif
+                                                @if(str_contains($lower, 'mangel') || str_contains($lower, 'mängel'))
+                                                    <a href="/maengel" wire:navigate class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-extrabold text-[11px] rounded-xl border border-amber-200 transition flex items-center gap-1.5 btn-press">
+                                                        <span>⚠️</span> <span>Mängel-Verwaltung öffnen ➔</span>
+                                                    </a>
+                                                @endif
+                                                @if(str_contains($lower, 'rechnung') || str_contains($lower, 'angebot'))
+                                                    <a href="/rechnungen" wire:navigate class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-extrabold text-[11px] rounded-xl border border-emerald-200 transition flex items-center gap-1.5 btn-press">
+                                                        <span>💶</span> <span>Rechnungen ansehen ➔</span>
+                                                    </a>
+                                                @endif
+                                                @if(str_contains($lower, 'einsatzplan') || str_contains($lower, 'handwerker'))
+                                                    <a href="/einsatzplan" wire:navigate class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 font-extrabold text-[11px] rounded-xl border border-indigo-200 transition flex items-center gap-1.5 btn-press">
+                                                        <span>👷</span> <span>Einsatzplaner aufrufen ➔</span>
+                                                    </a>
+                                                @endif
                                             </div>
                                         @endif
                                     </div>
-                                </div>
-                            @endif
-                        @endforeach
-                    @endif
 
-                    <!-- Instant Frontend Loading Indicator when Senden is clicked -->
-                    <div wire:loading.flex wire:target="sendPrompt, runQuickAction, photoFile, processVoiceRecording" 
-                         class="flex gap-3 items-start max-w-full sm:max-w-xl animate-fade-in my-2">
-                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-slate-900 text-white flex items-center justify-center text-sm shadow-md shadow-blue-500/20 animate-bounce shrink-0 mt-0.5">
+                                    <!-- Smart Follow-Up Action Chips (on last assistant message) -->
+                                    @if ($loop->last)
+                                        <div class="pt-2 space-y-1.5">
+                                            <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                                                <span>💡 Vorgeschlagene nächste Schritte:</span>
+                                            </div>
+                                            <div class="flex flex-wrap gap-2">
+                                                <button wire:click="runQuickAction('Welche Fristen oder VOB/B Bedenken sind hierbei zwingend zu beachten?')" 
+                                                        class="px-3 py-1.5 bg-white hover:bg-amber-50 text-slate-700 hover:text-amber-900 font-bold text-xs rounded-xl border border-slate-200 hover:border-amber-300 transition shadow-2xs cursor-pointer btn-press">
+                                                    <span>⚠️ VOB/B Fristen prüfen</span>
+                                                </button>
+                                                <button wire:click="runQuickAction('Erstelle daraus einen Bautagebuch-Eintrag für heute.')" 
+                                                        class="px-3 py-1.5 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-900 font-bold text-xs rounded-xl border border-slate-200 hover:border-blue-300 transition shadow-2xs cursor-pointer btn-press">
+                                                    <span>🎙️ In Bautagebuch eintragen</span>
+                                                </button>
+                                                <button wire:click="runQuickAction('Wie sieht die finanzielle Marge für diese Baustelle aktuell aus?')" 
+                                                        class="px-3 py-1.5 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-900 font-bold text-xs rounded-xl border border-slate-200 hover:border-emerald-300 transition shadow-2xs cursor-pointer btn-press">
+                                                    <span>📊 Rohgewinn-Check</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                @endif
+
+                <!-- Real-time Agent Thinking Indicator -->
+                <div wire:loading.flex wire:target="sendPrompt, runQuickAction, photoFile, processAudioUpload" 
+                     class="flex gap-3 items-start max-w-2xl animate-fade-in my-3">
+                    <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 text-white flex items-center justify-center text-sm shadow-md shadow-blue-500/20 animate-pulse shrink-0 border border-blue-300/30">
+                        🤖
+                    </div>
+                    <div class="bg-white border border-blue-200/90 rounded-3xl rounded-tl-xs px-5 py-4 text-xs text-slate-800 shadow-md shadow-blue-500/5 flex items-center gap-3">
+                        <div class="flex items-center gap-1 shrink-0">
+                            <span class="w-2 h-2 rounded-full bg-blue-600 animate-typing-1"></span>
+                            <span class="w-2 h-2 rounded-full bg-indigo-600 animate-typing-2"></span>
+                            <span class="w-2 h-2 rounded-full bg-cyan-500 animate-typing-3"></span>
+                        </div>
+                        <div class="space-y-0.5">
+                            <p class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                                <span>BT KI-Agent generiert Antwort & führt Befehle aus...</span>
+                            </p>
+                            <p class="text-[11px] text-slate-500">Analysiere Baustellendatenbank, VOB/B Richtlinien & ERP-Werkzeuge...</p>
+                        </div>
+                    </div>
+                </div>
+
+                @if ($isProcessing)
+                    <div wire:loading.remove class="flex gap-3 items-start max-w-2xl animate-fade-in my-3">
+                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 text-white flex items-center justify-center text-sm shadow-md shadow-blue-500/20 animate-pulse shrink-0 border border-blue-300/30">
                             🤖
                         </div>
-                        <div class="bg-white border border-blue-200/90 rounded-2xl rounded-tl-xs px-4 py-3 text-xs text-slate-800 font-medium shadow-md shadow-blue-500/5 flex items-center gap-3">
-                            <div class="flex items-center gap-1.5 shrink-0">
-                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping"></span>
-                                <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <div class="bg-white border border-blue-200/90 rounded-3xl rounded-tl-xs px-5 py-4 text-xs text-slate-800 shadow-md shadow-blue-500/5 flex items-center gap-3">
+                            <div class="flex items-center gap-1 shrink-0">
+                                <span class="w-2 h-2 rounded-full bg-blue-600 animate-typing-1"></span>
+                                <span class="w-2 h-2 rounded-full bg-indigo-600 animate-typing-2"></span>
+                                <span class="w-2 h-2 rounded-full bg-cyan-500 animate-typing-3"></span>
                             </div>
                             <div class="space-y-0.5">
                                 <p class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
-                                    <span>BT KI-Agent generiert Antwort...</span>
-                                    <span class="text-[10px] text-blue-600 font-semibold animate-pulse">(Live)</span>
+                                    <span>BT KI-Agent verarbeitet Aufgabe...</span>
                                 </p>
-                                <p class="text-[11px] text-slate-500 italic">Analysiere Baustellen-Datenbank, VOB/B & Werkzeuge...</p>
+                                <p class="text-[11px] text-slate-500">Führe Datenbank-Werkzeuge & Berechnungen aus...</p>
                             </div>
                         </div>
                     </div>
-
-                    @if ($isProcessing)
-                        <div wire:loading.remove class="flex gap-3 items-start max-w-full sm:max-w-xl animate-fade-in my-2">
-                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-slate-900 text-white flex items-center justify-center text-sm shadow-md shadow-blue-500/20 animate-bounce shrink-0 mt-0.5">
-                                🤖
-                            </div>
-                            <div class="bg-white border border-blue-200/90 rounded-2xl rounded-tl-xs px-4 py-3 text-xs text-slate-800 font-medium shadow-md shadow-blue-500/5 flex items-center gap-3">
-                                <div class="flex items-center gap-1.5 shrink-0">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping"></span>
-                                    <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                </div>
-                                <div class="space-y-0.5">
-                                    <p class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
-                                        <span>BT KI-Agent verarbeitet Befehl...</span>
-                                    </p>
-                                    <p class="text-[11px] text-slate-500 italic">Führe Datenbank-Werkzeuge & Berechnungen aus...</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-
-                <!-- Input Form with OpenAI Whisper Voice Recording & Vision Photo Upload -->
-                <div x-data="{
-                    recording: false,
-                    recordingTime: 0,
-                    recordingInterval: null,
-                    mediaRecorder: null,
-                    audioChunks: [],
-                    async startRecording() {
-                        try {
-                            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                            this.mediaRecorder = new MediaRecorder(stream);
-                            this.audioChunks = [];
-                            this.mediaRecorder.ondataavailable = e => {
-                                if (e.data.size > 0) this.audioChunks.push(e.data);
-                            };
-                            this.mediaRecorder.onstop = async () => {
-                                clearInterval(this.recordingInterval);
-                                const blob = new Blob(this.audioChunks, { type: 'audio/webm' });
-                                const file = new File([blob], 'speech.webm', { type: 'audio/webm' });
-                                @this.upload('audioFile', file, () => {
-                                    @this.processAudioUpload();
-                                });
-                            };
-                            this.mediaRecorder.start();
-                            this.recording = true;
-                            this.recordingTime = 0;
-                            this.recordingInterval = setInterval(() => this.recordingTime++, 1000);
-                        } catch (err) {
-                            alert('Mikrofon-Zugriff fehlgeschlagen: ' + err.message);
-                        }
-                    },
-                    stopRecording() {
-                        if (this.mediaRecorder && this.recording) {
-                            this.mediaRecorder.stop();
-                            this.recording = false;
-                            clearInterval(this.recordingInterval);
-                            if (this.mediaRecorder.stream) {
-                                this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
-                            }
-                        }
-                    }
-                }">
-                    <!-- Photo Thumbnail Preview if uploaded -->
-                    @if ($photoFile)
-                        <div class="px-4 py-2 bg-blue-50 border-t border-blue-200 flex items-center justify-between gap-2">
-                            <div class="flex items-center gap-2">
-                                <span class="text-lg">📷</span>
-                                <div>
-                                    <span class="text-xs font-extrabold text-blue-900">Baustellen-Foto ausgewählt (Vision KI)</span>
-                                    <span class="text-[10px] text-blue-600 block">{{ $photoFile->getClientOriginalName() }}</span>
-                                </div>
-                            </div>
-                            <button type="button" wire:click="$set('photoFile', null)" class="text-slate-400 hover:text-rose-600 font-bold text-xs cursor-pointer">✕ Entfernen</button>
-                        </div>
-                    @endif
-
-                    <!-- Quick Action Pills -->
-                    <div class="px-3 sm:px-4 pt-2.5 bg-slate-50 border-t border-slate-200/60 flex flex-wrap gap-1.5 sm:gap-2 text-[11px]">
-                        <button type="button" wire:click="$set('userMessage', 'Berechne Aufmaß: Kellerwand Süd 14,5m x 2,8m mit Fenster 1,20m x 1,00m nach VOB/B')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-indigo-50 text-indigo-700 hover:text-indigo-900 rounded-lg border border-indigo-200 hover:border-indigo-300 font-bold transition-all shadow-2xs btn-press cursor-pointer flex items-center gap-1">
-                            <span>📐</span> <span>Aufmaß berechnen</span>
-                        </button>
-                        <button type="button" wire:click="$set('userMessage', 'Zeige Baustoffpreise Juli 2026 für Bitumen, Injektionsharz und Dämmung')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-blue-50 text-blue-700 hover:text-blue-900 rounded-lg border border-blue-200 hover:border-blue-300 font-bold transition-all shadow-2xs btn-press cursor-pointer flex items-center gap-1">
-                            <span>📦</span> <span>Materialpreise</span>
-                        </button>
-                        <button type="button" wire:click="$set('userMessage', 'Erstelle einen KI-Wochenbericht für Baustelle Berching')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 rounded-lg border border-slate-200 hover:border-blue-300 font-medium transition-all shadow-2xs btn-press cursor-pointer flex items-center gap-1">
-                            <span>📊</span> <span>Wochenbericht</span>
-                        </button>
-                        <button type="button" wire:click="$set('userMessage', 'Erstelle eine Bedenkenanmeldung gem. § 4 VOB/B wegen feuchtem Untergrund')" class="px-2 sm:px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 rounded-lg border border-slate-200 hover:border-blue-300 font-medium transition-all shadow-2xs btn-press cursor-pointer flex items-center gap-1">
-                            <span>⚖️</span> <span>VOB/B Bedenken</span>
-                        </button>
-                    </div>
-
-                    <form wire:submit="sendPrompt" class="p-2.5 sm:p-4 bg-white border-t border-slate-200/80 flex items-end gap-1.5 sm:gap-3">
-                        
-                        <!-- Photo Upload Button (OpenAI Vision) -->
-                        <label title="Baustellen-Foto hochladen"
-                                class="p-2.5 sm:px-3.5 sm:py-3.5 bg-slate-100 hover:bg-blue-100 text-slate-700 hover:text-blue-800 font-bold text-xs rounded-xl border border-slate-200 hover:border-blue-300 transition-all btn-press flex items-center justify-center gap-1.5 shrink-0 cursor-pointer h-10 sm:h-auto">
-                            <span class="text-sm sm:text-lg">📷</span>
-                            <span class="hidden md:inline">Foto</span>
-                            <input type="file" wire:model="photoFile" accept="image/*" class="hidden">
-                        </label>
-
-                        <!-- Voice Recording Button (OpenAI Whisper) -->
-                        <template x-if="!recording">
-                            <button type="button" 
-                                    @click="startRecording()"
-                                    title="Spracheingabe starten"
-                                    class="p-2.5 sm:px-3.5 sm:py-3.5 bg-slate-100 hover:bg-blue-100 text-slate-700 hover:text-blue-800 font-bold text-xs rounded-xl border border-slate-200 hover:border-blue-300 transition-all btn-press flex items-center justify-center gap-1.5 shrink-0 cursor-pointer h-10 sm:h-auto">
-                                <span class="text-sm sm:text-lg">🎙️</span>
-                                <span class="hidden md:inline">Einsprechen</span>
-                            </button>
-                        </template>
-
-                        <template x-if="recording">
-                            <button type="button" 
-                                    @click="stopRecording()"
-                                    title="Aufnahme beenden & analysieren"
-                                    class="px-2.5 sm:px-3.5 py-2.5 sm:py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-md shadow-rose-500/20 animate-pulse transition-all flex items-center gap-1.5 shrink-0 cursor-pointer h-10 sm:h-auto">
-                                <span class="w-2.5 h-2.5 rounded-full bg-white animate-ping"></span>
-                                <span>Stopp (<span x-text="recordingTime"></span>s)</span>
-                            </button>
-                        </template>
-
-                        <div class="relative flex-1">
-                            <textarea wire:model="userMessage" 
-                                      x-data="{
-                                          resize() {
-                                              $el.style.height = 'auto';
-                                              $el.style.height = Math.min($el.scrollHeight, 180) + 'px';
-                                          }
-                                      }"
-                                      x-init="resize()"
-                                      @input="resize()"
-                                      x-effect="resize(); $nextTick(() => resize())"
-                                      @keydown.enter="if (!$event.shiftKey) { $event.preventDefault(); $wire.sendPrompt(); }"
-                                      rows="1"
-                                      class="w-full bg-slate-50/80 border border-slate-200 rounded-xl pl-3.5 sm:pl-4 pr-3.5 sm:pr-14 py-2.5 sm:py-3 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all shadow-2xs resize-none overflow-y-auto max-h-44 leading-relaxed block"
-                                      placeholder="Aufgabe eingeben oder einsprechen..." required></textarea>
-                            
-                            <div class="absolute right-2.5 bottom-2.5 hidden sm:flex items-center gap-1 text-[9px] font-semibold text-slate-400 bg-slate-100/90 border border-slate-200/80 px-1.5 py-0.5 rounded shadow-2xs backdrop-blur-xs">
-                                Enter ↵
-                            </div>
-                        </div>
-
-                        <button type="submit" wire:loading.attr="disabled" 
-                                class="px-3 sm:px-5 py-2.5 sm:py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-95 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-1.5 shrink-0 disabled:opacity-50 cursor-pointer h-10 sm:h-auto">
-                            <span wire:loading.remove wire:target="sendPrompt" class="flex items-center gap-1.5">
-                                <span>🚀</span>
-                                <span class="hidden sm:inline">Senden</span>
-                            </span>
-                            <span wire:loading wire:target="sendPrompt" class="flex items-center gap-2">
-                                <span class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                                <span class="hidden sm:inline">Führe aus...</span>
-                            </span>
-                        </button>
-                    </form>
-                </div>
+                @endif
             </div>
         </div>
-    </div>
 
-    <!-- Rename Chat Session Modal -->
+        <!-- ========================================== -->
+        <!-- FLOATING BOTTOM COMPOSER (ChatGPT Style)   -->
+        <!-- ========================================== -->
+        <div class="shrink-0 p-3 sm:p-5 bg-gradient-to-t from-slate-50 via-slate-50/95 to-transparent z-10">
+            <div class="max-w-4xl mx-auto w-full space-y-2">
+                
+                <!-- Quick Topic Pills (Above Input) -->
+                <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-[11px]">
+                    <button type="button" 
+                            wire:click="$set('userMessage', 'Berechne Aufmaß: Kellerwand Süd 14,5m x 2,8m mit Fenster 1,20m x 1,00m nach VOB/C')" 
+                            class="px-3 py-1 bg-white hover:bg-indigo-50 text-indigo-800 rounded-full border border-slate-200 hover:border-indigo-300 font-bold transition shadow-2xs shrink-0 cursor-pointer flex items-center gap-1">
+                        <span>📐</span> <span>Aufmaß VOB/C</span>
+                    </button>
+                    <button type="button" 
+                            wire:click="$set('userMessage', 'Zeige Baustoffpreise Juli 2026 für Bitumen, Injektionsharz und Dämmung')" 
+                            class="px-3 py-1 bg-white hover:bg-blue-50 text-blue-800 rounded-full border border-slate-200 hover:border-blue-300 font-bold transition shadow-2xs shrink-0 cursor-pointer flex items-center gap-1">
+                        <span>📦</span> <span>Materialpreise</span>
+                    </button>
+                    <button type="button" 
+                            wire:click="$set('userMessage', 'Erstelle einen KI-Wochenbericht für Baustelle Berching')" 
+                            class="px-3 py-1 bg-white hover:bg-slate-100 text-slate-700 rounded-full border border-slate-200 font-medium transition shadow-2xs shrink-0 cursor-pointer flex items-center gap-1">
+                        <span>📊</span> <span>Wochenbericht</span>
+                    </button>
+                    <button type="button" 
+                            wire:click="$set('userMessage', 'Erstelle eine Bedenkenanmeldung gem. § 4 VOB/B wegen feuchtem Untergrund')" 
+                            class="px-3 py-1 bg-white hover:bg-amber-50 text-amber-900 rounded-full border border-slate-200 hover:border-amber-300 font-medium transition shadow-2xs shrink-0 cursor-pointer flex items-center gap-1">
+                        <span>⚖️</span> <span>VOB/B Bedenken</span>
+                    </button>
+                </div>
+
+                <!-- Floating Input Card -->
+                <div x-data="{
+                        recording: false,
+                        recordingTime: 0,
+                        recordingInterval: null,
+                        mediaRecorder: null,
+                        audioChunks: [],
+                        async startRecording() {
+                            try {
+                                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                                this.mediaRecorder = new MediaRecorder(stream);
+                                this.audioChunks = [];
+                                this.mediaRecorder.ondataavailable = e => {
+                                    if (e.data.size > 0) this.audioChunks.push(e.data);
+                                };
+                                this.mediaRecorder.onstop = async () => {
+                                    clearInterval(this.recordingInterval);
+                                    const blob = new Blob(this.audioChunks, { type: 'audio/webm' });
+                                    const file = new File([blob], 'speech.webm', { type: 'audio/webm' });
+                                    @this.upload('audioFile', file, () => {
+                                        @this.processAudioUpload();
+                                    });
+                                };
+                                this.mediaRecorder.start();
+                                this.recording = true;
+                                this.recordingTime = 0;
+                                this.recordingInterval = setInterval(() => this.recordingTime++, 1000);
+                            } catch (err) {
+                                alert('Mikrofon-Zugriff fehlgeschlagen: ' + err.message);
+                            }
+                        },
+                        stopRecording() {
+                            if (this.mediaRecorder && this.recording) {
+                                this.mediaRecorder.stop();
+                                this.recording = false;
+                                clearInterval(this.recordingInterval);
+                                if (this.mediaRecorder.stream) {
+                                    this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                                }
+                            }
+                        }
+                     }"
+                     class="bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-900/5 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all overflow-hidden">
+                    
+                    <!-- Photo Thumbnail Preview if attached -->
+                    @if ($photoFile)
+                        <div class="px-4 py-2.5 bg-blue-50/80 border-b border-blue-200 flex items-center justify-between gap-3 animate-fade-in">
+                            <div class="flex items-center gap-2.5">
+                                <span class="text-xl">📷</span>
+                                <div>
+                                    <span class="text-xs font-extrabold text-blue-950 block">Baustellen-Foto ausgewählt (GPT-4o Vision)</span>
+                                    <span class="text-[10px] text-blue-600">{{ $photoFile->getClientOriginalName() }}</span>
+                                </div>
+                            </div>
+                            <button type="button" wire:click="$set('photoFile', null)" class="text-slate-400 hover:text-rose-600 font-bold text-xs cursor-pointer px-2 py-1 rounded hover:bg-white transition">
+                                ✕ Entfernen
+                            </button>
+                        </div>
+                    @endif
+
+                    <!-- Voice Recording Banner Overlay -->
+                    <div x-show="recording" x-cloak class="px-4 py-3 bg-rose-600 text-white flex items-center justify-between gap-3 animate-fade-in">
+                        <div class="flex items-center gap-3">
+                            <div class="flex items-center gap-1">
+                                <span class="w-1.5 bg-white rounded-full animate-soundwave-1"></span>
+                                <span class="w-1.5 bg-white rounded-full animate-soundwave-2"></span>
+                                <span class="w-1.5 bg-white rounded-full animate-soundwave-3"></span>
+                                <span class="w-1.5 bg-white rounded-full animate-soundwave-4"></span>
+                                <span class="w-1.5 bg-white rounded-full animate-soundwave-5"></span>
+                            </div>
+                            <span class="text-xs font-bold">Sprachaufnahme aktiv: <span x-text="recordingTime"></span>s</span>
+                        </div>
+                        <button type="button" @click="stopRecording()" class="px-3 py-1 bg-white text-rose-700 font-extrabold text-xs rounded-xl hover:bg-rose-50 transition cursor-pointer shadow-sm">
+                            Aufnahme beenden & transkribieren
+                        </button>
+                    </div>
+
+                    <!-- Composer Input Form -->
+                    <form wire:submit="sendPrompt" class="p-3 sm:p-4 space-y-2">
+                        <textarea wire:model="userMessage" 
+                                  x-data="{
+                                      resize() {
+                                          $el.style.height = 'auto';
+                                          $el.style.height = Math.min($el.scrollHeight, 180) + 'px';
+                                      }
+                                  }"
+                                  x-init="resize()"
+                                  @input="resize()"
+                                  x-effect="resize(); $nextTick(() => resize())"
+                                  @keydown.enter="if (!$event.shiftKey) { $event.preventDefault(); $wire.sendPrompt(); }"
+                                  rows="1"
+                                  placeholder="Fragen Sie etwas, erteilen Sie einen Bau-Befehl oder sprechen Sie ein..." 
+                                  class="w-full bg-transparent border-0 p-1 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:ring-0 focus:outline-none resize-none max-h-44 leading-relaxed block"
+                                  required></textarea>
+                        
+                        <!-- Toolbar Controls (Foto, Voice, Send) -->
+                        <div class="flex items-center justify-between pt-1 border-t border-slate-100">
+                            <div class="flex items-center gap-1 sm:gap-2">
+                                <!-- Photo Upload Button (Vision) -->
+                                <label title="Baustellen-Foto für GPT-4o Vision Analyse hochladen" 
+                                       class="p-2 sm:px-3 sm:py-1.5 text-slate-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition flex items-center gap-1.5 text-xs font-bold cursor-pointer btn-press border border-transparent hover:border-blue-200">
+                                    <span class="text-base">📷</span>
+                                    <span class="hidden sm:inline">Foto</span>
+                                    <input type="file" wire:model="photoFile" accept="image/*" class="hidden">
+                                </label>
+
+                                <!-- Whisper Voice Button -->
+                                <template x-if="!recording">
+                                    <button type="button" 
+                                            @click="startRecording()" 
+                                            title="Spracheingabe mit OpenAI Whisper starten"
+                                            class="p-2 sm:px-3 sm:py-1.5 text-slate-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition flex items-center gap-1.5 text-xs font-bold cursor-pointer btn-press border border-transparent hover:border-blue-200">
+                                        <span class="text-base">🎙️</span>
+                                        <span class="hidden sm:inline">Einsprechen</span>
+                                    </button>
+                                </template>
+                            </div>
+
+                            <!-- Send Button -->
+                            <div class="flex items-center gap-2">
+                                <span class="hidden sm:inline text-[10px] text-slate-400 font-mono">↵ Senden</span>
+                                <button type="submit" 
+                                        wire:loading.attr="disabled"
+                                        title="Nachricht absenden"
+                                        class="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-95 text-white rounded-2xl shadow-md shadow-blue-500/20 transition flex items-center justify-center cursor-pointer btn-press disabled:opacity-50">
+                                    <span wire:loading.remove wire:target="sendPrompt">
+                                        <svg class="w-4 h-4 translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                                        </svg>
+                                    </span>
+                                    <span wire:loading wire:target="sendPrompt">
+                                        <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin block"></span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- LLM Transparency Disclaimer Footer -->
+                <p class="text-center text-[10px] text-slate-400 leading-tight">
+                    BT KI-Agent greift autonom auf Baustellendatenbank, Bautagebücher und VOB/B zu. Angaben bitte stets fachlich prüfen.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- RENAME CHAT MODAL                          -->
+    <!-- ========================================== -->
     @if ($showRenameModal)
-        <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
-            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden space-y-0">
-                <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
+        <div class="fixed inset-0 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans animate-fade-in">
+            <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
+                <div class="px-6 py-4 bg-slate-950 text-white flex justify-between items-center">
                     <div class="flex items-center gap-2">
                         <span class="text-lg">✏️</span>
                         <h3 class="text-sm font-extrabold text-white">Unterhaltung umbenennen</h3>
@@ -824,11 +1043,17 @@ new class extends Component {
                 <form wire:submit="saveChatTitle" class="p-6 space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5">Titel der Unterhaltung</label>
-                        <input wire:model="editingChatTitle" type="text" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-bold focus:border-blue-600 focus:bg-white focus:outline-none" placeholder="z. B. Baustelle Berching Abnahme" required>
+                        <input wire:model="editingChatTitle" 
+                               type="text" 
+                               class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-bold focus:border-blue-600 focus:bg-white focus:outline-none" 
+                               placeholder="z. B. Baustelle Berching Abnahme" 
+                               required>
                     </div>
 
                     <div class="flex justify-end space-x-3 pt-3 border-t border-slate-100">
-                        <button type="button" wire:click="$set('showRenameModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition cursor-pointer">Abbrechen</button>
+                        <button type="button" wire:click="$set('showRenameModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition cursor-pointer">
+                            Abbrechen
+                        </button>
                         <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition cursor-pointer">
                             Speichern
                         </button>

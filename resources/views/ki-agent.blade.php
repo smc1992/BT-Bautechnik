@@ -1,7 +1,5 @@
 <x-app-layout>
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <livewire:ai-agent-manager />
-        </div>
+    <div class="h-full w-full flex flex-col flex-1">
+        <livewire:ai-agent-manager />
     </div>
 </x-app-layout>

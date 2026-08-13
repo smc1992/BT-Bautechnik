@@ -1,5 +1,5 @@
 @php
-    $projects = \App\Models\Project::where('status', 'active')->orderBy('name', 'asc')->get(['id', 'name', 'location']);
+    $projects = \App\Models\Project::where('status', 'active')->orderBy('name', 'asc')->get(['id', 'name', 'city_street', 'zip']);
 @endphp
 
 <div x-data="{ 
@@ -35,7 +35,7 @@
         get filteredProjects() {
             if (!this.cmdQuery.trim()) return this.projects.slice(0, 5);
             const q = this.cmdQuery.toLowerCase();
-            return this.projects.filter(p => p.name.toLowerCase().includes(q) || (p.location && p.location.toLowerCase().includes(q)));
+            return this.projects.filter(p => p.name.toLowerCase().includes(q) || (p.city_street && p.city_street.toLowerCase().includes(q)));
         }
      }" 
      x-on:keydown.window.cmd.k.prevent="showCmdPalette = true"
@@ -91,7 +91,7 @@
                                 <span>📍</span>
                                 <span class="text-xs font-bold text-slate-800 truncate" x-text="p.name"></span>
                             </div>
-                            <span class="text-[10px] text-slate-400 font-medium whitespace-nowrap" x-text="p.location || 'Baustelle'"></span>
+                            <span class="text-[10px] text-slate-400 font-medium whitespace-nowrap" x-text="p.city_street || p.zip || 'Baustelle'"></span>
                         </a>
                     </template>
                 </div>

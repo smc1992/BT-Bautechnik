@@ -14,6 +14,11 @@ class Project extends Model
 
     protected $guarded = [];
 
+    public function getLocationAttribute(): string
+    {
+        return trim(($this->zip ? $this->zip . ' ' : '') . ($this->city_street ?: ''));
+    }
+
     public function contact(): BelongsTo
     {
         return $this->belongsTo(Contact::class);

@@ -1,8 +1,15 @@
 <?php
 
 Route::get('/', function () {
-    return redirect()->route('login');
-});
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
+    return view('landing');
+})->name('home');
+
+Route::view('software', 'landing')->name('landing');
+Route::view('loesung', 'landing');
+
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

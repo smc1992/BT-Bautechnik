@@ -4,38 +4,38 @@
     </x-slot>
 
     <!-- Header Navigation -->
-    <header class="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80">
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <a href="/" class="hover:opacity-90 transition">
                 <x-brand-logo size="default" />
             </a>
             <div class="flex items-center gap-3">
-                <a href="/" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white font-bold text-xs rounded-xl border border-slate-800 transition">
+                <a href="/" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 font-bold text-xs rounded-xl border border-slate-200 transition">
                     ← Zurück zur Startseite
                 </a>
             </div>
         </div>
     </header>
 
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-10">
         
-        <div class="space-y-3 border-b border-slate-800 pb-8">
-            <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-black uppercase tracking-wider">
+        <div class="space-y-3 border-b border-slate-200 pb-8">
+            <span class="px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-black uppercase tracking-wider">
                 Vertragsbedingungen
             </span>
-            <h1 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
                 Allgemeine Geschäftsbedingungen (AGB)
             </h1>
-            <p class="text-sm text-slate-400">
+            <p class="text-sm text-slate-500">
                 Nutzungsbedingungen für das BT Bautechnik Bauleiter-ERP Cockpit (B2B)
             </p>
         </div>
 
-        <div class="space-y-8 text-sm text-slate-300 leading-relaxed font-sans">
+        <div class="space-y-6 text-sm text-slate-700 leading-relaxed font-sans">
             
             <!-- § 1 Geltungsbereich -->
-            <div class="bg-slate-900/60 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-slate-800/80 space-y-3">
-                <h2 class="text-lg font-black text-white border-b border-slate-800 pb-2">
+            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                <h2 class="text-lg font-black text-slate-900 border-b border-slate-100 pb-2">
                     § 1 Geltungsbereich & Vertragspartner
                 </h2>
                 <p>
@@ -47,8 +47,8 @@
             </div>
 
             <!-- § 2 Leistungsgegenstand -->
-            <div class="bg-slate-900/60 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-slate-800/80 space-y-3">
-                <h2 class="text-lg font-black text-white border-b border-slate-800 pb-2">
+            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                <h2 class="text-lg font-black text-slate-900 border-b border-slate-100 pb-2">
                     § 2 Leistungsgegenstand & Verfügbarkeit
                 </h2>
                 <p>
@@ -60,8 +60,8 @@
             </div>
 
             <!-- § 3 Datenschutz & Datensicherheit -->
-            <div class="bg-slate-900/60 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-slate-800/80 space-y-3">
-                <h2 class="text-lg font-black text-white border-b border-slate-800 pb-2">
+            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                <h2 class="text-lg font-black text-slate-900 border-b border-slate-100 pb-2">
                     § 3 Datenschutz, Geheimhaltung & Datensicherheit
                 </h2>
                 <p>
@@ -73,8 +73,8 @@
             </div>
 
             <!-- § 4 Schlussbestimmungen -->
-            <div class="bg-slate-900/60 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-slate-800/80 space-y-3">
-                <h2 class="text-lg font-black text-white border-b border-slate-800 pb-2">
+            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                <h2 class="text-lg font-black text-slate-900 border-b border-slate-100 pb-2">
                     § 4 Anwendbares Recht & Gerichtsstand
                 </h2>
                 <p>
@@ -90,13 +90,13 @@
     </div>
 
     <!-- Footer -->
-    <footer class="border-t border-slate-900 bg-slate-950 py-8 text-xs text-slate-500 mt-16">
+    <footer class="border-t border-slate-200 bg-white py-8 text-xs text-slate-500 mt-16">
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
             <x-brand-logo size="small" />
             <div class="flex items-center gap-4">
-                <a href="/impressum" class="hover:text-white transition">Impressum</a>
-                <a href="/datenschutz" class="hover:text-white transition">Datenschutz</a>
-                <a href="/" class="hover:text-white transition">Zur Startseite</a>
+                <a href="/impressum" class="hover:text-slate-900 transition">Impressum</a>
+                <a href="/datenschutz" class="hover:text-slate-900 transition">Datenschutz</a>
+                <a href="/" class="hover:text-slate-900 transition">Zur Startseite</a>
             </div>
         </div>
     </footer>

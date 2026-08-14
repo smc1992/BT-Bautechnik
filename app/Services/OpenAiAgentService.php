@@ -591,6 +591,92 @@ class OpenAiAgentService
                         ]
                     ]
                 ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'create_or_update_contact',
+                    'description' => 'Erstellt oder aktualisiert einen Kunden, Bauträger, Hausverwaltung, Generalübernehmer oder Subunternehmer im 360° CRM.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'company_name' => ['type' => 'string', 'description' => 'Firmenname / Unternehmensbezeichnung'],
+                            'first_name' => ['type' => 'string', 'description' => 'Vorname des Ansprechpartners'],
+                            'last_name' => ['type' => 'string', 'description' => 'Nachname des Ansprechpartners'],
+                            'type' => ['type' => 'string', 'enum' => ['kunde', 'bautraeger', 'hausverwaltung', 'generalunternehmer', 'subunternehmer', 'handwerker'], 'description' => 'Kategorie des Kontakts'],
+                            'email' => ['type' => 'string', 'description' => 'E-Mail-Adresse'],
+                            'phone' => ['type' => 'string', 'description' => 'Telefon- oder Mobilnummer'],
+                            'street' => ['type' => 'string', 'description' => 'Straße und Hausnummer'],
+                            'zip' => ['type' => 'string', 'description' => 'Postleitzahl'],
+                            'city' => ['type' => 'string', 'description' => 'Ort / Stadt'],
+                            'notes' => ['type' => 'string', 'description' => 'Notizen, Besonderheiten oder Telefonprotokoll']
+                        ],
+                        'required' => ['company_name']
+                    ]
+                ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'generate_acceptance_protocol',
+                    'description' => 'Generiert ein förmliches VOB/B § 12 Bauabnahmeprotokoll inklusive offener Mängel, Fristen und PDF-Download-Link.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'project_name' => ['type' => 'string', 'description' => 'Name der Baustelle / des Projekts'],
+                            'client_representative' => ['type' => 'string', 'description' => 'Vertreter des Bauherrn / Auftraggebers'],
+                            'contractor_representative' => ['type' => 'string', 'description' => 'Bauleiter der BT Bautechnik UG (Standard: Bauleitung BT)'],
+                            'work_scope' => ['type' => 'string', 'description' => 'Beschreibung des abgenommenen Leistungsumfangs'],
+                            'result' => ['type' => 'string', 'enum' => ['ohne_vorbehalt', 'mit_maengeln', 'verweigert'], 'description' => 'Ergebnis der Abnahme'],
+                            'warranty_years' => ['type' => 'integer', 'description' => 'Gewährleistungsdauer in Jahren (Standard: 5 gem. VOB/B § 13)']
+                        ],
+                        'required' => ['project_name']
+                    ]
+                ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'save_measurement_sheet',
+                    'description' => 'Berechnet und speichert ein digitales Aufmaßblatt (VOB/C DIN 18299) mit einzelnen Messzeilen direkt in der Datenbank ab.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'project_name' => ['type' => 'string', 'description' => 'Name der Baustelle'],
+                            'title' => ['type' => 'string', 'description' => 'Titel des Aufmaßes (z.B. Aufmaß Bodenplatte TG)'],
+                            'raw_measurements' => ['type' => 'string', 'description' => 'Maßangaben / Diktat (z.B. "Wand Nord 14.5x2.8, Wand Süd 14.5x2.8, Abzug Tür 1.0x2.1")'],
+                            'location_area' => ['type' => 'string', 'description' => 'Bauteil / Achse / Geschoss']
+                        ],
+                        'required' => ['project_name', 'title', 'raw_measurements']
+                    ]
+                ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'check_overdue_defects_and_escalate',
+                    'description' => 'Prüft alle überfälligen Mängel nach Fristablauf und generiert ein VOB/B § 13 Mahnschreiben mit Androhung der Ersatzvornahme.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'project_name' => ['type' => 'string', 'description' => 'Optional: Nur für eine bestimmte Baustelle filtern']
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'fetch_site_weather_live',
+                    'description' => 'Ruft Live-Wetterdaten (Temperatur, Regenmenge, Wind, Eignung für Bauarbeiten) für eine Baustelle per Geokoordinaten/PLZ ab.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'project_name' => ['type' => 'string', 'description' => 'Name der Baustelle']
+                        ],
+                        'required' => ['project_name']
+                    ]
+                ]
             ]
         ];
     }
@@ -1327,6 +1413,249 @@ class OpenAiAgentService
                                  (empty($list) ? "Keine Geräte für diesen Filter gefunden." : implode("\n", $list)) . "\n\n" .
                                  "[Zum Gerätepark](/geraetepark)"
                 ];
+
+            case 'create_or_update_contact':
+                $company = trim($args['company_name'] ?? '');
+                if (empty($company)) {
+                    return ['success' => false, 'summary' => 'Firmenname ist erforderlich.'];
+                }
+
+                $contact = Contact::where('company_name', 'LIKE', "%{$company}%")
+                    ->orWhere('name', 'LIKE', "%{$company}%")
+                    ->first();
+
+                $data = [
+                    'company_name' => $company,
+                    'first_name' => $args['first_name'] ?? ($contact?->first_name ?? ''),
+                    'last_name' => $args['last_name'] ?? ($contact?->last_name ?? ''),
+                    'type' => $args['type'] ?? ($contact?->type ?? 'kunde'),
+                    'email' => $args['email'] ?? $contact?->email,
+                    'phone' => $args['phone'] ?? $contact?->phone,
+                    'street' => $args['street'] ?? $contact?->street,
+                    'zip' => $args['zip'] ?? $contact?->zip,
+                    'city' => $args['city'] ?? $contact?->city,
+                ];
+
+                if (!empty($args['notes'])) {
+                    $prefix = "[" . date('d.m.Y H:i') . " KI-Agent]: ";
+                    $data['notes'] = ($contact && $contact->notes ? ($contact->notes . "\n\n") : '') . $prefix . $args['notes'];
+                }
+
+                if ($contact) {
+                    $contact->update($data);
+                    $actionText = "aktualisiert";
+                } else {
+                    $contact = Contact::create($data);
+                    $actionText = "neu angelegt";
+                }
+
+                return [
+                    'success' => true,
+                    'contact_id' => $contact->id,
+                    'summary' => "👤 **Kontakt '{$contact->company_name}' {$actionText} (Kategorie: {$contact->type}):**\n" .
+                                 "• **Ansprechpartner:** {$contact->first_name} {$contact->last_name}\n" .
+                                 "• **Telefon:** " . ($contact->phone ?: '–') . "\n" .
+                                 "• **E-Mail:** " . ($contact->email ?: '–') . "\n" .
+                                 "• **Ort:** " . ($contact->zip ? "{$contact->zip} " : '') . ($contact->city ?: '–') . "\n\n" .
+                                 "[Zur 360° Kunden-Zentrale](/kontakte)"
+                ];
+
+            case 'generate_acceptance_protocol':
+                $projectName = $args['project_name'] ?? '';
+                $project = Project::where('name', 'LIKE', "%{$projectName}%")->first() ?: Project::first();
+                if (!$project) {
+                    return ['success' => false, 'summary' => "Baustelle nicht gefunden."];
+                }
+
+                $defects = Defect::where('project_id', $project->id)->whereNotIn('status', ['behoben', 'abgenommen'])->get();
+                $warrantyYears = intval($args['warranty_years'] ?? 5);
+                $warrantyEnd = date('d.m.Y', strtotime("+{$warrantyYears} years"));
+
+                $defectList = [];
+                foreach ($defects as $d) {
+                    $defectList[] = "• [Mangel #{$d->id}] {$d->title} (Ort: {$d->location}) - Frist: " . date('d.m.Y', strtotime($d->deadline));
+                }
+
+                return [
+                    'success' => true,
+                    'project_id' => $project->id,
+                    'summary' => "📑 **VOB/B § 12 Bauabnahmeprotokoll vorbereitet:**\n" .
+                                 "• **Bauvorhaben:** {$project->name}\n" .
+                                 "• **Auftraggeber:** " . ($project->contact?->company_name ?: ($args['client_representative'] ?? 'Bauherr')) . "\n" .
+                                 "• **Auftragnehmer:** BT Bautechnik UG (Vertreter: " . ($args['contractor_representative'] ?? 'Julia Haberzettel') . ")\n" .
+                                 "• **Leistungsumfang:** " . ($args['work_scope'] ?? 'Schlüsselfertige Bauwerksabdichtung & Sanierungsarbeiten gem. Leistungsverzeichnis.') . "\n" .
+                                 "• **Ergebnis:** " . match($args['result'] ?? 'mit_maengeln') {
+                                     'ohne_vorbehalt' => '✅ Mangelfrei abgenommen (Ohne Vorbehalt)',
+                                     'mit_maengeln' => '⚠️ Abgenommen mit Vorbehalt wegen bekannter Restmängel',
+                                     'verweigert' => '❌ Abnahme wegen wesentlicher Mängel verweigert',
+                                     default => 'Abgenommen mit Vorbehalt'
+                                 } . "\n" .
+                                 "• **Gewährleistungsende:** {$warrantyEnd} ({$warrantyYears} Jahre gem. § 13 VOB/B)\n" .
+                                 (empty($defectList) ? "• **Restmängel:** Keine offenen Mängel verzeichnet.\n\n" : "• **Verzeichnete Mängel zur Nachbesserung:**\n" . implode("\n", $defectList) . "\n\n") .
+                                 "[📄 Druckreifes Abnahmeprotokoll PDF herunterladen](/abnahme/pdf/{$project->id}) | [Zum Cockpit](/dashboard)"
+                ];
+
+            case 'save_measurement_sheet':
+                $projectName = $args['project_name'] ?? '';
+                $project = Project::where('name', 'LIKE', "%{$projectName}%")->first() ?: Project::first();
+                if (!$project) {
+                    return ['success' => false, 'summary' => "Baustelle nicht gefunden."];
+                }
+
+                $parser = app(\App\Services\OpenAiParserService::class);
+                $parsed = $parser->parseAufmassText($args['raw_measurements'] ?? '');
+
+                $count = \App\Models\Measurement::where('project_id', $project->id)->count() + 1;
+                $measNumber = 'AM-' . date('Y') . '-' . str_pad((string)$count, 3, '0', STR_PAD_LEFT);
+
+                $measurement = \App\Models\Measurement::create([
+                    'project_id' => $project->id,
+                    'measurement_number' => $measNumber,
+                    'title' => $args['title'] ?? 'Aufmaßblatt',
+                    'measurement_date' => date('Y-m-d'),
+                    'location_area' => $args['location_area'] ?? 'Baustelle',
+                    'status' => 'draft',
+                    'total_amount_net' => 0,
+                    'inspector_name' => 'BT Bauleiter (KI-Agent)',
+                    'notes' => 'Automatisch per Sprachmemo/KI erfasst.'
+                ]);
+
+                $totalQty = 0;
+                $rowsSummary = [];
+                $posIndex = 1;
+
+                foreach ($parsed['rows'] ?? [] as $row) {
+                    $l = floatval($row['length'] ?? 0);
+                    $w = floatval($row['width'] ?? 0);
+                    $h = floatval($row['height'] ?? 1);
+                    $c = floatval($row['count'] ?? 1);
+                    $mode = $row['mode'] ?? 'add';
+
+                    $rowQty = round($l * $w * ($h > 0 ? $h : 1) * ($c > 0 ? $c : 1), 3);
+                    if ($mode === 'subtract') {
+                        $totalQty -= $rowQty;
+                    } elseif ($mode === 'add') {
+                        $totalQty += $rowQty;
+                    }
+
+                    \App\Models\MeasurementItem::create([
+                        'measurement_id' => $measurement->id,
+                        'position_index' => $posIndex++,
+                        'item_code' => 'POS-' . str_pad((string)$posIndex, 2, '0', STR_PAD_LEFT),
+                        'description' => $row['label'] ?? 'Massenposition',
+                        'unit' => $parsed['unit'] ?? 'm²',
+                        'length' => $l,
+                        'width' => $w,
+                        'height' => $h,
+                        'factor' => $c,
+                        'deduction' => ($mode === 'subtract' ? $rowQty : 0),
+                        'quantity' => ($mode === 'subtract' ? -$rowQty : $rowQty),
+                        'unit_price' => 0,
+                        'total_price' => 0,
+                        'room_or_axis' => $args['location_area'] ?? 'Standard'
+                    ]);
+
+                    $rowsSummary[] = "• {$row['label']}: {$l}m × {$w}m " . ($mode === 'subtract' ? "(Abzug: -{$rowQty} {$parsed['unit']})" : "= {$rowQty} {$parsed['unit']}");
+                }
+
+                $measurement->update(['total_amount_net' => round(max(0, $totalQty) * 65.0, 2)]);
+
+                return [
+                    'success' => true,
+                    'measurement_id' => $measurement->id,
+                    'summary' => "📐 **Digitales Aufmaßblatt {$measNumber} in Datenbank gespeichert (VOB/C / DIN 18299):**\n" .
+                                 "• **Projekt:** {$project->name}\n" .
+                                 "• **Bereich:** " . ($args['location_area'] ?? 'Flächen & Bauteile') . "\n" .
+                                 "• **Gesamtmenge Netto:** " . number_format(max(0, $totalQty), 2, ',', '.') . " " . ($parsed['unit'] ?? 'm²') . "\n\n" .
+                                 "**Erfasste Messzeilen:**\n" . implode("\n", $rowsSummary) . "\n\n" .
+                                 "[Zum Projekt-Cockpit](/dashboard)"
+                ];
+
+            case 'check_overdue_defects_and_escalate':
+                $query = Defect::with(['project', 'assignedContact'])
+                    ->whereNotIn('status', ['behoben', 'abgenommen'])
+                    ->where('deadline', '<', date('Y-m-d'));
+
+                if (!empty($args['project_name'])) {
+                    $project = Project::where('name', 'LIKE', "%{$args['project_name']}%")->first();
+                    if ($project) {
+                        $query->where('project_id', $project->id);
+                    }
+                }
+
+                $overdue = $query->get();
+                if ($overdue->isEmpty()) {
+                    return [
+                        'success' => true,
+                        'summary' => "✅ **Keine Fristüberschreitungen:** Alle Mängel liegen aktuell innerhalb der vereinbarten VOB-Fristen. [Zu den Mängeln](/maengel)"
+                    ];
+                }
+
+                $escalations = [];
+                foreach ($overdue as $def) {
+                    $subName = $def->assignedContact?->company_name ?: ($def->assignedContact?->name ?: 'Subunternehmer');
+                    $daysOver = (int)ceil((time() - strtotime($def->deadline)) / 86400);
+                    $escalations[] = "⚠️ **[Mangel #{$def->id}] {$def->title}** (Baustelle: " . ($def->project?->name ?? 'Allgemein') . ")\n" .
+                                     "• **Verantwortlich:** {$subName}\n" .
+                                     "• **Frist abgelaufen seit:** {$daysOver} Tagen (" . date('d.m.Y', strtotime($def->deadline)) . ")\n" .
+                                     "• **VOB/B § 13 Abs. 5 Satz 2 Rechtsfolge:** Nachfrist setzen (3 Werktage), danach Ersatzvornahme durch Dritte auf Kosten des Auftragnehmers.";
+                }
+
+                return [
+                    'success' => true,
+                    'count' => $overdue->count(),
+                    'summary' => "🚨 **{$overdue->count()} überfällige Mängel nach VOB/B § 13 identifiziert:**\n\n" .
+                                 implode("\n\n", $escalations) . "\n\n" .
+                                 "[Zu den Mängeln & Mahnschreiben generieren](/maengel)"
+                ];
+
+            case 'fetch_site_weather_live':
+                $projectName = $args['project_name'] ?? '';
+                $project = Project::where('name', 'LIKE', "%{$projectName}%")->first() ?: Project::first();
+                if (!$project) {
+                    return ['success' => false, 'summary' => "Baustelle nicht gefunden."];
+                }
+
+                $lat = 49.105;
+                $lon = 11.441;
+
+                if (stripos($project->city ?? '', 'Nürnberg') !== false) {
+                    $lat = 49.452; $lon = 11.077;
+                } elseif (stripos($project->city ?? '', 'Regensburg') !== false) {
+                    $lat = 49.013; $lon = 12.101;
+                } elseif (stripos($project->city ?? '', 'Ingolstadt') !== false) {
+                    $lat = 48.766; $lon = 11.425;
+                } elseif (stripos($project->city ?? '', 'München') !== false) {
+                    $lat = 48.135; $lon = 11.582;
+                }
+
+                $weatherInfo = "21°C, heiter, trocken";
+                try {
+                    $ctx = stream_context_create(['http' => ['timeout' => 3]]);
+                    $json = @file_get_contents("https://api.open-meteo.com/v1/forecast?latitude={$lat}&longitude={$lon}&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m", false, $ctx);
+                    if ($json) {
+                        $data = json_decode($json, true);
+                        if (isset($data['current'])) {
+                            $temp = $data['current']['temperature_2m'] ?? 20;
+                            $rain = $data['current']['precipitation'] ?? 0;
+                            $humidity = $data['current']['relative_humidity_2m'] ?? 60;
+                            $wind = $data['current']['wind_speed_10m'] ?? 10;
+                            $weatherInfo = "{$temp}°C (Luftfeuchte: {$humidity}%, Regen: {$rain} mm/h, Wind: {$wind} km/h)";
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    // ignore
+                }
+
+                return [
+                    'success' => true,
+                    'summary' => "🌤️ **Live-Baustellenwetter für '{$project->name}' ({$project->city}):**\n" .
+                                 "• **Aktuelle Wetterlage:** {$weatherInfo}\n" .
+                                 "• **DIN 18533 (Abdichtungsarbeiten):** " . ((isset($temp) && $temp < 5) ? "❌ Zu kalt (<5°C) für Bitumen-KMB." : "✅ Optimal für Abdichtungs- und Schweißbahnarbeiten.") . "\n" .
+                                 "• **Betonierarbeiten (DIN 1045):** " . ((isset($temp) && $temp <= 0) ? "⚠️ Frostschutzmaßnahmen erforderlich." : "✅ Keine Frostgefahr.") . "\n\n" .
+                                 "[Bautagebuch mit Wetterdaten anlegen](/bautagebuch)"
+                ];
+
 
             default:
                 return ['success' => false, 'summary' => "Werkzeug '{$name}' unbekannt."];

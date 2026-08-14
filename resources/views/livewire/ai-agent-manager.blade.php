@@ -856,26 +856,36 @@ new class extends Component {
             <div class="max-w-4xl mx-auto w-full space-y-2">
                 
                 <!-- Quick Topic Pills (Above Input) -->
-                <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-[11px]">
+                <div class="flex items-center gap-1.5 overflow-x-auto pb-1.5 no-scrollbar text-[11px]">
                     <button type="button" 
-                            wire:click="$set('userMessage', 'Berechne Aufmaß: Kellerwand Süd 14,5m x 2,8m mit Fenster 1,20m x 1,00m nach VOB/C')" 
+                            wire:click="$set('userMessage', 'Berechne und speichere Aufmaß: Wand Nord 14,5m x 2,8m, Wand Süd 14,5m x 2,8m mit Türabzug 1,00m x 2,10m nach VOB/C')" 
+                            class="px-3 py-1 bg-white hover:bg-cyan-50 text-cyan-800 rounded-full border border-slate-200 hover:border-cyan-300 font-bold transition shadow-2xs shrink-0 cursor-pointer flex items-center gap-1">
+                        <span>📐</span> <span>Aufmaß berechnen & speichern</span>
+                    </button>
+                    <button type="button" 
+                            wire:click="$set('userMessage', 'Prüfe alle überfälligen Mängel und erstelle eine VOB/B § 13 Mängelrüge-Mahnung')" 
+                            class="px-3 py-1 bg-white hover:bg-rose-50 text-rose-800 rounded-full border border-slate-200 hover:border-rose-300 font-bold transition shadow-2xs shrink-0 cursor-pointer flex items-center gap-1">
+                        <span>🚨</span> <span>Überfällige Mängel prüfen</span>
+                    </button>
+                    <button type="button" 
+                            wire:click="$set('userMessage', 'Erstelle ein VOB/B § 12 Bauabnahmeprotokoll für Baustelle Berching')" 
                             class="px-3 py-1 bg-white hover:bg-indigo-50 text-indigo-800 rounded-full border border-slate-200 hover:border-indigo-300 font-bold transition shadow-2xs shrink-0 cursor-pointer flex items-center gap-1">
-                        <span>📐</span> <span>Aufmaß VOB/C</span>
+                        <span>📑</span> <span>Abnahmeprotokoll (VOB/B § 12)</span>
                     </button>
                     <button type="button" 
-                            wire:click="$set('userMessage', 'Zeige Baustoffpreise Juli 2026 für Bitumen, Injektionsharz und Dämmung')" 
-                            class="px-3 py-1 bg-white hover:bg-blue-50 text-blue-800 rounded-full border border-slate-200 hover:border-blue-300 font-bold transition shadow-2xs shrink-0 cursor-pointer flex items-center gap-1">
-                        <span>📦</span> <span>Materialpreise</span>
+                            wire:click="$set('userMessage', 'Lege neuen Bauträger an: Müller Wohnbau GmbH, Ansprechpartner Thomas Müller, Tel: 0171 1234567, Nürnberg')" 
+                            class="px-3 py-1 bg-white hover:bg-purple-50 text-purple-800 rounded-full border border-slate-200 hover:border-purple-300 font-bold transition shadow-2xs shrink-0 cursor-pointer flex items-center gap-1">
+                        <span>👤</span> <span>Neuen Kontakt anlegen</span>
                     </button>
                     <button type="button" 
-                            wire:click="$set('userMessage', 'Erstelle einen KI-Wochenbericht für Baustelle Berching')" 
-                            class="px-3 py-1 bg-white hover:bg-slate-100 text-slate-700 rounded-full border border-slate-200 font-medium transition shadow-2xs shrink-0 cursor-pointer flex items-center gap-1">
-                        <span>📊</span> <span>Wochenbericht</span>
+                            wire:click="$set('userMessage', 'Prüfe das aktuelle Baustellenwetter und Eignung für Bitumenabdichtung')" 
+                            class="px-3 py-1 bg-white hover:bg-amber-50 text-amber-900 rounded-full border border-slate-200 hover:border-amber-300 font-bold transition shadow-2xs shrink-0 cursor-pointer flex items-center gap-1">
+                        <span>🌤️</span> <span>Live-Baustellenwetter</span>
                     </button>
                     <button type="button" 
-                            wire:click="$set('userMessage', 'Erstelle eine Bedenkenanmeldung gem. § 4 VOB/B wegen feuchtem Untergrund')" 
-                            class="px-3 py-1 bg-white hover:bg-amber-50 text-amber-900 rounded-full border border-slate-200 hover:border-amber-300 font-medium transition shadow-2xs shrink-0 cursor-pointer flex items-center gap-1">
-                        <span>⚖️</span> <span>VOB/B Bedenken</span>
+                            wire:click="$set('userMessage', 'Welche Rechnungen sind aktuell offen oder überfällig?')" 
+                            class="px-3 py-1 bg-white hover:bg-emerald-50 text-emerald-800 rounded-full border border-slate-200 hover:border-emerald-300 font-bold transition shadow-2xs shrink-0 cursor-pointer flex items-center gap-1">
+                        <span>💶</span> <span>Offene Rechnungen</span>
                     </button>
                 </div>
 

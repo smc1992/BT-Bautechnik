@@ -249,7 +249,7 @@ new class extends Component {
                         </a>
                     @endauth
                     
-                    <a href="https://wa.me/4917612345678?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-200 font-black text-xs rounded-xl text-center flex items-center justify-center gap-1.5">
+                    <a href="https://wa.me/4916096275910?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-200 font-black text-xs rounded-xl text-center flex items-center justify-center gap-1.5">
                         <span>💬 WhatsApp</span>
                     </a>
                 </div>
@@ -294,7 +294,7 @@ new class extends Component {
                         <span class="inline-block transition-transform group-hover:translate-x-1">→</span>
                     </button>
 
-                    <a href="https://wa.me/4917612345678?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20gerne%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="w-full sm:w-auto px-5 sm:px-6 py-3.5 sm:py-4 bg-white hover:bg-slate-50 text-slate-800 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl border border-slate-300 shadow-sm transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                    <a href="https://wa.me/4916096275910?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20gerne%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="w-full sm:w-auto px-5 sm:px-6 py-3.5 sm:py-4 bg-white hover:bg-slate-50 text-slate-800 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl border border-slate-300 shadow-sm transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
                         <span>💬 Direkt per WhatsApp anfragen</span>
                     </a>
                 </div>
@@ -1967,7 +1967,7 @@ new class extends Component {
                         </div>
 
                         <div class="pt-3 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
-                            <a href="https://wa.me/4917612345678?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20gerne%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="text-xs text-emerald-700 hover:underline flex items-center gap-1 font-bold">
+                            <a href="https://wa.me/4916096275910?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20gerne%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="text-xs text-emerald-700 hover:underline flex items-center gap-1 font-bold">
                                 <span>💬 Lieber per WhatsApp anfragen</span>
                             </a>
 
@@ -1998,7 +1998,7 @@ new class extends Component {
             <button wire:click="openDemoModal" class="flex-1 py-3 px-4 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600 active:scale-95 text-white font-black text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 transition">
                 <span>⚡ Live-Demo</span>
             </button>
-            <a href="https://wa.me/4917612345678?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20eine%20Live-Demo%20anfragen." target="_blank" class="py-3 px-3.5 bg-emerald-600 active:scale-95 text-white font-black text-xs rounded-xl shadow-md flex items-center justify-center gap-1 shrink-0 transition">
+            <a href="https://wa.me/4916096275910?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20eine%20Live-Demo%20anfragen." target="_blank" class="py-3 px-3.5 bg-emerald-600 active:scale-95 text-white font-black text-xs rounded-xl shadow-md flex items-center justify-center gap-1 shrink-0 transition">
                 <span>💬 WhatsApp</span>
             </a>
         </div>

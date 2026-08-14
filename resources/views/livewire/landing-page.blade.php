@@ -112,18 +112,21 @@ new class extends Component {
     }
 }; ?>
 
-<div class="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-600 selection:text-white relative overflow-x-hidden">
+<div x-data="{ showStickyBar: false, mobileMenuOpen: false }" 
+     @scroll.window="showStickyBar = (window.pageYOffset || document.documentElement.scrollTop) > 450" 
+     class="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-600 selection:text-white relative overflow-x-hidden">
     
-    <!-- Subtle Blueprint Geometric Background Accent -->
-    <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none opacity-60"></div>
-    <div class="fixed top-0 left-1/4 w-[600px] h-[500px] bg-blue-100/60 rounded-full blur-[140px] pointer-events-none -z-10"></div>
-    <div class="fixed top-1/3 right-10 w-[500px] h-[500px] bg-amber-100/50 rounded-full blur-[160px] pointer-events-none -z-10"></div>
+    <!-- Modern Blueprint Geometric Background Pattern & Ambient Laser Glow -->
+    <div class="absolute inset-0 blueprint-pattern pointer-events-none opacity-70"></div>
+    <div class="fixed top-0 left-1/4 w-[650px] h-[550px] bg-blue-200/40 rounded-full blur-[150px] pointer-events-none -z-10 animate-glow"></div>
+    <div class="fixed top-1/3 right-10 w-[550px] h-[550px] bg-amber-100/50 rounded-full blur-[160px] pointer-events-none -z-10"></div>
+    <div class="fixed bottom-10 left-10 w-[500px] h-[500px] bg-indigo-100/40 rounded-full blur-[160px] pointer-events-none -z-10"></div>
 
     <!-- ========================================================================= -->
     <!-- ========================================================================= -->
     <!-- 1. STICKY TOP NAVBAR (CLEAN WHITE / FROSTED GLASS & FULL MOBILE NAV)      -->
     <!-- ========================================================================= -->
-    <header x-data="{ mobileMenuOpen: false }" class="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-slate-200/90 shadow-xs transition-all duration-300">
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-slate-200/90 shadow-xs transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2">
             
             <!-- Real Brand Logo Component -->
@@ -331,9 +334,35 @@ new class extends Component {
 
             </div>
 
-            <!-- Crisp Architectural Cockpit Preview Card (High Contrast with Real Construction Photography) -->
-            <div class="mt-10 sm:mt-14 max-w-6xl mx-auto rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 bg-gradient-to-b from-blue-100 via-slate-200 to-amber-50 border border-slate-300 shadow-2xl reveal-on-scroll">
-                <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200 overflow-hidden shadow-inner">
+            <!-- Crisp Architectural Cockpit Preview Card (High Contrast with Real Construction Photography & Floating Live Badges) -->
+            <div class="mt-10 sm:mt-16 max-w-6xl mx-auto rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 bg-gradient-to-b from-blue-100/90 via-slate-200/80 to-amber-100/60 border border-slate-300 shadow-2xl reveal-on-scroll relative">
+                
+                <!-- Floating Live Badge 1: Top-Right (Whisper KI Voice Recognition) -->
+                <div class="hidden md:flex items-center gap-3 px-4 py-2.5 rounded-2xl floating-badge absolute -top-5 -right-3 z-30 animate-float text-left">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-white flex items-center justify-center font-bold text-base shrink-0 shadow-md shadow-amber-500/20">
+                        🎙️
+                    </div>
+                    <div class="space-y-0.5">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                            <span class="text-[9.5px] font-black uppercase text-amber-700 tracking-wider">Whisper KI erkannt</span>
+                        </div>
+                        <p class="text-[11.5px] font-black text-slate-900 leading-tight">14:32 Tiefgarage: 3 Mängel & Wetter erfasst</p>
+                    </div>
+                </div>
+
+                <!-- Floating Live Badge 2: Bottom-Left (VOB/B Nachtrag Freigabe) -->
+                <div class="hidden md:flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-slate-950/95 backdrop-blur-xl text-white border border-slate-700/90 shadow-2xl absolute -bottom-5 -left-3 z-30 text-left">
+                    <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-base shrink-0 shadow-md shadow-blue-500/30">
+                        ⚖️
+                    </div>
+                    <div class="space-y-0.5">
+                        <span class="text-[9.5px] font-mono text-amber-400 font-bold uppercase tracking-wider">VOB/B § 2 Abs. 6 Freigabe</span>
+                        <p class="text-[11.5px] font-black text-white leading-tight">+ 4.850,00 € Nachtrag rechtssicher als PDF</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200 overflow-hidden shadow-inner relative z-10">
                     
                     <!-- Window bar -->
                     <div class="px-3.5 sm:px-5 py-2.5 sm:py-3.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-white">
@@ -396,23 +425,23 @@ new class extends Component {
                                 </div>
                             </div>
 
-                            <!-- Progress & Budget Cards -->
+                            <!-- Progress & Budget Cards (Layered) -->
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
-                                <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs card-lift">
+                                <div class="layered-card p-3 sm:p-4 rounded-xl border border-slate-200 card-lift">
                                     <span class="text-[9px] sm:text-[10px] text-slate-500 font-bold uppercase">Geplantes Budget</span>
-                                    <p class="text-sm sm:text-base font-black text-slate-900 mt-0.5">85.000,00 €</p>
+                                    <p class="text-sm sm:text-base font-black text-slate-900 mt-0.5 tabular-nums">85.000,00 €</p>
                                     <div class="w-full bg-slate-100 h-1.5 sm:h-2 rounded-full mt-2 overflow-hidden">
                                         <div class="bg-blue-600 h-full w-[65%]"></div>
                                     </div>
                                 </div>
-                                <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs card-lift">
+                                <div class="layered-card p-3 sm:p-4 rounded-xl border border-slate-200 card-lift">
                                     <span class="text-[9px] sm:text-[10px] text-slate-500 font-bold uppercase">Nachträge (VOB/B)</span>
-                                    <p class="text-sm sm:text-base font-black text-amber-700 mt-0.5">+ 12.450,00 €</p>
+                                    <p class="text-sm sm:text-base font-black text-amber-700 mt-0.5 tabular-nums">+ 12.450,00 €</p>
                                     <span class="text-[9.5px] sm:text-[10px] text-emerald-700 font-bold">3 freigegeben, 1 offen</span>
                                 </div>
-                                <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs card-lift">
+                                <div class="layered-card p-3 sm:p-4 rounded-xl border border-slate-200 card-lift">
                                     <span class="text-[9px] sm:text-[10px] text-slate-500 font-bold uppercase">Aufmaß (VOB/C)</span>
-                                    <p class="text-sm sm:text-base font-black text-blue-700 mt-0.5">620 m² / 750 m²</p>
+                                    <p class="text-sm sm:text-base font-black text-blue-700 mt-0.5 tabular-nums">620 m² / 750 m²</p>
                                     <span class="text-[9.5px] sm:text-[10px] text-slate-600 font-bold">82% fertiggestellt</span>
                                 </div>
                             </div>
@@ -443,37 +472,65 @@ new class extends Component {
     </section>
 
     <!-- ========================================================================= -->
-    <!-- MARTEX STYLE COMPLIANCE & STANDARDS TRUST BAR                             -->
+    <!-- HIGH-TRUST COMPLIANCE & BAU-STANDARDS BAR (6 COLS)                        -->
     <!-- ========================================================================= -->
-    <div class="border-y border-slate-200 bg-white py-6 sm:py-8">
+    <div class="border-y border-slate-200 bg-white py-6 sm:py-8 shadow-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6 text-[11px] sm:text-xs text-slate-600 font-bold">
-                <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 sm:bg-transparent">
-                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center text-xs sm:text-sm font-black shrink-0">⚖️</span>
-                    <span class="leading-tight">VOB/B § 2 & VOB/C</span>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 text-[11px] sm:text-xs text-slate-700 font-bold">
+                <!-- VOB -->
+                <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-blue-200 transition">
+                    <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-black shrink-0">⚖️</span>
+                    <div class="leading-tight">
+                        <span class="block font-black text-slate-900">VOB/B § 2 & VOB/C</span>
+                        <span class="text-[9.5px] text-slate-500 font-medium">Rechtssicher</span>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 sm:bg-transparent">
-                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-xs sm:text-sm font-black shrink-0">📊</span>
-                    <span class="leading-tight">DATEV SKR03 / SKR04</span>
+                <!-- DATEV -->
+                <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-emerald-200 transition">
+                    <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-black shrink-0">📊</span>
+                    <div class="leading-tight">
+                        <span class="block font-black text-slate-900">DATEV SKR03/04</span>
+                        <span class="text-[9.5px] text-slate-500 font-medium">Inkl. § 13b UStG</span>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 sm:bg-transparent">
-                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center text-xs sm:text-sm font-black shrink-0">📐</span>
-                    <span class="leading-tight">DIN 18299 / 18533</span>
+                <!-- DIN -->
+                <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-indigo-200 transition">
+                    <span class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-black shrink-0">📐</span>
+                    <div class="leading-tight">
+                        <span class="block font-black text-slate-900">DIN 18299/18533</span>
+                        <span class="text-[9.5px] text-slate-500 font-medium">Digitale Aufmaße</span>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 sm:bg-transparent">
-                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-xs sm:text-sm font-black shrink-0">🇩🇪</span>
-                    <span class="leading-tight">100% DSGVO (DE)</span>
+                <!-- GAEB / GoBD -->
+                <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-cyan-200 transition">
+                    <span class="w-8 h-8 rounded-lg bg-cyan-100 text-cyan-700 flex items-center justify-center text-sm font-black shrink-0">📑</span>
+                    <div class="leading-tight">
+                        <span class="block font-black text-slate-900">GAEB & GoBD</span>
+                        <span class="text-[9.5px] text-slate-500 font-medium">Revisionssicher</span>
+                    </div>
                 </div>
-                <div class="col-span-2 sm:col-span-1 flex items-center justify-center sm:justify-start gap-2 p-2 rounded-xl bg-slate-50 sm:bg-transparent">
-                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-cyan-50 text-cyan-700 flex items-center justify-center text-xs sm:text-sm font-black shrink-0">📱</span>
-                    <span class="leading-tight">PWA Offline-Fähig</span>
+                <!-- DSGVO -->
+                <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-amber-200 transition">
+                    <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-black shrink-0">🇩🇪</span>
+                    <div class="leading-tight">
+                        <span class="block font-black text-slate-900">100% DSGVO</span>
+                        <span class="text-[9.5px] text-slate-500 font-medium">Server Frankfurt</span>
+                    </div>
+                </div>
+                <!-- Offline PWA -->
+                <div class="col-span-2 sm:col-span-1 flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-violet-200 transition">
+                    <span class="w-8 h-8 rounded-lg bg-violet-100 text-violet-700 flex items-center justify-center text-sm font-black shrink-0">📱</span>
+                    <div class="leading-tight">
+                        <span class="block font-black text-slate-900">PWA Offline-First</span>
+                        <span class="text-[9.5px] text-slate-500 font-medium">Kein Funkloch-Stopp</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- ========================================================================= -->
-    <!-- MARTEX DEMO-2 SIGNATURE 3-STEP PROCESS SECTION WITH CONNECTING LINE       -->
+    <!-- MARTEX DEMO-2 SIGNATURE 3-STEP PROCESS + INTERACTIVE VOICE MEMO SIMULATOR -->
     <!-- ========================================================================= -->
     <section class="py-14 sm:py-24 bg-slate-50 border-b border-slate-200 relative overflow-hidden reveal-on-scroll">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -493,7 +550,7 @@ new class extends Component {
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 relative">
                 
                 <!-- Step 1 -->
-                <div class="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm card-lift relative space-y-3.5 sm:space-y-4">
+                <div class="layered-card p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 card-lift relative space-y-3.5 sm:space-y-4">
                     <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-blue-600 text-white font-black text-base sm:text-lg flex items-center justify-center shadow-md shadow-blue-500/30">
                         1
                     </div>
@@ -511,7 +568,7 @@ new class extends Component {
                 </div>
 
                 <!-- Step 2 -->
-                <div class="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm card-lift relative space-y-3.5 sm:space-y-4">
+                <div class="layered-card p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 card-lift relative space-y-3.5 sm:space-y-4">
                     <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-500 text-white font-black text-base sm:text-lg flex items-center justify-center shadow-md shadow-amber-500/30">
                         2
                     </div>
@@ -529,7 +586,7 @@ new class extends Component {
                 </div>
 
                 <!-- Step 3 -->
-                <div class="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm card-lift relative space-y-3.5 sm:space-y-4">
+                <div class="layered-card p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 card-lift relative space-y-3.5 sm:space-y-4">
                     <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-600 text-white font-black text-base sm:text-lg flex items-center justify-center shadow-md shadow-emerald-500/30">
                         3
                     </div>
@@ -544,6 +601,173 @@ new class extends Component {
                             📊 DATEV SKR03/04 & VOB/B § 2
                         </span>
                     </div>
+                </div>
+
+            </div>
+
+            <!-- ================================================================= -->
+            <!-- 🎙️ INTERACTIVE LIVE KI-SPRACHMEMO SIMULATOR WIDGET (SHOW, DONT TELL) -->
+            <!-- ================================================================= -->
+            <div x-data="{
+                isPlaying: false,
+                seconds: 0,
+                interval: null,
+                activeSample: 'abdichtung',
+                samples: {
+                    abdichtung: {
+                        tag: 'Tagesbericht & Mängelerfassung vor Ort',
+                        title: 'Baustelle Maximilianstraße 44 – Tiefgarage',
+                        audioText: '„Servus, heute 4 Mann vor Ort. Tiefgaragenabdichtung nach DIN 18533 planmäßig abgeschlossen. Im Kellerabgang 1 Riss an WU-Wand entdeckt – Mangel mit Foto angelegt. Wetter trocken, 19 Grad.“',
+                        weather: '19°C • Sonnig & Trocken (GPS Auto-Wetter)',
+                        workers: '4 Monteure (Firma BT Bautechnik)',
+                        taskDone: 'Abdichtung DIN 18533 im Soll (620 m²)',
+                        defectDetected: 'Mangel #14: Riss WU-Wand Kellerabgang',
+                        outputPdf: 'Bautagesbericht #42 & Mängelanzeige als PDF generiert'
+                    },
+                    nachtrag: {
+                        tag: 'VOB/B § 2 Mehrvergütung & Zusatzleistung',
+                        title: 'Sanierung Wohnanlage Am Mühlbach 12',
+                        audioText: '„Bauherr Müller hat heute vor Ort Zusatzdämmung an der Nordfassade beauftragt. Entspricht VOB/B § 2 Absatz 6. 120 Quadratmeter EPS 032 Dämmplatten zusätzlich erforderlich.“',
+                        weather: '21°C • Leicht bewölkt',
+                        workers: '3 Facharbeiter',
+                        taskDone: 'Zusatzleistung Nordfassade aufgenommen',
+                        defectDetected: 'Keine Baumängel erfasst',
+                        outputPdf: 'VOB/B § 2 Abs. 6 Nachtragsangebot #104 (+ 4.850,00 €) sofort als PDF fertig'
+                    }
+                },
+                play() {
+                    this.isPlaying = true;
+                    this.seconds = 0;
+                    if (this.interval) clearInterval(this.interval);
+                    this.interval = setInterval(() => {
+                        if (this.seconds < 10) {
+                            this.seconds++;
+                        } else {
+                            this.isPlaying = false;
+                            clearInterval(this.interval);
+                        }
+                    }, 500);
+                },
+                stop() {
+                    this.isPlaying = false;
+                    clearInterval(this.interval);
+                }
+            }" class="mt-12 sm:mt-16 bg-gradient-to-br from-slate-900 via-slate-950 to-blue-950 text-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-slate-800 shadow-2xl space-y-6">
+                
+                <!-- Simulator Header with Sample Switcher -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-slate-800">
+                    <div class="space-y-1">
+                        <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] sm:text-xs font-black uppercase">
+                            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                            <span>Interaktiver Live-Simulator</span>
+                        </div>
+                        <h3 class="text-base sm:text-xl font-black text-white">
+                            Testen Sie, wie die KI eine 10-Sekunden-Sprachnotiz in Sekunden strukturiert
+                        </h3>
+                    </div>
+
+                    <!-- Scenario Selector -->
+                    <div class="flex items-center gap-2 p-1 bg-slate-900/90 rounded-xl border border-slate-800 text-xs">
+                        <button type="button" 
+                                @click="activeSample = 'abdichtung'; stop(); seconds = 0;" 
+                                :class="activeSample === 'abdichtung' ? 'bg-blue-600 text-white font-black' : 'text-slate-400 hover:text-white'" 
+                                class="px-3 py-1.5 rounded-lg transition text-[11px] sm:text-xs">
+                            Scenario 1: Bautagesbericht
+                        </button>
+                        <button type="button" 
+                                @click="activeSample = 'nachtrag'; stop(); seconds = 0;" 
+                                :class="activeSample === 'nachtrag' ? 'bg-blue-600 text-white font-black' : 'text-slate-400 hover:text-white'" 
+                                class="px-3 py-1.5 rounded-lg transition text-[11px] sm:text-xs">
+                            Scenario 2: VOB-Nachtrag
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Interactive Player Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-center">
+                    
+                    <!-- Left: Tactile Audio Player Control (5 cols) -->
+                    <div class="lg:col-span-5 bg-slate-900/80 p-5 rounded-2xl border border-slate-800/90 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10.5px] font-mono text-amber-400 uppercase font-black tracking-wider" x-text="samples[activeSample].tag"></span>
+                            <span class="text-[11px] font-mono text-slate-400" x-text="isPlaying ? '0:0' + seconds + ' / 0:10' : (seconds >= 10 ? '0:10 / 0:10' : '0:00 / 0:10')"></span>
+                        </div>
+
+                        <!-- Audio Play Button & Visualizer -->
+                        <div class="flex items-center gap-3">
+                            <button type="button" 
+                                    @click="isPlaying ? stop() : play()" 
+                                    class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-600 text-slate-950 font-black text-xl flex items-center justify-center shadow-lg shadow-amber-500/30 hover:scale-105 active:scale-95 transition-all cursor-pointer">
+                                <span x-show="!isPlaying">▶</span>
+                                <span x-show="isPlaying" x-cloak>❚❚</span>
+                            </button>
+
+                            <!-- Audio Waveform Bars -->
+                            <div class="flex-1 flex items-center gap-1.5 h-10 px-3 bg-slate-950/80 rounded-xl border border-slate-800">
+                                <div class="w-1 bg-amber-400 rounded-full" :class="isPlaying ? 'wave-bar-1' : 'h-2'"></div>
+                                <div class="w-1 bg-amber-400 rounded-full" :class="isPlaying ? 'wave-bar-2' : 'h-4'"></div>
+                                <div class="w-1 bg-amber-400 rounded-full" :class="isPlaying ? 'wave-bar-3' : 'h-3'"></div>
+                                <div class="w-1 bg-amber-400 rounded-full" :class="isPlaying ? 'wave-bar-4' : 'h-6'"></div>
+                                <div class="w-1 bg-amber-400 rounded-full" :class="isPlaying ? 'wave-bar-5' : 'h-4'"></div>
+                                <div class="w-1 bg-amber-400 rounded-full" :class="isPlaying ? 'wave-bar-6' : 'h-5'"></div>
+                                <div class="w-1 bg-amber-400 rounded-full" :class="isPlaying ? 'wave-bar-7' : 'h-2'"></div>
+                                <div class="w-1 bg-amber-400 rounded-full" :class="isPlaying ? 'wave-bar-8' : 'h-3'"></div>
+                            </div>
+                        </div>
+
+                        <!-- Spoken Voice-Memo Quote -->
+                        <div class="p-3 bg-slate-950/90 rounded-xl border border-slate-800/80 text-xs">
+                            <span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Eingesprochene Audionachricht:</span>
+                            <p class="text-amber-200/90 italic font-mono text-[11px] leading-relaxed" x-text="samples[activeSample].audioText"></p>
+                        </div>
+                    </div>
+
+                    <!-- Right: Instant Real-time Extracted Data (7 cols) -->
+                    <div class="lg:col-span-7 bg-slate-900/90 p-5 sm:p-6 rounded-2xl border border-blue-900/40 space-y-3.5 relative overflow-hidden">
+                        
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span class="text-xs font-black text-white">Automatisch strukturierter Bautagesbericht</span>
+                            </div>
+                            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-lg border border-emerald-500/30">
+                                100% VOB-konform
+                            </span>
+                        </div>
+
+                        <!-- Structured Cards Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                            <div class="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 space-y-0.5">
+                                <span class="text-[9.5px] font-bold text-slate-400 uppercase">Wetterdaten (GPS)</span>
+                                <p class="text-[11.5px] font-bold text-slate-200" x-text="samples[activeSample].weather"></p>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 space-y-0.5">
+                                <span class="text-[9.5px] font-bold text-slate-400 uppercase">Anwesende Fachkräfte</span>
+                                <p class="text-[11.5px] font-bold text-slate-200" x-text="samples[activeSample].workers"></p>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 space-y-0.5">
+                                <span class="text-[9.5px] font-bold text-slate-400 uppercase">Ausgeführte Leistungen</span>
+                                <p class="text-[11.5px] font-bold text-blue-300" x-text="samples[activeSample].taskDone"></p>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 space-y-0.5">
+                                <span class="text-[9.5px] font-bold text-slate-400 uppercase">Mängel- & Nachtragsstatus</span>
+                                <p class="text-[11.5px] font-bold text-amber-300" x-text="samples[activeSample].defectDetected"></p>
+                            </div>
+                        </div>
+
+                        <!-- PDF Ready Bar -->
+                        <div class="p-3 bg-gradient-to-r from-blue-900/40 via-indigo-900/40 to-slate-900 rounded-xl border border-blue-500/30 flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="text-base">📄</span>
+                                <span class="text-slate-200 font-bold text-[11px]" x-text="samples[activeSample].outputPdf"></span>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-lg bg-blue-600 text-white font-black text-[10px]">
+                                Fertig
+                            </span>
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
@@ -1239,12 +1463,12 @@ new class extends Component {
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 6. INTERAKTIVER ROI & ERSPARNISRECHNER                                    -->
+    <!-- 6. INTERAKTIVER ROI & ERSPARNISRECHNER MIT DYNAMISCHER VISUALISIERUNG    -->
     <!-- ========================================================================= -->
-    <section id="rechner" class="py-14 sm:py-20 bg-slate-100 border-t border-slate-200 relative reveal-on-scroll">
+    <section id="rechner" class="py-14 sm:py-24 bg-slate-100 border-t border-slate-200 relative reveal-on-scroll">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            <div class="text-center max-w-3xl mx-auto space-y-2 sm:space-y-3 mb-8 sm:mb-12">
+            <div class="text-center max-w-3xl mx-auto space-y-2 sm:space-y-3 mb-10 sm:mb-14">
                 <span class="px-3.5 py-1 rounded-full bg-emerald-100 border border-emerald-200 text-emerald-800 text-[10.5px] sm:text-xs font-black uppercase">
                     🧮 Wirtschaftlichkeitsrechner
                 </span>
@@ -1259,17 +1483,17 @@ new class extends Component {
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center max-w-5xl mx-auto">
                 
                 <!-- Left: Interactive Sliders (6 cols) -->
-                <div class="lg:col-span-6 bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-5 sm:space-y-6 card-lift">
+                <div class="lg:col-span-6 layered-card p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 space-y-5 sm:space-y-6">
                     
                     <!-- Slider 1: Baustellen -->
-                    <div class="space-y-1.5 sm:space-y-2">
+                    <div class="space-y-2">
                         <div class="flex justify-between items-center text-xs">
                             <label class="font-bold text-slate-800">Gleichzeitige Baustellen:</label>
-                            <span class="px-2.5 sm:px-3 py-1 rounded-lg sm:rounded-xl bg-blue-50 text-blue-700 font-black text-xs sm:text-sm border border-blue-200">
+                            <span class="px-3 py-1 rounded-xl bg-blue-50 text-blue-700 font-black text-xs sm:text-sm border border-blue-200 tabular-nums">
                                 {{ $roiProjectCount }} Baustellen
                             </span>
                         </div>
-                        <input type="range" wire:model.live="roiProjectCount" min="1" max="25" step="1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                        <input type="range" wire:model.live="roiProjectCount" min="1" max="25" step="1" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
                         <div class="flex justify-between text-[10px] text-slate-500 font-semibold">
                             <span>1 Baustelle</span>
                             <span>25 Baustellen</span>
@@ -1277,14 +1501,14 @@ new class extends Component {
                     </div>
 
                     <!-- Slider 2: Mitarbeiter -->
-                    <div class="space-y-1.5 sm:space-y-2">
+                    <div class="space-y-2">
                         <div class="flex justify-between items-center text-xs">
                             <label class="font-bold text-slate-800">Mitarbeiter & Bauleiter:</label>
-                            <span class="px-2.5 sm:px-3 py-1 rounded-lg sm:rounded-xl bg-indigo-50 text-indigo-700 font-black text-xs sm:text-sm border border-indigo-200">
+                            <span class="px-3 py-1 rounded-xl bg-indigo-50 text-indigo-700 font-black text-xs sm:text-sm border border-indigo-200 tabular-nums">
                                 {{ $roiWorkerCount }} Personen
                             </span>
                         </div>
-                        <input type="range" wire:model.live="roiWorkerCount" min="2" max="40" step="1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                        <input type="range" wire:model.live="roiWorkerCount" min="2" max="40" step="1" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
                         <div class="flex justify-between text-[10px] text-slate-500 font-semibold">
                             <span>2 Mitarbeiter</span>
                             <span>40 Mitarbeiter</span>
@@ -1292,14 +1516,14 @@ new class extends Component {
                     </div>
 
                     <!-- Slider 3: Stundensatz -->
-                    <div class="space-y-1.5 sm:space-y-2">
+                    <div class="space-y-2">
                         <div class="flex justify-between items-center text-xs">
                             <label class="font-bold text-slate-800">Kalkulatorischer Stundensatz:</label>
-                            <span class="px-2.5 sm:px-3 py-1 rounded-lg sm:rounded-xl bg-amber-50 text-amber-800 font-black text-xs sm:text-sm border border-amber-200">
+                            <span class="px-3 py-1 rounded-xl bg-amber-50 text-amber-800 font-black text-xs sm:text-sm border border-amber-200 tabular-nums">
                                 {{ $roiHourlyRate }} € / Std.
                             </span>
                         </div>
-                        <input type="range" wire:model.live="roiHourlyRate" min="45" max="110" step="5" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600">
+                        <input type="range" wire:model.live="roiHourlyRate" min="45" max="110" step="5" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600">
                         <div class="flex justify-between text-[10px] text-slate-500 font-semibold">
                             <span>45 €</span>
                             <span>110 €</span>
@@ -1309,27 +1533,27 @@ new class extends Component {
                 </div>
 
                 <!-- Right: Calculated Results (6 cols) -->
-                <div class="lg:col-span-6 bg-slate-900 text-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-800 shadow-2xl space-y-5 sm:space-y-6 card-lift">
+                <div class="lg:col-span-6 bg-gradient-to-br from-slate-900 via-slate-950 to-blue-950 text-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-800 shadow-2xl space-y-5 sm:space-y-6 card-lift">
                     
                     <div class="space-y-1">
                         <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider">Ihr kalkulierter Jahresvorteil</span>
-                        <h4 class="text-2xl sm:text-4xl font-black text-white tabular-nums">
-                            ~ {{ number_format($this->totalValuePerYear, 0, ',', '.') }} € <span class="text-xs text-slate-400 font-medium">/ Jahr</span>
+                        <h4 class="text-3xl sm:text-5xl font-black text-white tabular-nums tracking-tight">
+                            ~ {{ number_format($this->totalValuePerYear, 0, ',', '.') }} € <span class="text-xs sm:text-sm text-slate-400 font-medium">/ Jahr</span>
                         </h4>
                     </div>
 
-                    <div class="space-y-2.5 sm:space-y-3 text-xs pt-2 border-t border-slate-800">
-                        <div class="flex justify-between items-center p-2.5 sm:p-3 bg-slate-950/80 rounded-xl border border-white/5">
+                    <div class="space-y-2.5 sm:space-y-3 text-xs pt-3 border-t border-slate-800">
+                        <div class="flex justify-between items-center p-3 bg-slate-950/80 rounded-xl border border-white/5">
                             <span class="text-slate-300">⏱️ Eingesparte Büro- & Doku-Zeit:</span>
-                            <span class="font-black text-blue-400 tabular-nums">~ {{ $this->savedHoursPerMonth }} Std. / Monat</span>
+                            <span class="font-black text-blue-400 tabular-nums text-sm">~ {{ $this->savedHoursPerMonth }} Std. / Monat</span>
                         </div>
-                        <div class="flex justify-between items-center p-2.5 sm:p-3 bg-slate-950/80 rounded-xl border border-white/5">
+                        <div class="flex justify-between items-center p-3 bg-slate-950/80 rounded-xl border border-white/5">
                             <span class="text-slate-300">💶 Bürokratiekosten-Ersparnis:</span>
-                            <span class="font-black text-emerald-400 tabular-nums">{{ number_format($this->savedCostPerYear, 0, ',', '.') }} € / Jahr</span>
+                            <span class="font-black text-emerald-400 tabular-nums text-sm">{{ number_format($this->savedCostPerYear, 0, ',', '.') }} € / Jahr</span>
                         </div>
-                        <div class="flex justify-between items-center p-2.5 sm:p-3 bg-slate-950/80 rounded-xl border border-white/5">
+                        <div class="flex justify-between items-center p-3 bg-slate-950/80 rounded-xl border border-white/5">
                             <span class="text-slate-300">📈 Zusätzliche Nachtragserlöse (VOB/B):</span>
-                            <span class="font-black text-amber-400 tabular-nums">+ {{ number_format($this->additionalSupplementRevenue, 0, ',', '.') }} € / Jahr</span>
+                            <span class="font-black text-amber-400 tabular-nums text-sm">+ {{ number_format($this->additionalSupplementRevenue, 0, ',', '.') }} € / Jahr</span>
                         </div>
                     </div>
 
@@ -1344,9 +1568,9 @@ new class extends Component {
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 6. VORHER VS. NACHHER VERGLEICH (LIGHT SPLIT CARDS)                       -->
+    <!-- 7. VORHER VS. NACHHER VERGLEICH (INTERAKTIVER TAB- & SPLIT-VERGLEICH)     -->
     <!-- ========================================================================= -->
-    <section id="vorteile" class="py-14 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal-on-scroll">
+    <section id="vorteile" x-data="{ viewMode: 'both' }" class="py-14 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal-on-scroll">
         
         <div class="text-center max-w-3xl mx-auto space-y-2 sm:space-y-3 mb-8 sm:mb-12">
             <span class="px-3.5 py-1 rounded-full bg-cyan-100 border border-cyan-200 text-cyan-800 text-[10.5px] sm:text-xs font-black uppercase">
@@ -1355,14 +1579,43 @@ new class extends Component {
             <h2 class="text-2xl sm:text-4xl font-black text-slate-950 tracking-tight">
                 Vorher vs. Nachher: Ihr Baustellenalltag transformiert
             </h2>
+            <p class="text-xs sm:text-sm text-slate-600 font-medium">
+                Sehen Sie den Unterschied zwischen gewohntem Papierchaos und moderner digitaler Bauleitung:
+            </p>
+
+            <!-- Interactive View Filter Buttons -->
+            <div class="pt-3 inline-flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl border border-slate-200 text-xs">
+                <button type="button" 
+                        @click="viewMode = 'both'" 
+                        :class="viewMode === 'both' ? 'bg-white text-slate-900 shadow-xs font-black' : 'text-slate-500 hover:text-slate-900 font-bold'" 
+                        class="px-3 sm:px-4 py-1.5 rounded-xl transition text-[11px] sm:text-xs">
+                    ↔️ Nebeneinander
+                </button>
+                <button type="button" 
+                        @click="viewMode = 'before'" 
+                        :class="viewMode === 'before' ? 'bg-rose-50 text-rose-800 border border-rose-200 font-black' : 'text-slate-500 hover:text-slate-900 font-bold'" 
+                        class="px-3 sm:px-4 py-1.5 rounded-xl transition text-[11px] sm:text-xs">
+                    ❌ Ohne Software
+                </button>
+                <button type="button" 
+                        @click="viewMode = 'after'" 
+                        :class="viewMode === 'after' ? 'bg-blue-600 text-white font-black' : 'text-slate-500 hover:text-slate-900 font-bold'" 
+                        class="px-3 sm:px-4 py-1.5 rounded-xl transition text-[11px] sm:text-xs">
+                    ✨ Mit BT Cockpit
+                </button>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto">
             
             <!-- BEFORE CARD -->
-            <div class="bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-rose-200 shadow-sm space-y-4 sm:space-y-5 card-lift">
+            <div x-show="viewMode === 'both' || viewMode === 'before'" 
+                 x-transition:enter="transition ease-out duration-300 transform" 
+                 x-transition:enter-start="opacity-0 scale-95" 
+                 x-transition:enter-end="opacity-100 scale-100" 
+                 class="layered-card p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-rose-200 shadow-sm space-y-4 sm:space-y-5 card-lift">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-black text-sm">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-black text-base shrink-0">
                         ✕
                     </div>
                     <div>
@@ -1371,38 +1624,38 @@ new class extends Component {
                     </div>
                 </div>
 
-                <ul class="space-y-2.5 sm:space-y-3 text-xs text-slate-600 font-medium">
-                    <li class="flex items-start gap-2">
-                        <span class="text-rose-600 font-bold">✕</span>
-                        <span>Papier-Bautagebücher werden unvollständig oder erst Tage später ausgefüllt.</span>
+                <ul class="space-y-3 text-xs text-slate-600 font-medium">
+                    <li class="flex items-start gap-2.5 p-2 rounded-xl bg-rose-50/50">
+                        <span class="text-rose-600 font-bold text-sm leading-none shrink-0">✕</span>
+                        <span><strong>Papier-Bautagebücher:</strong> Werden unvollständig oder erst Tage später aus dem Gedächtnis ausgefüllt.</span>
                     </li>
-                    <li class="flex items-start gap-2">
-                        <span class="text-rose-600 font-bold">✕</span>
-                        <span>Nachträge nach VOB/B § 2 werden formlos per Mail oder Zuruf verhandelt und nicht vergütet.</span>
+                    <li class="flex items-start gap-2.5 p-2 rounded-xl bg-rose-50/50">
+                        <span class="text-rose-600 font-bold text-sm leading-none shrink-0">✕</span>
+                        <span><strong>Verlorene VOB-Nachträge:</strong> Mehrleistungen werden auf Zuruf ausgeführt, aber am Ende vom Bauherrn bestritten.</span>
                     </li>
-                    <li class="flex items-start gap-2">
-                        <span class="text-rose-600 font-bold">✕</span>
-                        <span>Handschriftliche Handaufmaße mit unklaren Formeln führen zu Streit bei der Abnahme.</span>
+                    <li class="flex items-start gap-2.5 p-2 rounded-xl bg-rose-50/50">
+                        <span class="text-rose-600 font-bold text-sm leading-none shrink-0">✕</span>
+                        <span><strong>Aufmaß-Streitigkeiten:</strong> Unleserliche Handzettel führen zu Verzögerungen bei der Schlussrechnung.</span>
                     </li>
-                    <li class="flex items-start gap-2">
-                        <span class="text-rose-600 font-bold">✕</span>
-                        <span>Stundenzettel müssen am Monatsende mühsam abgetippt und korrigiert werden.</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <span class="text-rose-600 font-bold">✕</span>
-                        <span>Steuerberater wartet auf Belege; keine DATEV-Schnittstelle.</span>
+                    <li class="flex items-start gap-2.5 p-2 rounded-xl bg-rose-50/50">
+                        <span class="text-rose-600 font-bold text-sm leading-none shrink-0">✕</span>
+                        <span><strong>Monatsabschluss-Chaos:</strong> Stundenzettel und Subunternehmerrechnungen müssen manuell abgetippt werden.</span>
                     </li>
                 </ul>
             </div>
 
             <!-- AFTER CARD -->
-            <div class="bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border-2 border-blue-600 shadow-xl space-y-4 sm:space-y-5 relative card-lift">
+            <div x-show="viewMode === 'both' || viewMode === 'after'" 
+                 x-transition:enter="transition ease-out duration-300 transform" 
+                 x-transition:enter-start="opacity-0 scale-95" 
+                 x-transition:enter-end="opacity-100 scale-100" 
+                 class="layered-card p-5 sm:p-8 rounded-2xl sm:rounded-3xl border-2 border-blue-600 shadow-xl space-y-4 sm:space-y-5 relative card-lift">
                 <div class="absolute -top-3 right-4 sm:right-6 px-3 py-0.5 sm:py-1 bg-blue-600 text-white rounded-full text-[9px] sm:text-[10px] font-black tracking-wider uppercase shadow-xs">
                     Empfohlener Standard
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-sm">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-base shrink-0">
                         ✓
                     </div>
                     <div>
@@ -1411,32 +1664,116 @@ new class extends Component {
                     </div>
                 </div>
 
-                <ul class="space-y-2.5 sm:space-y-3 text-xs text-slate-700 font-semibold">
-                    <li class="flex items-start gap-2">
-                        <span class="text-emerald-600 font-bold">✓</span>
-                        <span>30-Sekunden Sprachmemo erzeugt das fertige Bautagebuch samt Wetter & Fotos.</span>
+                <ul class="space-y-3 text-xs text-slate-700 font-semibold">
+                    <li class="flex items-start gap-2.5 p-2 rounded-xl bg-emerald-50/60">
+                        <span class="text-emerald-600 font-bold text-sm leading-none shrink-0">✓</span>
+                        <span><strong>30s KI-Sprachmemo:</strong> Erzeugt das vollständige Bautagebuch samt Wetter, Fotos und Mängeln sofort.</span>
                     </li>
-                    <li class="flex items-start gap-2">
-                        <span class="text-emerald-600 font-bold">✓</span>
-                        <span>1-Klick Nachtragsangebote mit rechtssicherem VOB/B-Bezug und fertigem PDF.</span>
+                    <li class="flex items-start gap-2.5 p-2 rounded-xl bg-emerald-50/60">
+                        <span class="text-emerald-600 font-bold text-sm leading-none shrink-0">✓</span>
+                        <span><strong>1-Klick Nachträge VOB/B § 2:</strong> Rechtssichere PDF-Angebote mit offiziellem Briefkopf vor Ausführung.</span>
                     </li>
-                    <li class="flex items-start gap-2">
-                        <span class="text-emerald-600 font-bold">✓</span>
-                        <span>Digitales Aufmaßblatt (VOB/C / DIN 18299) mit automatischem Raumabzug.</span>
+                    <li class="flex items-start gap-2.5 p-2 rounded-xl bg-emerald-50/60">
+                        <span class="text-emerald-600 font-bold text-sm leading-none shrink-0">✓</span>
+                        <span><strong>Digitales Aufmaß (DIN 18299):</strong> Transparente Berechnungsformeln und sofortige Freigabe durch den Bauherrn.</span>
                     </li>
-                    <li class="flex items-start gap-2">
-                        <span class="text-emerald-600 font-bold">✓</span>
-                        <span>Mobile Zeiterfassung (MiLoG-konform) direkt auf der Baustelle per Klick.</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <span class="text-emerald-600 font-bold">✓</span>
-                        <span>DATEV SKR03/04 Export mit automatischer § 13b UStG Steuerschlüssel-Vergabe.</span>
+                    <li class="flex items-start gap-2.5 p-2 rounded-xl bg-emerald-50/60">
+                        <span class="text-emerald-600 font-bold text-sm leading-none shrink-0">✓</span>
+                        <span><strong>DATEV SKR03/04 Export:</strong> Automatische § 13b UStG Steuerschlüssel für Subunternehmer auf Knopfdruck.</span>
                     </li>
                 </ul>
             </div>
 
         </div>
 
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 8. BAUPRAXIS-STIMMEN & PRAXIS-TESTIMONIALS                                 -->
+    <!-- ========================================================================= -->
+    <section class="py-14 sm:py-24 bg-gradient-to-b from-white via-slate-50 to-white border-t border-slate-200 relative reveal-on-scroll">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-2 sm:space-y-3 mb-10 sm:mb-14">
+                <span class="px-3.5 py-1 rounded-full bg-amber-100 border border-amber-200 text-amber-900 text-[10.5px] sm:text-xs font-black uppercase">
+                    ⭐ Aus der Baupraxis
+                </span>
+                <h2 class="text-2xl sm:text-4xl font-black text-slate-950 tracking-tight">
+                    Was Bauleiter & Bauträger über BT Cockpit sagen
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-600 font-medium">
+                    Praxisberichte von Unternehmen, die ihre Baustellen digitalisieren:
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+                
+                <!-- Testimonial 1 -->
+                <div class="layered-card p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 flex flex-col justify-between space-y-4 card-lift">
+                    <div class="space-y-3">
+                        <div class="flex items-center text-amber-400 text-sm">
+                            ★★★★★
+                        </div>
+                        <p class="text-xs sm:text-[13px] text-slate-700 leading-relaxed font-medium">
+                            „Früher sind uns bei fast jedem Projekt mehrere tausend Euro an VOB-Nachträgen durchgerutscht, weil auf der Baustelle niemand Zeit zum Schreiben hatte. Mit dem KI-Bautagebuch ist der Tagesbericht in 45 Sekunden fertig.“
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-800 font-black flex items-center justify-center text-sm shrink-0">
+                            SM
+                        </div>
+                        <div>
+                            <h5 class="text-xs font-black text-slate-900">Dipl.-Ing. Stefan Maier</h5>
+                            <span class="text-[11px] text-slate-500 font-medium block">Geschäftsführer Bau & Sanierung GmbH, München</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="layered-card p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 flex flex-col justify-between space-y-4 card-lift">
+                    <div class="space-y-3">
+                        <div class="flex items-center text-amber-400 text-sm">
+                            ★★★★★
+                        </div>
+                        <p class="text-xs sm:text-[13px] text-slate-700 leading-relaxed font-medium">
+                            „Die DATEV-Übergabe mit SKR03 und der automatischen § 13b-Zuordnung für Nachunternehmer spart unserer Buchhaltung 2 volle Tage am Monatsende. Absoluter Gamechanger für unseren Betrieb.“
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-800 font-black flex items-center justify-center text-sm shrink-0">
+                            MW
+                        </div>
+                        <div>
+                            <h5 class="text-xs font-black text-slate-900">Markus Weber</h5>
+                            <span class="text-[11px] text-slate-500 font-medium block">Bauleiter Schlüsselfertigbau, Nürnberg</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="layered-card p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 flex flex-col justify-between space-y-4 card-lift">
+                    <div class="space-y-3">
+                        <div class="flex items-center text-amber-400 text-sm">
+                            ★★★★★
+                        </div>
+                        <p class="text-xs sm:text-[13px] text-slate-700 leading-relaxed font-medium">
+                            „Endlich eine Software ohne überflüssigen Schnickschnack. Meine Poliere vor Ort bedienen das System ohne jede Schulung direkt auf dem Smartphone im Browser. Einfach genial.“
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-800 font-black flex items-center justify-center text-sm shrink-0">
+                            TB
+                        </div>
+                        <div>
+                            <h5 class="text-xs font-black text-slate-900">Thomas Brandl</h5>
+                            <span class="text-[11px] text-slate-500 font-medium block">Bauträger & Projektentwickler, Regensburg</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
     </section>
 
     <!-- ========================================================================= -->
@@ -1644,5 +1981,27 @@ new class extends Component {
             </div>
         </div>
     @endif
+
+    <!-- ========================================================================= -->
+    <!-- 9. MOBILE STICKY QUICK-ACTION BAR (FLOAT AT BOTTOM ON SMARTPHONES)        -->
+    <!-- ========================================================================= -->
+    <div x-show="showStickyBar" 
+         x-transition:enter="transition ease-out duration-300 transform" 
+         x-transition:enter-start="translate-y-20 opacity-0" 
+         x-transition:enter-end="translate-y-0 opacity-100" 
+         x-transition:leave="transition ease-in duration-200 transform" 
+         x-transition:leave-start="translate-y-0 opacity-100" 
+         x-transition:leave-end="translate-y-20 opacity-0" 
+         x-cloak 
+         class="fixed bottom-4 left-4 right-4 z-40 md:hidden">
+        <div class="bg-slate-950/95 backdrop-blur-xl border border-slate-700/80 rounded-2xl p-2.5 shadow-2xl flex items-center justify-between gap-2.5">
+            <button wire:click="openDemoModal" class="flex-1 py-3 px-4 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600 active:scale-95 text-white font-black text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 transition">
+                <span>⚡ Live-Demo</span>
+            </button>
+            <a href="https://wa.me/4917612345678?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20eine%20Live-Demo%20anfragen." target="_blank" class="py-3 px-3.5 bg-emerald-600 active:scale-95 text-white font-black text-xs rounded-xl shadow-md flex items-center justify-center gap-1 shrink-0 transition">
+                <span>💬 WhatsApp</span>
+            </a>
+        </div>
+    </div>
 
 </div>

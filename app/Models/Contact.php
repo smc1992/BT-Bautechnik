@@ -74,6 +74,36 @@ class Contact extends Model
         return $this->hasMany(ActualCost::class);
     }
 
+    public function dailyLogs(): HasMany
+    {
+        return $this->hasMany(DailyLog::class);
+    }
+
+    public function supplements(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(Supplement::class, Project::class);
+    }
+
+    public function measurements(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(Measurement::class, Project::class);
+    }
+
+    public function defects(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(Defect::class, Project::class);
+    }
+
+    public function plans(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(ProjectPlan::class, Project::class);
+    }
+
+    public function timeEntries(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(TimeEntry::class, Project::class);
+    }
+
     public function getDisplayNameAttribute(): string
     {
         if (!empty($this->company_name)) {

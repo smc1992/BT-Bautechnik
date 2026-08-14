@@ -114,43 +114,41 @@ new class extends Component {
     }
 }; ?>
 
-<div class="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-blue-600 selection:text-white">
+<div class="min-h-screen bg-[#060a12] text-slate-100 font-sans selection:bg-blue-600 selection:text-white relative overflow-x-hidden">
     
+    <!-- Ambient Glass Background Orbs -->
+    <div class="fixed top-0 left-1/4 w-[600px] h-[500px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none -z-10"></div>
+    <div class="fixed top-1/3 right-10 w-[500px] h-[500px] bg-amber-500/8 rounded-full blur-[160px] pointer-events-none -z-10"></div>
+    <div class="fixed bottom-10 left-10 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[160px] pointer-events-none -z-10"></div>
+
     <!-- ========================================================================= -->
-    <!-- 1. STICKY TOP NAVBAR                                                      -->
+    <!-- 1. STICKY TOP NAVBAR (FROSTED GLASS EFFECT)                               -->
     <!-- ========================================================================= -->
-    <header class="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80">
+    <header class="sticky top-0 z-40 bg-[#060a12]/80 backdrop-blur-xl border-b border-white/10 shadow-xl transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             
-            <!-- Logo Brand -->
-            <a href="/" class="flex items-center gap-3 group">
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center font-black text-white text-xl shadow-lg shadow-blue-500/25 group-hover:scale-105 transition">
-                    BT
-                </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <span class="font-black text-lg sm:text-xl text-white tracking-tight">BT BAUTECHNIK</span>
-                        <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-blue-500/20 text-blue-400 border border-blue-500/30">ERP COCKPIT</span>
-                    </div>
-                    <span class="text-[10px] text-slate-400 block font-medium tracking-wide">Aus der Praxis für echte Bauprofis & Bauträger</span>
-                </div>
+            <!-- Real Brand Logo Component -->
+            <a href="/" class="hover:opacity-95 transition group">
+                <x-brand-logo size="default" />
             </a>
 
             <!-- Nav Links (Desktop) -->
-            <nav class="hidden md:flex items-center gap-8 text-xs font-bold text-slate-300">
-                <a href="#module" class="hover:text-white transition">Module & VOB</a>
-                <a href="#vorteile" class="hover:text-white transition">Warum BT Cockpit?</a>
-                <a href="#rechner" class="hover:text-white transition flex items-center gap-1.5 text-blue-400 font-black">
+            <nav class="hidden lg:flex items-center gap-8 text-xs font-bold text-slate-300">
+                <a href="#story" class="hover:text-amber-400 transition flex items-center gap-1">
+                    <span>🧱 Praxis-Story</span>
+                </a>
+                <a href="#module" class="hover:text-blue-400 transition">Module & VOB</a>
+                <a href="#rechner" class="hover:text-emerald-400 transition flex items-center gap-1.5 font-extrabold text-emerald-400">
                     <span>🧮 Ersparnisrechner</span>
                 </a>
-                <a href="#ueber-uns" class="hover:text-white transition">Praxis-Vorteil</a>
+                <a href="#vorteile" class="hover:text-white transition">Vorher / Nachher</a>
                 <a href="#faq" class="hover:text-white transition">FAQ</a>
             </nav>
 
             <!-- Action Buttons -->
             <div class="flex items-center gap-3">
                 @auth
-                    <a href="{{ route('dashboard') }}" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl border border-slate-700 transition flex items-center gap-2">
+                    <a href="{{ route('dashboard') }}" class="px-4 py-2.5 bg-slate-900/90 hover:bg-slate-800 text-white font-bold text-xs rounded-xl border border-white/15 backdrop-blur-md shadow-xs transition flex items-center gap-2">
                         <span>📊 Zum Cockpit</span>
                     </a>
                 @else
@@ -159,7 +157,7 @@ new class extends Component {
                     </a>
                 @endauth
 
-                <button wire:click="openDemoModal" class="px-4 sm:px-5 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition cursor-pointer flex items-center gap-1.5 btn-press">
+                <button wire:click="openDemoModal" class="px-4 sm:px-5 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-500 hover:from-blue-500 hover:to-amber-400 text-white font-black text-xs rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-amber-500/30 transition cursor-pointer flex items-center gap-1.5 btn-press border border-white/15">
                     <span>✨ Demo anfordern</span>
                 </button>
             </div>
@@ -167,124 +165,124 @@ new class extends Component {
     </header>
 
     <!-- ========================================================================= -->
-    <!-- 2. HERO SECTION                                                           -->
+    <!-- 2. HERO SECTION WITH IMMERSIVE STORYTELLING & GLASSPHISM                  -->
     <!-- ========================================================================= -->
     <section class="relative pt-12 pb-24 lg:pt-20 lg:pb-32 overflow-hidden">
         
-        <!-- Glow effects in background -->
-        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-blue-600/20 rounded-full blur-[140px] pointer-events-none"></div>
-        <div class="absolute top-1/3 -left-32 w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none"></div>
-        <div class="absolute top-1/2 -right-32 w-96 h-96 bg-cyan-600/15 rounded-full blur-[120px] pointer-events-none"></div>
-
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             
             <div class="text-center max-w-4xl mx-auto space-y-6">
                 
-                <!-- Badge Pill -->
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-blue-500/30 text-blue-300 text-xs font-bold shadow-inner">
-                    <span class="flex h-2 w-2 rounded-full bg-blue-400 animate-ping"></span>
-                    <span>🏗️ Die #1 Bau-ERP & Bauleiter-Software – Entwickelt im echten Baustellenalltag</span>
+                <!-- Storytelling Origin Pill -->
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md border border-amber-500/30 text-amber-300 text-xs font-black shadow-inner">
+                    <span class="flex h-2 w-2 rounded-full bg-amber-400 animate-ping"></span>
+                    <span>🏗️ Entwickelt von der BT Bautechnik UG – Aus der Baupraxis für echte Bauprofis</span>
                 </div>
 
                 <!-- Main Hero Headline -->
-                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight sm:leading-none">
-                    Schluss mit Zettelwirtschaft.<br>
-                    <span class="bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300 bg-clip-text text-transparent">
-                        Volle Baustellen- & VOB-Kontrolle in einem Cockpit.
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight sm:leading-tight">
+                    Die Bauleiter-Software,<br>
+                    <span class="bg-gradient-to-r from-blue-400 via-indigo-300 to-amber-300 bg-clip-text text-transparent">
+                        die direkt auf der Baustelle geboren wurde.
                     </span>
                 </h1>
 
-                <!-- Subtitle -->
+                <!-- Subtitle with Authentic Builder Tone -->
                 <p class="text-sm sm:text-lg text-slate-300 font-medium max-w-3xl mx-auto leading-relaxed">
-                    Speziell für <strong>Bauträger, Bauunternehmen & Generalübernehmer</strong>: Steuern Sie Baustellen, Kunden, Nachträge nach VOB/B, digitale Aufmaße (VOB/C), KI-Bautagebücher und DATEV-Finanzen in Sekunden.
+                    Wir sind selbst Bauunternehmer in Bayern. Wir kennen den Regen, den Zeitdruck und verlorene Nachträge nach VOB/B § 2. Deshalb haben wir das <strong>BT Bautechnik Cockpit</strong> gebaut: Alle Baustellen, 360° Kunden-Zentrale, digitale Aufmaße (VOB/C), KI-Bautagebücher und DATEV-Finanzen in Sekunden steuern.
                 </p>
 
                 <!-- Hero CTAs -->
                 <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <button wire:click="openDemoModal" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-black text-sm rounded-2xl shadow-xl shadow-blue-500/30 hover:shadow-blue-500/60 transition cursor-pointer flex items-center justify-center gap-2.5 btn-press">
+                    <button wire:click="openDemoModal" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-500 hover:from-blue-500 hover:to-amber-400 text-white font-black text-sm rounded-2xl shadow-xl shadow-blue-500/25 hover:shadow-amber-500/40 transition cursor-pointer flex items-center justify-center gap-2.5 btn-press border border-white/20">
                         <span>🚀 Kostenlose Live-Demo anfordern</span>
                         <span>→</span>
                     </button>
 
-                    <a href="https://wa.me/4917612345678?text=Hallo%20BT%20Bautechnik,%20ich%20interessiere%20mich%20f%C3%BCr%20Ihr%20Bauleiter%20ERP%20Cockpit" target="_blank" class="w-full sm:w-auto px-6 py-4 bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white font-bold text-sm rounded-2xl border border-slate-800 hover:border-slate-700 transition flex items-center justify-center gap-2">
-                        <span>💬 Direkt per WhatsApp abstimmen</span>
+                    <a href="https://wa.me/4917612345678?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20gerne%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="w-full sm:w-auto px-6 py-4 bg-slate-900/80 hover:bg-slate-800 text-slate-200 hover:text-white font-bold text-sm rounded-2xl border border-white/10 hover:border-amber-400/40 transition flex items-center justify-center gap-2 backdrop-blur-md">
+                        <span>💬 Direkt per WhatsApp anfragen</span>
                     </a>
                 </div>
 
-                <!-- Trust Badges Strip -->
+                <!-- Glassmorphism Trust Badges Strip -->
                 <div class="pt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs">
-                    <div class="bg-slate-900/60 backdrop-blur-xs p-3 rounded-2xl border border-slate-800/80">
-                        <span class="text-blue-400 font-bold block">⚖️ VOB/B § 2 & VOB/C</span>
-                        <span class="text-slate-400 text-[11px]">100% rechtssicher</span>
+                    <div class="bg-slate-900/50 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 hover:border-blue-400/40 transition shadow-sm">
+                        <span class="text-blue-400 font-black block">⚖️ VOB/B § 2 & VOB/C</span>
+                        <span class="text-slate-400 text-[11px]">Rechtssichere Nachträge & Aufmaße</span>
                     </div>
-                    <div class="bg-slate-900/60 backdrop-blur-xs p-3 rounded-2xl border border-slate-800/80">
-                        <span class="text-indigo-400 font-bold block">🎙️ KI-Sprachmemo</span>
-                        <span class="text-slate-400 text-[11px]">Bautagebuch in 30 Sek.</span>
+                    <div class="bg-slate-900/50 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 hover:border-amber-400/40 transition shadow-sm">
+                        <span class="text-amber-400 font-black block">🎙️ KI-Sprachmemo</span>
+                        <span class="text-slate-400 text-[11px]">Bautagebuch in 30 Sek. vor Ort</span>
                     </div>
-                    <div class="bg-slate-900/60 backdrop-blur-xs p-3 rounded-2xl border border-slate-800/80">
-                        <span class="text-emerald-400 font-bold block">📊 DATEV-Export</span>
-                        <span class="text-slate-400 text-[11px]">SKR03 / SKR04 Schnittstelle</span>
+                    <div class="bg-slate-900/50 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 hover:border-emerald-400/40 transition shadow-sm">
+                        <span class="text-emerald-400 font-black block">📊 DATEV SKR03/04</span>
+                        <span class="text-slate-400 text-[11px]">Buchungsstapel für Steuerberater</span>
                     </div>
-                    <div class="bg-slate-900/60 backdrop-blur-xs p-3 rounded-2xl border border-slate-800/80">
-                        <span class="text-cyan-400 font-bold block">📱 Mobile PWA</span>
-                        <span class="text-slate-400 text-[11px]">Für Smartphone & Tablet</span>
+                    <div class="bg-slate-900/50 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 hover:border-cyan-400/40 transition shadow-sm">
+                        <span class="text-cyan-400 font-black block">📱 Mobile PWA</span>
+                        <span class="text-slate-400 text-[11px]">Für Smartphone & Baustellen-Tablet</span>
                     </div>
                 </div>
 
             </div>
 
-            <!-- Interactive Hero Mockup Card -->
-            <div class="mt-14 max-w-5xl mx-auto rounded-3xl p-2 sm:p-3 bg-gradient-to-b from-blue-500/30 via-slate-800/30 to-slate-900/60 border border-blue-500/30 shadow-2xl shadow-blue-500/10">
-                <div class="bg-slate-900/95 rounded-2xl border border-slate-800 overflow-hidden shadow-inner">
+            <!-- Interactive Hero Glassmorphism Cockpit Preview Card -->
+            <div class="mt-14 max-w-5xl mx-auto rounded-3xl p-3 sm:p-4 bg-gradient-to-b from-blue-500/20 via-slate-800/40 to-amber-500/10 border border-white/15 shadow-2xl backdrop-blur-2xl">
+                <div class="bg-slate-950/90 rounded-2xl border border-white/10 overflow-hidden shadow-inner">
                     
-                    <!-- Window bar -->
-                    <div class="px-4 py-3 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                    <!-- Window bar with real company identification -->
+                    <div class="px-5 py-3.5 bg-slate-900/90 border-b border-white/10 flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span class="w-3 h-3 rounded-full bg-rose-500/80"></span>
                             <span class="w-3 h-3 rounded-full bg-amber-500/80"></span>
                             <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
-                            <span class="text-xs text-slate-400 font-mono ml-2">app.bautechnik-bt.de / cockpit / live-preview</span>
+                            <span class="text-xs text-slate-300 font-mono ml-2">app.bautechnik-bt.de / bt-bauleiter-cockpit / live</span>
                         </div>
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                            LIVE SYSTEM
-                        </span>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                BT BAUTECHNIK UG
+                            </span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                                LIVE COCKPIT
+                            </span>
+                        </div>
                     </div>
 
                     <!-- Mockup Body -->
-                    <div class="p-4 sm:p-6 space-y-6">
+                    <div class="p-5 sm:p-7 space-y-6">
                         
-                        <!-- Mini Header -->
+                        <!-- Project Banner Header -->
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                             <div>
-                                <span class="text-[10px] font-mono text-blue-400 font-bold uppercase">PROJEKT #2026-081</span>
+                                <span class="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-wider">BAUVORHABEN #2026-081</span>
                                 <h3 class="text-base sm:text-lg font-black text-white">WEG Maximilianstraße 44 – Tiefgaragenabdichtung & Sanierung</h3>
-                                <p class="text-xs text-slate-400">Auftraggeber: Hausverwaltung Müller & Partner GmbH (Nürnberg)</p>
+                                <p class="text-xs text-slate-400">Auftraggeber / Bauherr: Hausverwaltung Müller & Partner GmbH (Nürnberg)</p>
                             </div>
                             <div class="flex items-center gap-2">
                                 <span class="px-3 py-1 rounded-xl bg-blue-600/20 text-blue-400 border border-blue-500/30 font-bold text-xs">
                                     KW 32 – KW 38
                                 </span>
                                 <span class="px-3 py-1 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 font-bold text-xs">
-                                    Aktiv im Plan
+                                    Im Plan
                                 </span>
                             </div>
                         </div>
 
-                        <!-- Progress & Budget -->
+                        <!-- Progress & Budget Cards -->
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                            <div class="bg-slate-900/60 backdrop-blur-md p-4 rounded-xl border border-white/10">
                                 <span class="text-[10px] text-slate-400 font-bold uppercase">Geplantes Budget</span>
                                 <p class="text-base font-black text-white mt-0.5">85.000,00 €</p>
                                 <div class="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
                                     <div class="bg-blue-500 h-full w-[65%]"></div>
                                 </div>
                             </div>
-                            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                            <div class="bg-slate-900/60 backdrop-blur-md p-4 rounded-xl border border-white/10">
                                 <span class="text-[10px] text-slate-400 font-bold uppercase">Nachtragsvolumen (VOB/B)</span>
-                                <p class="text-base font-black text-indigo-400 mt-0.5">+ 12.450,00 €</p>
+                                <p class="text-base font-black text-amber-400 mt-0.5">+ 12.450,00 €</p>
                                 <span class="text-[10px] text-emerald-400 font-semibold">3 freigegeben, 1 in Prüfung</span>
                             </div>
-                            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                            <div class="bg-slate-900/60 backdrop-blur-md p-4 rounded-xl border border-white/10">
                                 <span class="text-[10px] text-slate-400 font-bold uppercase">Aufmaßstand (VOB/C)</span>
                                 <p class="text-base font-black text-cyan-400 mt-0.5">620 m² / 750 m²</p>
                                 <span class="text-[10px] text-slate-400 font-semibold">82% fertiggestellt</span>
@@ -292,9 +290,9 @@ new class extends Component {
                         </div>
 
                         <!-- Mini Sub Action Bar -->
-                        <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800/80 flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <div class="p-3 bg-slate-900/80 rounded-xl border border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs">
                             <div class="flex items-center gap-2 text-slate-300">
-                                <span>🎙️ Bautagesbericht heute per KI erfasst</span>
+                                <span>🎙️ Bautagesbericht heute per Sprachmemo erfasst</span>
                                 <span class="text-slate-500">•</span>
                                 <span class="text-slate-400">Wetter: 22°C trocken</span>
                                 <span class="text-slate-500">•</span>
@@ -318,64 +316,64 @@ new class extends Component {
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 3. DIE STORY: AUS DER BAU-PRAXIS FÜR DIE PRAXIS                            -->
+    <!-- 3. DIE STORY: VON DER BRANCHE FÜR DIE BRANCHE                              -->
     <!-- ========================================================================= -->
-    <section id="ueber-uns" class="py-20 bg-slate-900/50 border-y border-slate-800/80 relative">
+    <section id="story" class="py-24 bg-slate-950/60 border-y border-white/10 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 
                 <div class="lg:col-span-6 space-y-6">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-black uppercase">
-                        <span>🧱 Praxis-Vorteil</span>
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-black uppercase">
+                        <span>🧱 Aus der Praxis für die Baupraxis</span>
                     </div>
 
                     <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight leading-tight">
-                        Warum herkömmliche Software auf der Baustelle scheitert – und warum wir es anders machen.
+                        Wir bauen selbst. Wir kennen den Baustellenalltag bis ins Detail.
                     </h2>
 
                     <div class="space-y-4 text-sm text-slate-300 leading-relaxed font-medium">
                         <p>
-                            Als aktive <strong>BT Bautechnik UG</strong> führen wir selbst anspruchsvolle Bau- und Sanierungsprojekte durch. Wir kennen die Realität:
+                            Hinter dieser Software steht kein anonymer IT-Konzern, sondern die <strong>BT Bautechnik UG (haftungsbeschränkt)</strong> – ein aktives deutsches Bauunternehmen mit Sitz in Berching (Bayern).
                         </p>
-                        <ul class="space-y-2.5 list-none pl-0">
-                            <li class="flex items-start gap-2.5">
-                                <span class="text-rose-400 font-bold">❌</span>
-                                <span>Bauleiter haben keine Zeit, abends stundenlang komplizierte Desktop-Programme zu bedienen.</span>
+                        <p>
+                            Jede Funktion in diesem Cockpit wurde aus einem konkreten Baustellen-Problem entwickelt:
+                        </p>
+                        <ul class="space-y-3 list-none pl-0">
+                            <li class="flex items-start gap-3 p-3 bg-slate-900/50 rounded-xl border border-white/5">
+                                <span class="text-amber-400 font-bold text-base">⚠️</span>
+                                <span><strong>VOB-Nachträge gingen verloren:</strong> Weil Poliere vor Ort keine Zeit hatten, Angebote am Schreibtisch zu schreiben. Heute erstellen wir Nachtragsangebote nach § 2 VOB/B mit 2 Klicks vor Ort.</span>
                             </li>
-                            <li class="flex items-start gap-2.5">
-                                <span class="text-rose-400 font-bold">❌</span>
-                                <span>Nachträge nach VOB/B § 2 gehen verloren oder werden zu spät eingereicht, weil der Prozess zu zäh ist.</span>
+                            <li class="flex items-start gap-3 p-3 bg-slate-900/50 rounded-xl border border-white/5">
+                                <span class="text-blue-400 font-bold text-base">🎙️</span>
+                                <span><strong>Zähe Bautagebücher:</strong> Nach einem 10-Stunden-Tag tippt kein Bauleiter Berichte. Ein 30-Sekunden Sprachmemo genügt und die KI formuliert den fertigen Bericht inklusive Wetter & Fotos.</span>
                             </li>
-                            <li class="flex items-start gap-2.5">
-                                <span class="text-rose-400 font-bold">❌</span>
-                                <span>Aufmaße und Mängelfotos landen in unübersichtlichen WhatsApp-Gruppen statt im Projektordner.</span>
+                            <li class="flex items-start gap-3 p-3 bg-slate-900/50 rounded-xl border border-white/5">
+                                <span class="text-emerald-400 font-bold text-base">📊</span>
+                                <span><strong>Abrechnungs-Chaos beim Steuerberater:</strong> Statt Belege per Post zu schicken, exportiert das System fertige DATEV-Buchungsstapel (SKR03/SKR04) inkl. § 13b UStG Nachunternehmer-Zuordnung.</span>
                             </li>
                         </ul>
-                        <p class="pt-2 text-white font-bold">
-                            💡 Das BT Bautechnik Cockpit löst all diese Probleme mit einem Klick direkt auf dem Smartphone oder Tablet vor Ort.
-                        </p>
                     </div>
 
                     <div class="pt-2">
-                        <button wire:click="openDemoModal" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs rounded-xl shadow-md shadow-blue-500/20 transition cursor-pointer btn-press">
-                            Erfahren Sie, wie Ihr Betrieb profitieren kann →
+                        <button wire:click="openDemoModal" class="px-6 py-3.5 bg-gradient-to-r from-blue-600 to-amber-500 hover:from-blue-500 hover:to-amber-400 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-blue-500/20 transition cursor-pointer btn-press border border-white/10">
+                            Lernen Sie die BT Bauleiter-Suite unverbindlich kennen →
                         </button>
                     </div>
                 </div>
 
                 <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="bg-slate-950 p-6 rounded-3xl border border-slate-800 space-y-3 hover:border-blue-500/40 transition">
-                        <div class="w-12 h-12 rounded-2xl bg-blue-600/20 text-blue-400 flex items-center justify-center text-2xl font-bold">
-                            ⏱️
+                    <div class="bg-slate-900/60 backdrop-blur-md p-6 rounded-3xl border border-white/10 space-y-3 hover:border-amber-400/40 transition shadow-sm">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl font-bold">
+                            🧱
                         </div>
-                        <h4 class="font-black text-white text-base">In 30 Sekunden erledigt</h4>
+                        <h4 class="font-black text-white text-base">Echtes Bauunternehmen</h4>
                         <p class="text-xs text-slate-400 leading-relaxed">
-                            Sprachmemo einsprechen – die KI erstellt das fertige Bautagebuch mit Wetter und Gewerken.
+                            Keine theoretische Spielerei: Wir nutzen die Software täglich auf unseren eigenen Baustellen in Bayern.
                         </p>
                     </div>
 
-                    <div class="bg-slate-950 p-6 rounded-3xl border border-slate-800 space-y-3 hover:border-indigo-500/40 transition">
-                        <div class="w-12 h-12 rounded-2xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center text-2xl font-bold">
+                    <div class="bg-slate-900/60 backdrop-blur-md p-6 rounded-3xl border border-white/10 space-y-3 hover:border-blue-400/40 transition shadow-sm">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-600/20 text-blue-400 flex items-center justify-center text-2xl font-bold">
                             📑
                         </div>
                         <h4 class="font-black text-white text-base">VOB/B Nachtragsautomatik</h4>
@@ -384,8 +382,8 @@ new class extends Component {
                         </p>
                     </div>
 
-                    <div class="bg-slate-950 p-6 rounded-3xl border border-slate-800 space-y-3 hover:border-cyan-500/40 transition">
-                        <div class="w-12 h-12 rounded-2xl bg-cyan-600/20 text-cyan-400 flex items-center justify-center text-2xl font-bold">
+                    <div class="bg-slate-900/60 backdrop-blur-md p-6 rounded-3xl border border-white/10 space-y-3 hover:border-indigo-400/40 transition shadow-sm">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center text-2xl font-bold">
                             👥
                         </div>
                         <h4 class="font-black text-white text-base">360° Kunden-Zentrale</h4>
@@ -394,7 +392,7 @@ new class extends Component {
                         </p>
                     </div>
 
-                    <div class="bg-slate-950 p-6 rounded-3xl border border-slate-800 space-y-3 hover:border-emerald-500/40 transition">
+                    <div class="bg-slate-900/60 backdrop-blur-md p-6 rounded-3xl border border-white/10 space-y-3 hover:border-emerald-400/40 transition shadow-sm">
                         <div class="w-12 h-12 rounded-2xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center text-2xl font-bold">
                             📊
                         </div>
@@ -410,13 +408,13 @@ new class extends Component {
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 4. INTERAKTIVER MODULE EXPLORER                                           -->
+    <!-- 4. INTERAKTIVER MODULE EXPLORER (GLASS PANELS & REAL PREVIEWS)            -->
     <!-- ========================================================================= -->
     <section id="module" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div class="text-center max-w-3xl mx-auto space-y-3 mb-12">
-            <span class="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-black uppercase">
-                🚀 Die All-in-One Suite
+            <span class="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-black uppercase">
+                🚀 Die All-in-One ERP Suite
             </span>
             <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight">
                 Entdecken Sie alle Module im interaktiven Simulator
@@ -428,28 +426,28 @@ new class extends Component {
 
         <!-- Module Selector Tabs -->
         <div class="flex flex-wrap items-center justify-center gap-2 mb-8">
-            <button wire:click="$set('activeModuleTab', 'cockpit')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'cockpit' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800' }}">
+            <button wire:click="$set('activeModuleTab', 'cockpit')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'cockpit' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30 border border-blue-400/40' : 'bg-slate-900/70 text-slate-400 hover:text-white border border-white/10 backdrop-blur-md' }}">
                 <span>🏗️ Baustellen-Cockpit</span>
             </button>
-            <button wire:click="$set('activeModuleTab', 'contacts360')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'contacts360' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800' }}">
+            <button wire:click="$set('activeModuleTab', 'contacts360')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'contacts360' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 border border-indigo-400/40' : 'bg-slate-900/70 text-slate-400 hover:text-white border border-white/10 backdrop-blur-md' }}">
                 <span>👥 360° Kunden-Zentrale</span>
             </button>
-            <button wire:click="$set('activeModuleTab', 'supplements')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'supplements' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800' }}">
+            <button wire:click="$set('activeModuleTab', 'supplements')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'supplements' ? 'bg-amber-600 text-white shadow-lg shadow-amber-500/30 border border-amber-400/40' : 'bg-slate-900/70 text-slate-400 hover:text-white border border-white/10 backdrop-blur-md' }}">
                 <span>📑 VOB/B Nachträge</span>
             </button>
-            <button wire:click="$set('activeModuleTab', 'measurements')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'measurements' ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800' }}">
+            <button wire:click="$set('activeModuleTab', 'measurements')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'measurements' ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/30 border border-cyan-400/40' : 'bg-slate-900/70 text-slate-400 hover:text-white border border-white/10 backdrop-blur-md' }}">
                 <span>📐 VOB/C Aufmaßblatt</span>
             </button>
-            <button wire:click="$set('activeModuleTab', 'dailylogs')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'dailylogs' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800' }}">
+            <button wire:click="$set('activeModuleTab', 'dailylogs')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'dailylogs' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 border border-emerald-400/40' : 'bg-slate-900/70 text-slate-400 hover:text-white border border-white/10 backdrop-blur-md' }}">
                 <span>🎙️ KI-Bautagebuch</span>
             </button>
-            <button wire:click="$set('activeModuleTab', 'datev')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'datev' ? 'bg-amber-600 text-white shadow-lg shadow-amber-500/20' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800' }}">
+            <button wire:click="$set('activeModuleTab', 'datev')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'datev' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30 border border-purple-400/40' : 'bg-slate-900/70 text-slate-400 hover:text-white border border-white/10 backdrop-blur-md' }}">
                 <span>📊 DATEV & Finanzen</span>
             </button>
         </div>
 
         <!-- Interactive Module Showcase Screen -->
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl">
+        <div class="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl">
             
             @if ($activeModuleTab === 'cockpit')
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -469,21 +467,21 @@ new class extends Component {
                         </button>
                     </div>
 
-                    <div class="lg:col-span-7 bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-4">
-                        <div class="flex justify-between items-center pb-3 border-b border-slate-800">
+                    <div class="lg:col-span-7 bg-slate-950/80 p-5 rounded-2xl border border-white/10 space-y-4">
+                        <div class="flex justify-between items-center pb-3 border-b border-white/10">
                             <span class="font-bold text-xs text-white">🏢 Projekt: Neubau Wohnanlage Regensburg</span>
                             <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400">KW 28 – KW 42</span>
                         </div>
                         <div class="grid grid-cols-3 gap-2 text-center text-xs">
-                            <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+                            <div class="bg-slate-900/80 p-2.5 rounded-xl border border-white/5">
                                 <span class="text-[9px] text-slate-400 block font-bold">BUDGET SOLL</span>
                                 <span class="font-black text-white text-sm">120.000 €</span>
                             </div>
-                            <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+                            <div class="bg-slate-900/80 p-2.5 rounded-xl border border-white/5">
                                 <span class="text-[9px] text-slate-400 block font-bold">IST-KOSTEN</span>
                                 <span class="font-black text-blue-400 text-sm">74.500 €</span>
                             </div>
-                            <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+                            <div class="bg-slate-900/80 p-2.5 rounded-xl border border-white/5">
                                 <span class="text-[9px] text-slate-400 block font-bold">GEWINNMARGE</span>
                                 <span class="font-black text-emerald-400 text-sm">+ 37,9%</span>
                             </div>
@@ -510,12 +508,12 @@ new class extends Component {
                         </button>
                     </div>
 
-                    <div class="lg:col-span-7 bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-3">
+                    <div class="lg:col-span-7 bg-slate-950/80 p-5 rounded-2xl border border-white/10 space-y-3">
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-xs text-white">👤 Kunde: Hausverwaltung Schmidt & Co.</span>
                             <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-indigo-500/20 text-indigo-400">4 Baustellen</span>
                         </div>
-                        <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 flex flex-wrap gap-2 text-xs">
+                        <div class="p-3 bg-slate-900/80 rounded-xl border border-white/10 flex flex-wrap gap-2 text-xs">
                             <span class="px-2 py-1 bg-blue-600/30 text-blue-300 rounded-lg font-bold">🏗️ + Baustelle</span>
                             <span class="px-2 py-1 bg-indigo-600/30 text-indigo-300 rounded-lg font-bold">📑 + Nachtrag</span>
                             <span class="px-2 py-1 bg-cyan-600/30 text-cyan-300 rounded-lg font-bold">📐 + Aufmaß</span>
@@ -529,7 +527,7 @@ new class extends Component {
             @if ($activeModuleTab === 'supplements')
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                     <div class="lg:col-span-5 space-y-4">
-                        <span class="text-xs font-black uppercase text-purple-400 tracking-wider">Kernmodul 03</span>
+                        <span class="text-xs font-black uppercase text-amber-400 tracking-wider">Kernmodul 03</span>
                         <h3 class="text-2xl font-black text-white">VOB/B Nachtragsmanagement (§ 2)</h3>
                         <p class="text-xs text-slate-300 leading-relaxed">
                             Schluss mit vergessenen oder abgewiesenen Nachträgen. Erfassen Sie Mehrleistungen nach § 2 Abs. 5 (Leistungsänderung) oder § 2 Abs. 6 (Zusätzliche Leistung) sofort mit rechtssicherem PDF-Export.
@@ -539,22 +537,22 @@ new class extends Component {
                             <p class="flex items-center gap-2">✅ PDF-Nachtragsangebot mit rechtssicherem VOB-Briefkopf</p>
                             <p class="flex items-center gap-2">✅ Status: Eingereicht, Geprüft, Beauftragt, Abgerechnet</p>
                         </div>
-                        <button wire:click="openDemoModal('sanierung_abdichtung')" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer btn-press">
+                        <button wire:click="openDemoModal('sanierung_abdichtung')" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer btn-press">
                             Nachtragsmodul ansehen →
                         </button>
                     </div>
 
-                    <div class="lg:col-span-7 bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-3">
-                        <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+                    <div class="lg:col-span-7 bg-slate-950/80 p-5 rounded-2xl border border-white/10 space-y-3">
+                        <div class="flex justify-between items-center pb-2 border-b border-white/10">
                             <span class="font-bold text-xs text-white">📑 Nachtragsangebot NT-03 nach VOB/B § 2 Abs. 5</span>
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-purple-500/20 text-purple-400">BEAUFTRAGT</span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-300">BEAUFTRAGT</span>
                         </div>
                         <p class="text-xs text-slate-300 font-medium">
                             Titel: Zusätzliche Hohlkehlenabdichtung & Bitumen-Dickbeschichtung Rampe UG 2
                         </p>
-                        <div class="flex justify-between items-center p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs">
+                        <div class="flex justify-between items-center p-3 bg-slate-900/80 rounded-xl border border-white/10 text-xs">
                             <span class="text-slate-400">Nachtragssumme Netto:</span>
-                            <span class="text-base font-black text-white">4.850,00 €</span>
+                            <span class="text-base font-black text-amber-300">4.850,00 €</span>
                         </div>
                     </div>
                 </div>
@@ -578,17 +576,17 @@ new class extends Component {
                         </button>
                     </div>
 
-                    <div class="lg:col-span-7 bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-3">
-                        <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+                    <div class="lg:col-span-7 bg-slate-950/80 p-5 rounded-2xl border border-white/10 space-y-3">
+                        <div class="flex justify-between items-center pb-2 border-b border-white/10">
                             <span class="font-bold text-xs text-white">📐 Aufmaßblatt AM-2026-004 (Bodenplatte TG)</span>
                             <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-cyan-500/20 text-cyan-400">DIN 18299</span>
                         </div>
                         <div class="space-y-2 text-xs font-mono">
-                            <div class="p-2.5 bg-slate-900 rounded-lg flex justify-between">
+                            <div class="p-2.5 bg-slate-900/80 rounded-lg flex justify-between border border-white/5">
                                 <span>Fläche Achse 1-4: 18.50 × 8.20</span>
                                 <span class="font-bold text-cyan-300">= 151,70 m²</span>
                             </div>
-                            <div class="p-2.5 bg-slate-900 rounded-lg flex justify-between text-rose-300">
+                            <div class="p-2.5 bg-slate-900/80 rounded-lg flex justify-between text-rose-300 border border-white/5">
                                 <span>Abzug Stütze (VOB): - (0.80 × 0.80 × 6)</span>
                                 <span class="font-bold">- 3,84 m²</span>
                             </div>
@@ -615,12 +613,12 @@ new class extends Component {
                         </button>
                     </div>
 
-                    <div class="lg:col-span-7 bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-3">
+                    <div class="lg:col-span-7 bg-slate-950/80 p-5 rounded-2xl border border-white/10 space-y-3">
                         <div class="flex items-center gap-3 p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-xs text-emerald-300">
                             <span class="text-lg">🎙️</span>
                             <span class="font-medium font-sans">"Heute 4 Mann vor Ort, Abdichtung TG fertiggestellt, 2 Palmen Bitumen verbraucht, Wetter trocken 21 Grad."</span>
                         </div>
-                        <div class="p-3.5 bg-slate-900 rounded-xl border border-slate-800 space-y-1.5 text-xs text-slate-300">
+                        <div class="p-3.5 bg-slate-900/80 rounded-xl border border-white/10 space-y-1.5 text-xs text-slate-300">
                             <span class="text-[10px] text-emerald-400 font-black uppercase">✨ KI-Generierter Bericht:</span>
                             <p class="leading-relaxed">
                                 <strong>Ausgeführte Leistungen:</strong> Fertigstellung der Flächenabdichtung Tiefgaragenebene 1 gem. DIN 18533. <strong>Personal:</strong> 4 Fachkräfte vor Ort. <strong>Witterung:</strong> 21°C, heiter, optimale Verarbeitungsbedingungen.
@@ -633,7 +631,7 @@ new class extends Component {
             @if ($activeModuleTab === 'datev')
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                     <div class="lg:col-span-5 space-y-4">
-                        <span class="text-xs font-black uppercase text-amber-400 tracking-wider">Kernmodul 06</span>
+                        <span class="text-xs font-black uppercase text-purple-400 tracking-wider">Kernmodul 06</span>
                         <h3 class="text-2xl font-black text-white">DATEV-Export & Subunternehmer-Controlling</h3>
                         <p class="text-xs text-slate-300 leading-relaxed">
                             Übertragen Sie alle Ausgangs- und Eingangsrechnungen, Nachunternehmer-Rechnungen (§ 13b UStG) und Projektkosten im standardisierten DATEV-Format direkt an Ihren Steuerberater.
@@ -643,17 +641,17 @@ new class extends Component {
                             <p class="flex items-center gap-2">✅ Automatische § 13b UStG Steuerschlüssel-Zuordnung</p>
                             <p class="flex items-center gap-2">✅ Rechnungsfreigabe-Workflow & Zahlungsüberwachung</p>
                         </div>
-                        <button wire:click="openDemoModal('generalunternehmer')" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer btn-press">
+                        <button wire:click="openDemoModal('generalunternehmer')" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer btn-press">
                             DATEV-Workflow testen →
                         </button>
                     </div>
 
-                    <div class="lg:col-span-7 bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-3">
-                        <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+                    <div class="lg:col-span-7 bg-slate-950/80 p-5 rounded-2xl border border-white/10 space-y-3">
+                        <div class="flex justify-between items-center pb-2 border-b border-white/10">
                             <span class="font-bold text-xs text-white">📊 DATEV SKR03 Buchungsstapel Export</span>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-400">STEUERBERATER READY</span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-purple-500/20 text-purple-300">STEUERBERATER READY</span>
                         </div>
-                        <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 font-mono text-[11px] text-slate-300 space-y-1">
+                        <div class="p-3 bg-slate-900/80 rounded-xl border border-white/10 font-mono text-[11px] text-slate-300 space-y-1">
                             <p>Umsatz;S/H;Konto;Gegenkonto;BU;Beleg1;Datum;Text</p>
                             <p class="text-emerald-400">14850.00;S;8400;10000;;RE-2026-041;1408;AR WEG Maxstr</p>
                             <p class="text-amber-400">4200.00;H;3100;70000;19;ER-88412;1408;Subunt. Abdichtung</p>
@@ -669,7 +667,7 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 5. INTERAKTIVER ROI & ERSPARNISRECHNER                                    -->
     <!-- ========================================================================= -->
-    <section id="rechner" class="py-24 bg-gradient-to-b from-slate-900 to-slate-950 border-t border-slate-800 relative">
+    <section id="rechner" class="py-24 bg-gradient-to-b from-slate-950 via-[#0a101d] to-slate-950 border-t border-white/10 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div class="text-center max-w-3xl mx-auto space-y-3 mb-16">
@@ -687,7 +685,7 @@ new class extends Component {
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto">
                 
                 <!-- Left: Interactive Sliders (6 cols) -->
-                <div class="lg:col-span-6 bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-6">
+                <div class="lg:col-span-6 bg-slate-900/60 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6">
                     
                     <!-- Slider 1: Baustellen -->
                     <div class="space-y-2">
@@ -723,11 +721,11 @@ new class extends Component {
                     <div class="space-y-2">
                         <div class="flex justify-between items-center text-xs">
                             <label class="font-bold text-slate-300">Durchschnittlicher Stundensatz:</label>
-                            <span class="px-3 py-1 rounded-xl bg-emerald-600/20 text-emerald-400 font-black text-sm border border-emerald-500/30">
+                            <span class="px-3 py-1 rounded-xl bg-amber-500/20 text-amber-300 font-black text-sm border border-amber-500/30">
                                 {{ $roiHourlyRate }} € / Std.
                             </span>
                         </div>
-                        <input type="range" wire:model.live="roiHourlyRate" min="45" max="110" step="5" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                        <input type="range" wire:model.live="roiHourlyRate" min="45" max="110" step="5" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
                         <div class="flex justify-between text-[10px] text-slate-500">
                             <span>45 €</span>
                             <span>110 €</span>
@@ -737,31 +735,31 @@ new class extends Component {
                 </div>
 
                 <!-- Right: Calculated Results (6 cols) -->
-                <div class="lg:col-span-6 bg-gradient-to-br from-slate-900 via-blue-950/40 to-slate-900 p-6 sm:p-8 rounded-3xl border border-blue-500/30 shadow-2xl space-y-6">
+                <div class="lg:col-span-6 bg-gradient-to-br from-slate-900/90 via-blue-950/40 to-slate-900/90 backdrop-blur-2xl p-6 sm:p-8 rounded-3xl border border-blue-500/30 shadow-2xl space-y-6">
                     
                     <div class="space-y-1">
-                        <span class="text-[10px] font-black uppercase text-blue-400 tracking-wider">Ihr kalkulierter Jahresvorteil</span>
+                        <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider">Ihr kalkulierter Jahresvorteil</span>
                         <h4 class="text-3xl sm:text-4xl font-black text-white tabular-nums">
                             ~ {{ number_format($this->totalValuePerYear, 0, ',', '.') }} € <span class="text-xs text-slate-400 font-medium">/ Jahr</span>
                         </h4>
                     </div>
 
-                    <div class="space-y-3 text-xs pt-2 border-t border-slate-800">
-                        <div class="flex justify-between items-center p-3 bg-slate-950/80 rounded-xl border border-slate-800/80">
+                    <div class="space-y-3 text-xs pt-2 border-t border-white/10">
+                        <div class="flex justify-between items-center p-3 bg-slate-950/80 rounded-xl border border-white/5">
                             <span class="text-slate-300">⏱️ Eingesparte Büro- & Doku-Zeit:</span>
                             <span class="font-black text-blue-400 tabular-nums">~ {{ $this->savedHoursPerMonth }} Std. / Monat</span>
                         </div>
-                        <div class="flex justify-between items-center p-3 bg-slate-950/80 rounded-xl border border-slate-800/80">
+                        <div class="flex justify-between items-center p-3 bg-slate-950/80 rounded-xl border border-white/5">
                             <span class="text-slate-300">💶 Bürokratiekosten-Ersparnis:</span>
                             <span class="font-black text-emerald-400 tabular-nums">{{ number_format($this->savedCostPerYear, 0, ',', '.') }} € / Jahr</span>
                         </div>
-                        <div class="flex justify-between items-center p-3 bg-slate-950/80 rounded-xl border border-slate-800/80">
+                        <div class="flex justify-between items-center p-3 bg-slate-950/80 rounded-xl border border-white/5">
                             <span class="text-slate-300">📈 Zusätzliche Nachtragserlöse (VOB/B):</span>
-                            <span class="font-black text-indigo-400 tabular-nums">+ {{ number_format($this->additionalSupplementRevenue, 0, ',', '.') }} € / Jahr</span>
+                            <span class="font-black text-amber-400 tabular-nums">+ {{ number_format($this->additionalSupplementRevenue, 0, ',', '.') }} € / Jahr</span>
                         </div>
                     </div>
 
-                    <button wire:click="openDemoModal" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-blue-500/20 transition cursor-pointer btn-press">
+                    <button wire:click="openDemoModal" class="w-full py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-500 hover:from-blue-500 hover:to-amber-400 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-blue-500/20 transition cursor-pointer btn-press border border-white/10">
                         Diesen Vorteil jetzt für Ihren Betrieb sichern →
                     </button>
                 </div>
@@ -772,7 +770,7 @@ new class extends Component {
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 6. VORHER VS. NACHHER VERGLEICH                                           -->
+    <!-- 6. VORHER VS. NACHHER VERGLEICH (SPLIT GLASS MATRIX)                      -->
     <!-- ========================================================================= -->
     <section id="vorteile" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -788,7 +786,7 @@ new class extends Component {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             
             <!-- BEFORE CARD -->
-            <div class="bg-slate-900/60 p-6 sm:p-8 rounded-3xl border border-rose-500/20 space-y-5">
+            <div class="bg-slate-900/40 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-rose-500/20 space-y-5">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center font-black">
                         ✕
@@ -824,7 +822,7 @@ new class extends Component {
             </div>
 
             <!-- AFTER CARD -->
-            <div class="bg-gradient-to-br from-slate-900 via-blue-950/40 to-slate-900 p-6 sm:p-8 rounded-3xl border border-blue-500/40 space-y-5 shadow-xl shadow-blue-500/10">
+            <div class="bg-gradient-to-br from-slate-900/90 via-blue-950/40 to-slate-900/90 backdrop-blur-2xl p-6 sm:p-8 rounded-3xl border border-blue-500/40 space-y-5 shadow-xl shadow-blue-500/10">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black">
                         ✓
@@ -866,11 +864,11 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 7. FAQ SECTION                                                            -->
     <!-- ========================================================================= -->
-    <section id="faq" class="py-24 bg-slate-900/40 border-t border-slate-800">
+    <section id="faq" class="py-24 bg-slate-950/60 border-t border-white/10">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div class="text-center space-y-3 mb-12">
-                <span class="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-xs font-black uppercase">
+                <span class="px-3 py-1 rounded-full bg-slate-900 border border-white/10 text-slate-300 text-xs font-black uppercase">
                     💬 Häufige Fragen
                 </span>
                 <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
@@ -880,49 +878,49 @@ new class extends Component {
 
             <div class="space-y-3 text-xs">
                 
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 transition">
+                <div class="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-4 transition">
                     <button wire:click="toggleFaq(0)" class="w-full flex justify-between items-center text-left font-black text-white text-sm cursor-pointer">
                         <span>Ist die Software auf Smartphones und Tablets auf der Baustelle nutzbar?</span>
-                        <span class="text-blue-400 text-base">{{ $openFaqIndex === 0 ? '−' : '+' }}</span>
+                        <span class="text-amber-400 text-base">{{ $openFaqIndex === 0 ? '−' : '+' }}</span>
                     </button>
                     @if ($openFaqIndex === 0)
-                        <p class="mt-3 text-slate-300 leading-relaxed pt-2 border-t border-slate-800">
+                        <p class="mt-3 text-slate-300 leading-relaxed pt-2 border-t border-white/10">
                             Ja! BT Bautechnik Cockpit ist als Progressive Web App (PWA) konzipiert. Es läuft reaktionsschnell auf jedem iPhone, Android-Smartphone, iPad oder Laptop – ohne umständliche App-Store Installation.
                         </p>
                     @endif
                 </div>
 
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 transition">
+                <div class="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-4 transition">
                     <button wire:click="toggleFaq(1)" class="w-full flex justify-between items-center text-left font-black text-white text-sm cursor-pointer">
                         <span>Wie funktioniert die Nachtragserstellung nach VOB/B § 2?</span>
-                        <span class="text-blue-400 text-base">{{ $openFaqIndex === 1 ? '−' : '+' }}</span>
+                        <span class="text-amber-400 text-base">{{ $openFaqIndex === 1 ? '−' : '+' }}</span>
                     </button>
                     @if ($openFaqIndex === 1)
-                        <p class="mt-3 text-slate-300 leading-relaxed pt-2 border-t border-slate-800">
+                        <p class="mt-3 text-slate-300 leading-relaxed pt-2 border-t border-white/10">
                             Das System unterscheidet automatisch zwischen Leistungsänderungen (§ 2 Abs. 5) und unvorhergesehenen Zusatzleistungen (§ 2 Abs. 6). Sie geben Titel und Menge ein – das System erstellt sofort das unterschriftsreife Nachtragsangebot als PDF mit rechtssicherer Klausulierung.
                         </p>
                     @endif
                 </div>
 
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 transition">
+                <div class="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-4 transition">
                     <button wire:click="toggleFaq(2)" class="w-full flex justify-between items-center text-left font-black text-white text-sm cursor-pointer">
                         <span>Kann mein Steuerberater die Rechnungen und Kosten direkt importieren?</span>
-                        <span class="text-blue-400 text-base">{{ $openFaqIndex === 2 ? '−' : '+' }}</span>
+                        <span class="text-amber-400 text-base">{{ $openFaqIndex === 2 ? '−' : '+' }}</span>
                     </button>
                     @if ($openFaqIndex === 2)
-                        <p class="mt-3 text-slate-300 leading-relaxed pt-2 border-t border-slate-800">
+                        <p class="mt-3 text-slate-300 leading-relaxed pt-2 border-t border-white/10">
                             Ja. Das System verfügt über eine integrierte DATEV CSV-Schnittstelle nach SKR03 und SKR04 inklusive automatischem Buchungsschlüssel für Nachunternehmer-Rechnungen (§ 13b UStG Bauleistungen).
                         </p>
                     @endif
                 </div>
 
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 transition">
+                <div class="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-4 transition">
                     <button wire:click="toggleFaq(3)" class="w-full flex justify-between items-center text-left font-black text-white text-sm cursor-pointer">
                         <span>Können wir das System unverbindlich testen?</span>
-                        <span class="text-blue-400 text-base">{{ $openFaqIndex === 3 ? '−' : '+' }}</span>
+                        <span class="text-amber-400 text-base">{{ $openFaqIndex === 3 ? '−' : '+' }}</span>
                     </button>
                     @if ($openFaqIndex === 3)
-                        <p class="mt-3 text-slate-300 leading-relaxed pt-2 border-t border-slate-800">
+                        <p class="mt-3 text-slate-300 leading-relaxed pt-2 border-t border-white/10">
                             Absolut. Klicken Sie einfach auf "Demo anfordern". Wir zeigen Ihnen in 15 Minuten per Videoschalte oder direkt vor Ort, wie Sie das System für Ihre Baustellen einrichten.
                         </p>
                     @endif
@@ -938,7 +936,7 @@ new class extends Component {
     <!-- ========================================================================= -->
     <section class="py-20 relative overflow-hidden">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 p-8 sm:p-12 rounded-3xl border border-blue-500/30 shadow-2xl space-y-6">
+            <div class="bg-gradient-to-r from-blue-950/80 via-slate-900/90 to-amber-950/80 backdrop-blur-2xl p-8 sm:p-12 rounded-3xl border border-white/15 shadow-2xl space-y-6">
                 <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight">
                     Bereit, Ihre Baustellen & Finanzen auf das nächste Level zu heben?
                 </h2>
@@ -946,10 +944,10 @@ new class extends Component {
                     Schließen Sie sich zukunftsorientierten Bauunternehmen & Bauträgern an. Fordern Sie jetzt Ihre unverbindliche Präsentation an.
                 </p>
                 <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-                    <button wire:click="openDemoModal" class="w-full sm:w-auto px-8 py-3.5 bg-white hover:bg-slate-100 text-slate-950 font-black text-xs rounded-xl shadow-xl transition cursor-pointer btn-press">
+                    <button wire:click="openDemoModal" class="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-500 hover:from-blue-500 hover:to-amber-400 text-white font-black text-xs rounded-xl shadow-xl transition cursor-pointer btn-press border border-white/20">
                         🚀 Jetzt kostenlose Demo anfordern
                     </button>
-                    <a href="{{ route('login') }}" class="w-full sm:w-auto px-6 py-3.5 bg-blue-950/60 hover:bg-blue-900/60 text-white font-bold text-xs rounded-xl border border-blue-500/30 transition">
+                    <a href="{{ route('login') }}" class="w-full sm:w-auto px-6 py-3.5 bg-slate-900/90 hover:bg-slate-800 text-white font-bold text-xs rounded-xl border border-white/15 transition">
                         Bestehendes Kundenkonto Login ↗
                     </a>
                 </div>
@@ -958,17 +956,26 @@ new class extends Component {
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 9. FOOTER                                                                 -->
+    <!-- 9. FOOTER WITH REAL LEGAL ENTITY & COMPLIANCE LINKS                       -->
     <!-- ========================================================================= -->
-    <footer class="border-t border-slate-900 bg-slate-950 py-12 text-xs text-slate-500">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-2">
-                <span class="font-black text-white">BT BAUTECHNIK UG</span>
-                <span>• Bauleiter ERP & Digitales Baustellen-Cockpit</span>
+    <footer class="border-t border-white/10 bg-[#04070d] py-12 text-xs text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            
+            <!-- Real Brand Identity in Footer -->
+            <div class="flex flex-col sm:flex-row items-center gap-3">
+                <x-brand-logo size="small" />
+                <span class="text-slate-600 hidden sm:inline">•</span>
+                <span class="text-slate-400 text-center sm:text-left">
+                    BT Bautechnik UG (haftungsbeschränkt) | Berching, Bayern 🇩🇪
+                </span>
             </div>
-            <div class="flex items-center gap-6">
-                <span>Made with pride in Bavaria 🇩🇪</span>
-                <a href="{{ route('login') }}" class="hover:text-white transition">Login</a>
+
+            <!-- Legal Pages Links -->
+            <div class="flex flex-wrap items-center justify-center gap-6 font-bold text-slate-300">
+                <a href="/impressum" class="hover:text-amber-400 transition">Impressum</a>
+                <a href="/datenschutz" class="hover:text-amber-400 transition">Datenschutz</a>
+                <a href="/agb" class="hover:text-amber-400 transition">AGB</a>
+                <a href="{{ route('login') }}" class="hover:text-white transition text-blue-400">Kunden-Login ↗</a>
             </div>
         </div>
     </footer>
@@ -977,8 +984,8 @@ new class extends Component {
     <!-- 10. INTERACTIVE LEAD CAPTURE & DEMO REQUEST MODAL                         -->
     <!-- ========================================================================= -->
     @if ($showDemoModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 relative overflow-hidden">
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-xl">
+            <div class="bg-slate-900/95 border border-white/15 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 relative overflow-hidden backdrop-blur-2xl">
                 
                 <button wire:click="closeDemoModal" class="absolute top-5 right-5 text-slate-400 hover:text-white text-xl font-bold cursor-pointer">✕</button>
 
@@ -989,7 +996,7 @@ new class extends Component {
                         </div>
                         <h3 class="text-xl font-black text-white">Vielen Dank für Ihre Anfrage!</h3>
                         <p class="text-xs text-slate-300 max-w-sm mx-auto leading-relaxed">
-                            Wir haben Ihre Daten erhalten. Unsere Bauleitung wird sich innerhalb kürzester Zeit bei Ihnen für eine persönliche Live-Präsentation melden.
+                            Wir haben Ihre Daten erhalten. Unsere Bauleitung der <strong>BT Bautechnik UG</strong> wird sich innerhalb kürzester Zeit bei Ihnen für eine persönliche Live-Präsentation melden.
                         </p>
                         <div class="pt-2">
                             <button wire:click="closeDemoModal" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl cursor-pointer">
@@ -999,7 +1006,7 @@ new class extends Component {
                     </div>
                 @else
                     <div class="space-y-1">
-                        <span class="text-[10px] font-black uppercase text-blue-400 tracking-wider">Unverbindliche Präsentation</span>
+                        <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider">Unverbindliche Präsentation</span>
                         <h3 class="text-xl font-black text-white">Live-Demo für Ihr Bauunternehmen</h3>
                         <p class="text-xs text-slate-400">Erfahren Sie, wie BT Cockpit Ihren Baustellenalltag revolutioniert.</p>
                     </div>
@@ -1007,29 +1014,29 @@ new class extends Component {
                     <form wire:submit="submitDemoRequest" class="space-y-3.5 text-xs">
                         <div>
                             <label class="block font-bold text-slate-300 mb-1">Ihr Name / Ansprechpartner *</label>
-                            <input wire:model="demoName" type="text" placeholder="z. B. Dipl.-Ing. Markus Huber" class="w-full bg-slate-950 border border-slate-800 text-white font-bold rounded-xl p-2.5 focus:border-blue-500 focus:outline-none" required>
+                            <input wire:model="demoName" type="text" placeholder="z. B. Dipl.-Ing. Markus Huber" class="w-full bg-slate-950 border border-white/15 text-white font-bold rounded-xl p-2.5 focus:border-amber-400 focus:outline-none" required>
                         </div>
 
                         <div>
                             <label class="block font-bold text-slate-300 mb-1">Unternehmen / Firma *</label>
-                            <input wire:model="demoCompany" type="text" placeholder="z. B. Huber Bau & Sanierung GmbH" class="w-full bg-slate-950 border border-slate-800 text-white font-bold rounded-xl p-2.5 focus:border-blue-500 focus:outline-none" required>
+                            <input wire:model="demoCompany" type="text" placeholder="z. B. Huber Bau & Sanierung GmbH" class="w-full bg-slate-950 border border-white/15 text-white font-bold rounded-xl p-2.5 focus:border-amber-400 focus:outline-none" required>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
                                 <label class="block font-bold text-slate-300 mb-1">E-Mail-Adresse *</label>
-                                <input wire:model="demoEmail" type="email" placeholder="m.huber@huberbau.de" class="w-full bg-slate-950 border border-slate-800 text-white font-semibold rounded-xl p-2.5 focus:border-blue-500 focus:outline-none" required>
+                                <input wire:model="demoEmail" type="email" placeholder="m.huber@huberbau.de" class="w-full bg-slate-950 border border-white/15 text-white font-semibold rounded-xl p-2.5 focus:border-amber-400 focus:outline-none" required>
                             </div>
                             <div>
                                 <label class="block font-bold text-slate-300 mb-1">Telefon / Mobil *</label>
-                                <input wire:model="demoPhone" type="tel" placeholder="0171 1234567" class="w-full bg-slate-950 border border-slate-800 text-white font-semibold rounded-xl p-2.5 focus:border-blue-500 focus:outline-none" required>
+                                <input wire:model="demoPhone" type="tel" placeholder="0171 1234567" class="w-full bg-slate-950 border border-white/15 text-white font-semibold rounded-xl p-2.5 focus:border-amber-400 focus:outline-none" required>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
                                 <label class="block font-bold text-slate-300 mb-1">Ihr Unternehmensschwerpunkt</label>
-                                <select wire:model="demoTrade" class="w-full bg-slate-950 border border-slate-800 text-white font-bold rounded-xl p-2.5 focus:border-blue-500 focus:outline-none">
+                                <select wire:model="demoTrade" class="w-full bg-slate-950 border border-white/15 text-white font-bold rounded-xl p-2.5 focus:border-amber-400 focus:outline-none">
                                     <option value="bautraeger">Bauträger / Entwickler</option>
                                     <option value="generalunternehmer">Generalübernehmer / GU</option>
                                     <option value="sanierung_abdichtung">Sanierung & Abdichtung</option>
@@ -1039,7 +1046,7 @@ new class extends Component {
                             </div>
                             <div>
                                 <label class="block font-bold text-slate-300 mb-1">Baustellen pro Jahr</label>
-                                <select wire:model="demoProjectCount" class="w-full bg-slate-950 border border-slate-800 text-white font-bold rounded-xl p-2.5 focus:border-blue-500 focus:outline-none">
+                                <select wire:model="demoProjectCount" class="w-full bg-slate-950 border border-white/15 text-white font-bold rounded-xl p-2.5 focus:border-amber-400 focus:outline-none">
                                     <option value="1-3">1 – 3 Bauvorhaben</option>
                                     <option value="4-10">4 – 10 Bauvorhaben</option>
                                     <option value="10+">Über 10 Bauvorhaben</option>
@@ -1049,15 +1056,15 @@ new class extends Component {
 
                         <div>
                             <label class="block font-bold text-slate-300 mb-1">Nachricht / Schwerpunkte (optional)</label>
-                            <textarea wire:model="demoMessage" rows="2" placeholder="Welche Module interessieren Sie besonders (z.B. VOB-Nachträge, Aufmaße, KI-Bautagebuch)?" class="w-full bg-slate-950 border border-slate-800 text-white rounded-xl p-2.5 focus:border-blue-500 focus:outline-none"></textarea>
+                            <textarea wire:model="demoMessage" rows="2" placeholder="Welche Module interessieren Sie besonders (z.B. VOB-Nachträge, Aufmaße, KI-Bautagebuch)?" class="w-full bg-slate-950 border border-white/15 text-white rounded-xl p-2.5 focus:border-amber-400 focus:outline-none"></textarea>
                         </div>
 
-                        <div class="pt-3 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="pt-3 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
                             <a href="https://wa.me/4917612345678?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20gerne%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="text-xs text-emerald-400 hover:underline flex items-center gap-1 font-bold">
                                 <span>💬 Lieber per WhatsApp anfragen</span>
                             </a>
 
-                            <button type="submit" class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-black text-xs rounded-xl shadow-lg shadow-blue-500/20 cursor-pointer btn-press">
+                            <button type="submit" class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-500 hover:from-blue-500 hover:to-amber-400 text-white font-black text-xs rounded-xl shadow-lg shadow-blue-500/20 cursor-pointer btn-press border border-white/15">
                                 Demo-Termin vereinbaren →
                             </button>
                         </div>

@@ -9,6 +9,10 @@ Route::get('/', function () {
 
 Route::view('software', 'landing')->name('landing');
 Route::view('loesung', 'landing');
+Route::view('impressum', 'impressum')->name('impressum');
+Route::view('datenschutz', 'datenschutz')->name('datenschutz');
+Route::view('agb', 'agb')->name('agb');
+
 
 
 Route::view('dashboard', 'dashboard')

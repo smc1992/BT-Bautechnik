@@ -1,3 +1,19 @@
+@php
+    $company = $company ?? \App\Models\CompanySetting::getSettings();
+    $logoBase64 = $logoBase64 ?? null;
+    $contractorName = $contractorName ?? ($company?->company_name ?? 'BT Bautechnik UG (haftungsbeschränkt)');
+    $contractorRepresentative = $contractorRepresentative ?? ($company?->managing_director ?? 'Bauleitung');
+    $clientName = $clientName ?? ($project->contact?->display_name ?? $project->contact_address ?? 'Kunde / Bauherr');
+    $clientRepresentative = $clientRepresentative ?? ($project->contact?->first_name ? ($project->contact->first_name . ' ' . $project->contact->last_name) : 'Bauherr / Architekt');
+    $selectedSubcontractor = $selectedSubcontractor ?? null;
+    $acceptanceDate = $acceptanceDate ?? ($date ?? date('Y-m-d'));
+    $workScopeDescription = $workScopeDescription ?? ($project->work_type ? ("Ausführung des Gewerks: " . $project->work_type . "\nGemäß Leistungsverzeichnis, VOB/B und anerkannten Regeln der Bautechnik.") : 'Ausführung der vertraglich vereinbarten Bau- und Sanierungsleistungen gem. Leistungsverzeichnis und VOB/B.');
+    $defects = $defects ?? ($project->defects ?? collect());
+    $acceptanceResult = $acceptanceResult ?? ($defects->where('status', '!=', 'behoben')->count() > 0 ? 'mit_vorbehalt' : 'ohne_vorbehalt');
+    $defectRemediationDeadline = $defectRemediationDeadline ?? date('Y-m-d', strtotime('+14 days'));
+    $warrantyPeriod = $warrantyPeriod ?? '4 Jahre nach VOB/B § 13 Abs. 4 bzw. 5 Jahre BGB § 634a';
+    $notes = $notes ?? '';
+@endphp
 <!DOCTYPE html>
 <html lang="de">
 <head>

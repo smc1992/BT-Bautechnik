@@ -105,14 +105,29 @@ Route::get('/bautagebuch/freigabe/{token}', App\Livewire\PublicDailyLogApproval:
 
 Route::get('/projects/{project}/abnahmeprotokoll-pdf', function (\App\Models\Project $project) {
     $company = \App\Models\CompanySetting::getSettings();
+    $project->loadMissing(['defects', 'contact']);
+    $defects = $project->defects ?? collect();
     $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.abnahmeprotokoll', [
         'project' => $project,
-        'defects' => $project->defects ?? collect(),
+        'defects' => $defects,
         'company' => $company,
+        'contractorName' => $company->company_name ?? 'BT Bautechnik UG (haftungsbeschränkt)',
+        'contractorRepresentative' => $company->managing_director ?? 'Bauleitung',
+        'clientName' => $project->contact?->display_name ?? $project->contact_address ?? 'Kunde / Bauherr',
+        'clientRepresentative' => $project->contact?->first_name ? ($project->contact->first_name . ' ' . $project->contact->last_name) : 'Bauherr / Architekt',
+        'selectedSubcontractor' => null,
+        'acceptanceDate' => date('Y-m-d'),
+        'workScopeDescription' => $project->work_type ? ("Ausführung des Gewerks: " . $project->work_type . "\nGemäß Leistungsverzeichnis, VOB/B und anerkannten Regeln der Bautechnik.") : 'Ausführung der vertraglich vereinbarten Bau- und Sanierungsleistungen gem. Leistungsverzeichnis und VOB/B.',
+        'acceptanceResult' => ($defects->where('status', '!=', 'behoben')->count() > 0) ? 'mit_vorbehalt' : 'ohne_vorbehalt',
+        'defectRemediationDeadline' => date('Y-m-d', strtotime('+14 days')),
+        'warrantyPeriod' => '4 Jahre nach VOB/B § 13 Abs. 4 bzw. 5 Jahre BGB § 634a',
+        'notes' => '',
+        'logoBase64' => null,
         'date' => date('d.m.Y'),
     ]);
     return $pdf->download('VOB_Abnahmeprotokoll_' . \Illuminate\Support\Str::slug($project->name) . '.pdf');
 })->middleware(['auth', 'verified'])->name('project.abnahmeprotokoll-pdf');
+
 
 Route::get('/nachtraege/{supplement}/pdf', function (\App\Models\Supplement $supplement) {
     $company = \App\Models\CompanySetting::getSettings();

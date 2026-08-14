@@ -100,5 +100,40 @@
     .animate-typing-1 { animation: typing-bounce 1.4s infinite 0.0s; }
     .animate-typing-2 { animation: typing-bounce 1.4s infinite 0.2s; }
     .animate-typing-3 { animation: typing-bounce 1.4s infinite 0.4s; }
+
+    /* Micro-Animations & Dynamic Delight */
+    @keyframes float-slow {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-6px); }
+    }
+    .animate-float {
+        animation: float-slow 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+        0%, 100% { opacity: 0.6; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.05); }
+    }
+    .animate-glow {
+        animation: pulse-glow 3s ease-in-out infinite;
+    }
+
+    @keyframes radar-ping {
+        0% { transform: scale(0.95); opacity: 0.8; }
+        50% { transform: scale(1.4); opacity: 0; }
+        100% { transform: scale(0.95); opacity: 0; }
+    }
+    .animate-radar {
+        animation: radar-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    .card-lift {
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+    }
+    .card-lift:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+    }
 }
+
 

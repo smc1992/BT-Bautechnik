@@ -171,8 +171,8 @@ new class extends Component {
             
             <div class="text-center max-w-4xl mx-auto space-y-6">
                 
-                <!-- Origin Badge -->
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-amber-300 text-amber-900 text-xs font-black shadow-xs">
+                <!-- Origin Badge with Micro-Animation Float -->
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-amber-300 text-amber-900 text-xs font-black shadow-xs animate-float">
                     <span class="flex h-2 w-2 rounded-full bg-amber-500 animate-ping"></span>
                     <span>🏗️ Entwickelt von der BT Bautechnik UG – Aus der echten Baupraxis für Bauträger & Bauleiter</span>
                 </div>
@@ -190,34 +190,37 @@ new class extends Component {
                     Wir sind selbst aktives Bauunternehmen in Bayern. Wir kennen den Zeitdruck, unübersichtliche Aufmaße und vergessene Nachträge nach VOB/B § 2. Das <strong>BT Bautechnik Cockpit</strong> vereint Baustellen-Steuerung, 360° Kunden-Zentrale, digitale VOB/C Aufmaße, KI-Bautagebücher und DATEV-Finanzen in einer blitzschnellen Lösung.
                 </p>
 
-                <!-- Hero CTAs -->
+                <!-- Hero CTAs with Glow and Hover Elevation -->
                 <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <button wire:click="openDemoModal" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-700 via-indigo-700 to-amber-600 hover:from-blue-600 hover:to-amber-500 text-white font-black text-sm rounded-2xl shadow-xl shadow-blue-600/20 hover:shadow-amber-500/25 transition cursor-pointer flex items-center justify-center gap-2 btn-press">
+                    <button wire:click="openDemoModal" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-700 via-indigo-700 to-amber-600 hover:from-blue-600 hover:to-amber-500 text-white font-black text-sm rounded-2xl shadow-xl shadow-blue-600/20 hover:shadow-amber-500/25 transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2 btn-press">
                         <span>🚀 Kostenlose Live-Demo vereinbaren</span>
-                        <span>→</span>
+                        <span class="inline-block transition-transform group-hover:translate-x-1">→</span>
                     </button>
 
-                    <a href="https://wa.me/4917612345678?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20gerne%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="w-full sm:w-auto px-6 py-4 bg-white hover:bg-slate-50 text-slate-800 font-black text-sm rounded-2xl border border-slate-300 shadow-sm transition flex items-center justify-center gap-2">
+                    <a href="https://wa.me/4917612345678?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20gerne%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="w-full sm:w-auto px-6 py-4 bg-white hover:bg-slate-50 text-slate-800 font-black text-sm rounded-2xl border border-slate-300 shadow-sm transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
                         <span>💬 Direkt per WhatsApp anfragen</span>
                     </a>
                 </div>
 
-                <!-- Trust Badges Strip (Light Theme) -->
+                <!-- Trust Badges Strip (Light Theme with Card Lift) -->
                 <div class="pt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs">
-                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs hover:border-blue-400 transition">
-                        <span class="text-blue-700 font-black block text-sm">⚖️ VOB/B § 2 & VOB/C</span>
+                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs card-lift hover:border-blue-400 group cursor-default">
+                        <span class="text-blue-700 font-black block text-sm group-hover:scale-110 transition-transform">⚖️ VOB/B § 2 & VOB/C</span>
                         <span class="text-slate-500 text-[11px] font-semibold">Rechtssichere Nachträge & Aufmaße</span>
                     </div>
-                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs hover:border-amber-400 transition">
-                        <span class="text-amber-700 font-black block text-sm">🎙️ KI-Sprachmemo</span>
+                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs card-lift hover:border-amber-400 group cursor-default">
+                        <span class="text-amber-700 font-black block text-sm group-hover:scale-110 transition-transform">🎙️ KI-Sprachmemo</span>
                         <span class="text-slate-500 text-[11px] font-semibold">Bautagebuch in 30 Sek. vor Ort</span>
                     </div>
-                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs hover:border-emerald-400 transition">
-                        <span class="text-emerald-700 font-black block text-sm">📊 DATEV SKR03/04</span>
+                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs card-lift hover:border-emerald-400 group cursor-default">
+                        <span class="text-emerald-700 font-black block text-sm group-hover:scale-110 transition-transform">📊 DATEV SKR03/04</span>
                         <span class="text-slate-500 text-[11px] font-semibold">Buchungsstapel für Steuerberater</span>
                     </div>
-                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs hover:border-cyan-400 transition">
-                        <span class="text-cyan-700 font-black block text-sm">📱 Mobile PWA</span>
+                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs card-lift hover:border-cyan-400 group cursor-default">
+                        <span class="text-cyan-700 font-black block text-sm group-hover:scale-110 transition-transform">📱 Mobile PWA</span>
+                        <span class="text-slate-500 text-[11px] font-semibold">Für Smartphone & Baustellen-Tablet</span>
+                    </div>
+                </div>
                         <span class="text-slate-500 text-[11px] font-semibold">Für Smartphone & Baustellen-Tablet</span>
                     </div>
                 </div>
@@ -360,8 +363,8 @@ new class extends Component {
                 </div>
 
                 <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 shadow-xs hover:border-amber-300 transition">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl font-bold">
+                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 shadow-xs card-lift hover:border-amber-300 group cursor-default">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform duration-300">
                             🧱
                         </div>
                         <h4 class="font-black text-slate-900 text-base">Echtes Bauunternehmen</h4>
@@ -370,8 +373,8 @@ new class extends Component {
                         </p>
                     </div>
 
-                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 shadow-xs hover:border-blue-300 transition">
-                        <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-2xl font-bold">
+                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 shadow-xs card-lift hover:border-blue-300 group cursor-default">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform duration-300">
                             📑
                         </div>
                         <h4 class="font-black text-slate-900 text-base">VOB/B Nachtragsautomatik</h4>
@@ -380,8 +383,8 @@ new class extends Component {
                         </p>
                     </div>
 
-                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 shadow-xs hover:border-indigo-300 transition">
-                        <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-2xl font-bold">
+                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 shadow-xs card-lift hover:border-indigo-300 group cursor-default">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform duration-300">
                             👥
                         </div>
                         <h4 class="font-black text-slate-900 text-base">360° Kunden-Zentrale</h4>
@@ -390,8 +393,8 @@ new class extends Component {
                         </p>
                     </div>
 
-                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 shadow-xs hover:border-emerald-300 transition">
-                        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl font-bold">
+                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 shadow-xs card-lift hover:border-emerald-300 group cursor-default">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform duration-300">
                             📊
                         </div>
                         <h4 class="font-black text-slate-900 text-base">DATEV Buchungsstapel</h4>

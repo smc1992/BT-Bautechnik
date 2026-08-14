@@ -221,9 +221,6 @@ new class extends Component {
                         <span class="text-slate-500 text-[11px] font-semibold">Für Smartphone & Baustellen-Tablet</span>
                     </div>
                 </div>
-                        <span class="text-slate-500 text-[11px] font-semibold">Für Smartphone & Baustellen-Tablet</span>
-                    </div>
-                </div>
 
             </div>
 

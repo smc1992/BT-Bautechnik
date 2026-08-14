@@ -4,14 +4,14 @@
     </x-slot>
 
     <!-- Header Navigation -->
-    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-xs">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <a href="/" class="hover:opacity-90 transition">
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+            <a href="/" class="hover:opacity-90 transition-opacity">
                 <x-brand-logo size="default" />
             </a>
             <div class="flex items-center gap-3">
-                <a href="/" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 font-bold text-xs rounded-xl border border-slate-200 transition">
-                    ← Zurück zur Startseite
+                <a href="/" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 font-semibold text-xs sm:text-[13px] rounded-xl border border-slate-200/80 transition flex items-center gap-1.5">
+                    <span>← Zurück zur Startseite</span>
                 </a>
             </div>
         </div>

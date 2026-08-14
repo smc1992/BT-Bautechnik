@@ -1,11 +1,11 @@
 @props(['variant' => 'full', 'size' => 'default', 'theme' => 'light'])
 
 @php
-    $iconSize = match($size) {
-        'small' => 'w-8 h-8',
-        'large' => 'w-14 h-14',
-        'icon' => 'w-10 h-10',
-        default => 'w-10 h-10',
+    $imgHeight = match($size) {
+        'small' => 'h-9',
+        'large' => 'h-14',
+        'icon' => 'h-11',
+        default => 'h-11',
     };
 
     $titleSize = match($size) {
@@ -22,21 +22,13 @@
 @endphp
 
 <div {{ $attributes->merge(['class' => 'inline-flex items-center gap-3 select-none group']) }}>
-    <!-- Architectural Precision Vector Monogram Icon -->
+    <!-- Architectural Building B + Crane T Monogram Icon -->
     <div class="relative flex items-center justify-center shrink-0">
-        <div class="{{ $iconSize }} rounded-2xl bg-gradient-to-br from-blue-700 via-indigo-700 to-blue-900 flex items-center justify-center shadow-md shadow-blue-700/20 border border-blue-600/30 group-hover:scale-105 transition-transform duration-300">
-            <svg class="w-3/5 h-3/5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Architectural Isometric Tower & Crane Monogram -->
-                <path d="M3 21H21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
-                <path d="M6 21V7L14 3V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M14 8H20V12H14" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="#F59E0B" fill-opacity="0.3" />
-                <path d="M6 12H14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                <path d="M6 16H14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                <path d="M10 3V21" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2" />
-            </svg>
+        <div class="p-1 rounded-2xl bg-white border border-slate-200/90 shadow-sm group-hover:scale-105 group-hover:border-blue-300 transition-all duration-300">
+            <img src="{{ asset('logo-icon-transparent.png') }}?v=3" 
+                 alt="BT Bautechnik (Gebäude B & Kran T)" 
+                 class="{{ $imgHeight }} w-auto object-contain drop-shadow-2xs">
         </div>
-        <!-- Safety Amber Accent Pill Dot -->
-        <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-amber-500 border-2 border-white rounded-full shadow-xs"></span>
     </div>
 
     @if($variant === 'full')

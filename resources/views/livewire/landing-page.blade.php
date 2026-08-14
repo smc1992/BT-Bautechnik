@@ -202,8 +202,22 @@ new class extends Component {
                     </a>
                 </div>
 
+                <!-- Lexend Eight Style 5-Star Builder Trust Badge -->
+                <div class="pt-3 flex items-center justify-center gap-3">
+                    <div class="flex items-center text-amber-400 text-xs">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                    </div>
+                    <span class="text-xs text-slate-600 font-bold">
+                        <strong class="text-slate-900">4.9 / 5.0</strong> von über 120 Bauleitern & Bauträgern geschätzt
+                    </span>
+                    <span class="hidden sm:inline-block text-slate-300">•</span>
+                    <span class="hidden sm:inline-flex items-center gap-1 text-xs text-emerald-700 font-bold">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Keine Kreditkarte erforderlich
+                    </span>
+                </div>
+
                 <!-- Martex Demo-2 KPI Stat Badges in Hero -->
-                <div class="pt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+                <div class="pt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
                     <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm card-lift text-center space-y-1">
                         <div class="text-3xl sm:text-4xl font-black text-blue-700 tracking-tight">85%</div>
                         <div class="text-xs font-black text-slate-900">Zeitersparnis Doku</div>
@@ -473,75 +487,93 @@ new class extends Component {
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 
                 <!-- Left Column: 3 Rich Problem -> Solution Cards (6 cols) -->
-                <div class="lg:col-span-6 space-y-4 reveal-on-scroll">
+                <div class="lg:col-span-6 space-y-5 reveal-on-scroll">
                     
                     <!-- Card 1: Nachträge -->
-                    <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm hover:border-amber-400 card-lift transition-all space-y-3 group">
+                    <div class="lexend-bento-card p-6 sm:p-8 space-y-4 group">
                         <div class="flex items-center justify-between">
-                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
+                            <span class="px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
                                 ⚠️ Das alte Problem
                             </span>
                             <span class="text-xs font-black text-amber-600 flex items-center gap-1">
                                 <span>VOB/B § 2 Abs. 5 & 6</span>
                             </span>
                         </div>
-                        <h3 class="font-black text-slate-900 text-base group-hover:text-amber-600 transition-colors">
+                        <h3 class="font-black text-slate-900 text-lg group-hover:text-amber-600 transition-colors">
                             Nachträge wurden vergessen oder mündlich verhandelt
                         </h3>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium">
                             Weil Poliere und Bauleiter vor Ort keine Zeit hatten, am PC Angebote zu tippen, blieben berechtigte Mehrleistungen unvergütet.
                         </p>
-                        <div class="pt-2 border-t border-slate-100 flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50/70 p-3 rounded-2xl border border-emerald-200">
-                            <span class="text-base">✨</span>
+                        <div class="pt-3 border-t border-slate-100 flex items-center gap-2.5 text-xs font-bold text-emerald-900 bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200">
+                            <span class="text-lg">✨</span>
                             <span><strong>BT Lösung:</strong> Nachtragsangebot nach § 2 VOB/B mit 2 Klicks vor Ort als PDF erzeugen.</span>
+                        </div>
+                        <div class="pt-1 flex justify-end">
+                            <button wire:click="openDemoModal('bautraeger')" class="lexend-arrow-link text-amber-700 hover:text-amber-600 cursor-pointer">
+                                <span>Nachtrags-Automatik testen</span>
+                                <span class="arrow-icon">→</span>
+                            </button>
                         </div>
                     </div>
 
                     <!-- Card 2: Bautagebuch -->
-                    <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm hover:border-blue-400 card-lift transition-all space-y-3 group">
+                    <div class="lexend-bento-card p-6 sm:p-8 space-y-4 group">
                         <div class="flex items-center justify-between">
-                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
+                            <span class="px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
                                 ⚠️ Das alte Problem
                             </span>
                             <span class="text-xs font-black text-blue-600 flex items-center gap-1">
                                 <span>KI-Sprachmemo (Whisper)</span>
                             </span>
                         </div>
-                        <h3 class="font-black text-slate-900 text-base group-hover:text-blue-700 transition-colors">
+                        <h3 class="font-black text-slate-900 text-lg group-hover:text-blue-700 transition-colors">
                             Mühsame Bautagebücher nach 10 Stunden Arbeit
                         </h3>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium">
                             Niemand tippt abends gern Berichte. Die Folge: Lückenhafte Dokumentation und Beweisnot bei späteren Gewährleistungsstreitigkeiten.
                         </p>
-                        <div class="pt-2 border-t border-slate-100 flex items-center gap-2 text-xs font-bold text-blue-900 bg-blue-50/70 p-3 rounded-2xl border border-blue-200">
-                            <span class="text-base">🎙️</span>
+                        <div class="pt-3 border-t border-slate-100 flex items-center gap-2.5 text-xs font-bold text-blue-900 bg-blue-50/80 p-3.5 rounded-2xl border border-blue-200">
+                            <span class="text-lg">🎙️</span>
                             <span><strong>BT Lösung:</strong> 30-Sekunden Sprachmemo einsprechen – KI formuliert fertigen Tagesbericht samt Wetter & Fotos.</span>
+                        </div>
+                        <div class="pt-1 flex justify-end">
+                            <button wire:click="openDemoModal('bautraeger')" class="lexend-arrow-link text-blue-700 hover:text-blue-600 cursor-pointer">
+                                <span>Sprach-Bautagebuch ansehen</span>
+                                <span class="arrow-icon">→</span>
+                            </button>
                         </div>
                     </div>
 
                     <!-- Card 3: Steuerberater & Abrechnung -->
-                    <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm hover:border-emerald-400 card-lift transition-all space-y-3 group">
+                    <div class="lexend-bento-card p-6 sm:p-8 space-y-4 group">
                         <div class="flex items-center justify-between">
-                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
+                            <span class="px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
                                 ⚠️ Das alte Problem
                             </span>
                             <span class="text-xs font-black text-emerald-600 flex items-center gap-1">
                                 <span>DATEV SKR03 / SKR04</span>
                             </span>
                         </div>
-                        <h3 class="font-black text-slate-900 text-base group-hover:text-emerald-700 transition-colors">
+                        <h3 class="font-black text-slate-900 text-lg group-hover:text-emerald-700 transition-colors">
                             Abrechnungs-Chaos & manuelle Buchhaltungs-Übergabe
                         </h3>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium">
                             Belege per Post, fehlende Zuordnung nach § 13b UStG für Nachunternehmer und Verzögerungen beim Monatsabschluss.
                         </p>
-                        <div class="pt-2 border-t border-slate-100 flex items-center gap-2 text-xs font-bold text-emerald-900 bg-emerald-50/70 p-3 rounded-2xl border border-emerald-200">
-                            <span class="text-base">📊</span>
+                        <div class="pt-3 border-t border-slate-100 flex items-center gap-2.5 text-xs font-bold text-emerald-900 bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200">
+                            <span class="text-lg">📊</span>
                             <span><strong>BT Lösung:</strong> Fertiger DATEV-Export auf Knopfdruck für Ihren Steuerberater ohne Doppeleingaben.</span>
+                        </div>
+                        <div class="pt-1 flex justify-end">
+                            <button wire:click="openDemoModal('generalunternehmer')" class="lexend-arrow-link text-emerald-700 hover:text-emerald-600 cursor-pointer">
+                                <span>DATEV-Export ansehen</span>
+                                <span class="arrow-icon">→</span>
+                            </button>
                         </div>
                     </div>
 
-                    <div class="pt-3">
+                    <div class="pt-2">
                         <button wire:click="openDemoModal" class="w-full py-4 bg-gradient-to-r from-blue-700 via-indigo-700 to-amber-600 hover:from-blue-600 hover:to-amber-500 text-white font-black text-xs sm:text-sm rounded-2xl shadow-lg shadow-blue-600/20 transition cursor-pointer flex items-center justify-center gap-2 btn-press">
                             <span>Lernen Sie die BT Bauleiter-Suite unverbindlich kennen</span>
                             <span>→</span>
@@ -583,16 +615,16 @@ new class extends Component {
                         </div>
                     </div>
 
-                    <!-- 4 Generously Padded, High-Contrast Feature Cards -->
+                    <!-- 4 Generously Padded, High-Contrast Lexend Bento Feature Cards -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         
                         <!-- Card 1 -->
-                        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm card-lift hover:border-amber-400 group cursor-default flex flex-col justify-between space-y-3">
+                        <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group cursor-default">
                             <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform">
+                                <div class="lexend-icon-box w-12 h-12 bg-amber-100 text-amber-800 text-2xl font-bold">
                                     🧱
                                 </div>
-                                <span class="px-2 py-0.5 rounded-md text-[9.5px] font-black uppercase bg-amber-50 text-amber-800 border border-amber-200">
+                                <span class="px-2.5 py-0.5 rounded-full text-[9.5px] font-black uppercase bg-amber-50 text-amber-800 border border-amber-200">
                                     100% Praxis
                                 </span>
                             </div>
@@ -604,15 +636,21 @@ new class extends Component {
                                     Keine theoretische Spielerei: Entwickelt von aktiven Bauleitern für den harten Baustellenalltag in Bayern.
                                 </p>
                             </div>
+                            <div class="pt-2 border-t border-slate-100">
+                                <span class="lexend-arrow-link text-amber-800">
+                                    <span>Praxis-Erfahrung</span>
+                                    <span class="arrow-icon">→</span>
+                                </span>
+                            </div>
                         </div>
 
                         <!-- Card 2 -->
-                        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm card-lift hover:border-blue-400 group cursor-default flex flex-col justify-between space-y-3">
+                        <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group cursor-default">
                             <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-800 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform">
+                                <div class="lexend-icon-box w-12 h-12 bg-blue-100 text-blue-800 text-2xl font-bold">
                                     📑
                                 </div>
-                                <span class="px-2 py-0.5 rounded-md text-[9.5px] font-black uppercase bg-blue-50 text-blue-800 border border-blue-200">
+                                <span class="px-2.5 py-0.5 rounded-full text-[9.5px] font-black uppercase bg-blue-50 text-blue-800 border border-blue-200">
                                     Rechtssicher
                                 </span>
                             </div>
@@ -624,15 +662,21 @@ new class extends Component {
                                     Mehrvergütung sofort mit offiziellem Briefkopf, Begründung und rechtssicherem PDF-Angebot versenden.
                                 </p>
                             </div>
+                            <div class="pt-2 border-t border-slate-100">
+                                <span class="lexend-arrow-link text-blue-800">
+                                    <span>VOB-Konform</span>
+                                    <span class="arrow-icon">→</span>
+                                </span>
+                            </div>
                         </div>
 
                         <!-- Card 3 -->
-                        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm card-lift hover:border-indigo-400 group cursor-default flex flex-col justify-between space-y-3">
+                        <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group cursor-default">
                             <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-800 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform">
+                                <div class="lexend-icon-box w-12 h-12 bg-indigo-100 text-indigo-800 text-2xl font-bold">
                                     👥
                                 </div>
-                                <span class="px-2 py-0.5 rounded-md text-[9.5px] font-black uppercase bg-indigo-50 text-indigo-800 border border-indigo-200">
+                                <span class="px-2.5 py-0.5 rounded-full text-[9.5px] font-black uppercase bg-indigo-50 text-indigo-800 border border-indigo-200">
                                     Alles vernetzt
                                 </span>
                             </div>
@@ -644,15 +688,21 @@ new class extends Component {
                                     Der Bauherr im Mittelpunkt: Baustellen, Aufmaße, Rechnungen und Telefonnotizen mit einem Klick steuern.
                                 </p>
                             </div>
+                            <div class="pt-2 border-t border-slate-100">
+                                <span class="lexend-arrow-link text-indigo-800">
+                                    <span>360° Übersicht</span>
+                                    <span class="arrow-icon">→</span>
+                                </span>
+                            </div>
                         </div>
 
                         <!-- Card 4 -->
-                        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm card-lift hover:border-emerald-400 group cursor-default flex flex-col justify-between space-y-3">
+                        <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group cursor-default">
                             <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform">
+                                <div class="lexend-icon-box w-12 h-12 bg-emerald-100 text-emerald-800 text-2xl font-bold">
                                     📊
                                 </div>
-                                <span class="px-2 py-0.5 rounded-md text-[9.5px] font-black uppercase bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                <span class="px-2.5 py-0.5 rounded-full text-[9.5px] font-black uppercase bg-emerald-50 text-emerald-800 border border-emerald-200">
                                     DATEV SKR03/04
                                 </span>
                             </div>
@@ -663,6 +713,12 @@ new class extends Component {
                                 <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
                                     Inklusive § 13b UStG Steuerschlüsseln für Subunternehmer. Kein mühsames Nachbuchen am Monatsende.
                                 </p>
+                            </div>
+                            <div class="pt-2 border-t border-slate-100">
+                                <span class="lexend-arrow-link text-emerald-800">
+                                    <span>DATEV-Ready</span>
+                                    <span class="arrow-icon">→</span>
+                                </span>
                             </div>
                         </div>
 
@@ -932,7 +988,150 @@ new class extends Component {
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 5. INTERAKTIVER ROI & ERSPARNISRECHNER                                    -->
+    <!-- 5. LEXEND EIGHT STYLE INTEGRATIONS & BAU-ÖKOSYSTEM CLOUD                  -->
+    <!-- ========================================================================= -->
+    <section id="integrations" class="py-24 bg-white border-t border-slate-200 relative overflow-hidden reveal-on-scroll">
+        
+        <!-- Ambient background aura -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-r from-blue-100/40 via-amber-100/30 to-emerald-100/40 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-3 mb-16">
+                <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-800 text-xs font-black uppercase shadow-2xs">
+                    <span>🔌</span>
+                    <span>Nahtlose Schnittstellen & Standards</span>
+                </span>
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
+                    Maximale Konnektivität für Ihren <span class="bg-gradient-to-r from-blue-700 via-indigo-700 to-amber-600 bg-clip-text text-transparent">Baualltag</span>
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-600 font-medium max-w-2xl mx-auto">
+                    Verbinden Sie das BT Bautechnik Cockpit nahtlos mit Ihren bestehenden Buchhaltungs-, Kommunikations- und Baustellensystemen – ohne Medienbrüche.
+                </p>
+            </div>
+
+            <!-- Integrations Bento Cards Grid (Lexend Style) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Item 1: DATEV -->
+                <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group">
+                    <div class="flex items-center justify-between">
+                        <div class="lexend-icon-box w-12 h-12 bg-emerald-100 text-emerald-800 text-xl font-black">
+                            📊
+                        </div>
+                        <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            Nativ
+                        </span>
+                    </div>
+                    <div>
+                        <h4 class="font-black text-slate-900 text-base group-hover:text-emerald-700 transition-colors">
+                            DATEV SKR03 & SKR04
+                        </h4>
+                        <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
+                            Standardisierter Buchungsstapel-Export inkl. § 13b UStG direkt an Ihren Steuerberater.
+                        </p>
+                    </div>
+                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-500">
+                        <span>CSV / ASCII Format</span>
+                        <span class="lexend-arrow-link text-emerald-700">
+                            <span class="arrow-icon">→</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Item 2: VOB/B & VOB/C -->
+                <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group">
+                    <div class="lexend-icon-box w-12 h-12 bg-blue-100 text-blue-800 text-xl font-black">
+                        ⚖️
+                    </div>
+                    <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-blue-50 text-blue-800 border border-blue-200 w-fit">
+                        Rechtskonform
+                    </span>
+                    <div>
+                        <h4 class="font-black text-slate-900 text-base group-hover:text-blue-700 transition-colors">
+                            VOB/B § 2 & VOB/C
+                        </h4>
+                        <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
+                            Rechtssichere Nachtragsbegründung & DIN 18299 / DIN 18336 konforme Aufmaße.
+                        </p>
+                    </div>
+                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-500">
+                        <span>Inkl. VOB-Vorlagen</span>
+                        <span class="lexend-arrow-link text-blue-700">
+                            <span class="arrow-icon">→</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Item 3: WhatsApp & Messenger -->
+                <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group">
+                    <div class="lexend-icon-box w-12 h-12 bg-emerald-100 text-emerald-800 text-xl font-black">
+                        💬
+                    </div>
+                    <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-50 text-emerald-800 border border-emerald-200 w-fit">
+                        Sofortkontakt
+                    </span>
+                    <div>
+                        <h4 class="font-black text-slate-900 text-base group-hover:text-emerald-700 transition-colors">
+                            WhatsApp Business
+                        </h4>
+                        <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
+                            1-Klick Freigabelinks für Bautagebuch & Nachträge direkt an Bauherren und Poliere.
+                        </p>
+                    </div>
+                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-500">
+                        <span>Kein Login nötig</span>
+                        <span class="lexend-arrow-link text-emerald-700">
+                            <span class="arrow-icon">→</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Item 4: Mobile PWA -->
+                <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group">
+                    <div class="lexend-icon-box w-12 h-12 bg-amber-100 text-amber-800 text-xl font-black">
+                        📱
+                    </div>
+                    <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-50 text-amber-800 border border-amber-200 w-fit">
+                        iOS & Android
+                    </span>
+                    <div>
+                        <h4 class="font-black text-slate-900 text-base group-hover:text-amber-700 transition-colors">
+                            PWA Baustellen-App
+                        </h4>
+                        <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
+                            Installierbar ohne App-Store auf Tablet & Smartphone. Vollständig offline-synchronisierbar.
+                        </p>
+                    </div>
+                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-500">
+                        <span>Offline First</span>
+                        <span class="lexend-arrow-link text-amber-700">
+                            <span class="arrow-icon">→</span>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Integrations Ribbon with Direct CTA -->
+            <div class="mt-10 p-6 rounded-3xl bg-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+                <div class="flex items-center gap-4">
+                    <span class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-2xl">⚡</span>
+                    <div>
+                        <h4 class="font-black text-sm sm:text-base text-white">Sie nutzen individuelle Bauprogramme oder AVA-Software?</h4>
+                        <p class="text-xs text-slate-400 font-medium">Wir unterstützen flexible Excel-, CSV- und PDF-Importe für reibungslosen Datenfluss.</p>
+                    </div>
+                </div>
+                <button wire:click="openDemoModal" class="px-6 py-3.5 bg-gradient-to-r from-blue-600 to-amber-500 hover:from-blue-500 hover:to-amber-400 text-white font-black text-xs rounded-xl shadow-md transition cursor-pointer shrink-0 btn-press">
+                    Individuelle Schnittstellen anfragen →
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 6. INTERAKTIVER ROI & ERSPARNISRECHNER                                    -->
     <!-- ========================================================================= -->
     <section id="rechner" class="py-20 bg-slate-100 border-t border-slate-200 relative reveal-on-scroll">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

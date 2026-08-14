@@ -134,6 +134,56 @@
         transform: translateY(-4px);
         box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
     }
+
+    /* Lexend Demo 8 Bento & Micro-Animation System */
+    .lexend-bento-card {
+        background-color: #ffffff;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-radius: 1.75rem;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    .lexend-bento-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(59, 130, 246, 0.4);
+        box-shadow: 0 24px 38px -12px rgba(15, 23, 42, 0.09), 0 12px 16px -8px rgba(15, 23, 42, 0.04);
+    }
+
+    .lexend-icon-box {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 1rem;
+        transition: all 0.25s ease;
+    }
+    .lexend-bento-card:hover .lexend-icon-box {
+        transform: scale(1.08) rotate(3deg);
+    }
+
+    .lexend-arrow-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 800;
+        transition: all 0.2s ease;
+    }
+    .lexend-arrow-link .arrow-icon {
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .lexend-bento-card:hover .lexend-arrow-link .arrow-icon,
+    .lexend-arrow-link:hover .arrow-icon {
+        transform: translateX(4px);
+    }
+
+    /* Staggered Scroll Delays */
+    .stagger-1 { transition-delay: 50ms; }
+    .stagger-2 { transition-delay: 150ms; }
+    .stagger-3 { transition-delay: 250ms; }
+    .stagger-4 { transition-delay: 350ms; }
+    .stagger-5 { transition-delay: 450ms; }
+    .stagger-6 { transition-delay: 550ms; }
 }
 
 

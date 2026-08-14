@@ -50,18 +50,20 @@
             /* Smooth Scroll Reveal Animation Classes */
             .reveal-on-scroll {
                 opacity: 0;
-                transform: translateY(24px);
-                transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+                transform: translateY(20px);
+                transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
                 will-change: opacity, transform;
             }
             .reveal-on-scroll.is-visible {
-                opacity: 1;
-                transform: translateY(0);
+                opacity: 1 !important;
+                transform: translateY(0) !important;
             }
             .reveal-delay-100 { transition-delay: 0.1s; }
             .reveal-delay-200 { transition-delay: 0.2s; }
             .reveal-delay-300 { transition-delay: 0.3s; }
             .reveal-delay-400 { transition-delay: 0.4s; }
+
+            [x-cloak] { display: none !important; }
         </style>
     </head>
     <body class="font-sans antialiased bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white min-h-screen">
@@ -69,31 +71,56 @@
             {{ $slot }}
         </main>
 
-        <!-- IntersectionObserver for fluid on-scroll animations -->
+        <!-- IntersectionObserver for fluid on-scroll animations with robust Livewire fallback -->
         <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const observerOptions = {
-                    root: null,
-                    rootMargin: '0px 0px -40px 0px',
-                    threshold: 0.08
-                };
+            (function() {
+                function initScrollReveal() {
+                    const elements = document.querySelectorAll('.reveal-on-scroll');
+                    if (!elements.length) return;
 
-                const observer = new IntersectionObserver((entries, obs) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('is-visible');
-                            obs.unobserve(entry.target);
+                    if (!('IntersectionObserver' in window)) {
+                        elements.forEach(el => el.classList.add('is-visible'));
+                        return;
+                    }
+
+                    const observer = new IntersectionObserver((entries, obs) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('is-visible');
+                                obs.unobserve(entry.target);
+                            }
+                        });
+                    }, {
+                        root: null,
+                        rootMargin: '0px 0px 50px 0px',
+                        threshold: 0.01
+                    });
+
+                    elements.forEach(el => {
+                        const rect = el.getBoundingClientRect();
+                        if (rect.top < window.innerHeight) {
+                            el.classList.add('is-visible');
+                        } else if (!el.classList.contains('is-visible')) {
+                            observer.observe(el);
                         }
                     });
-                }, observerOptions);
+                }
 
-                document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', initScrollReveal);
+                } else {
+                    initScrollReveal();
+                }
 
-                // Re-bind when Livewire updates DOM
-                document.addEventListener('livewire:navigated', () => {
-                    document.querySelectorAll('.reveal-on-scroll:not(.is-visible)').forEach(el => observer.observe(el));
+                document.addEventListener('livewire:navigated', initScrollReveal);
+                document.addEventListener('livewire:initialized', () => {
+                    if (window.Livewire) {
+                        Livewire.hook('morph.updated', () => {
+                            initScrollReveal();
+                        });
+                    }
                 });
-            });
+            })();
         </script>
 
         @livewireScripts

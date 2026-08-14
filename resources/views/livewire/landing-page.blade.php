@@ -747,33 +747,48 @@ new class extends Component {
             </p>
         </div>
 
-        <!-- Module Selector Tabs -->
-        <div class="flex flex-wrap items-center justify-center gap-2 mb-8">
-            <button wire:click="$set('activeModuleTab', 'cockpit')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'cockpit' ? 'bg-blue-700 text-white shadow-md shadow-blue-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200' }}">
-                <span>🏗️ Baustellen-Cockpit</span>
-            </button>
-            <button wire:click="$set('activeModuleTab', 'contacts360')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'contacts360' ? 'bg-indigo-700 text-white shadow-md shadow-indigo-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200' }}">
-                <span>👥 360° Kunden-Zentrale</span>
-            </button>
-            <button wire:click="$set('activeModuleTab', 'supplements')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'supplements' ? 'bg-amber-600 text-white shadow-md shadow-amber-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200' }}">
-                <span>📑 VOB/B Nachträge</span>
-            </button>
-            <button wire:click="$set('activeModuleTab', 'measurements')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'measurements' ? 'bg-cyan-700 text-white shadow-md shadow-cyan-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200' }}">
-                <span>📐 VOB/C Aufmaßblatt</span>
-            </button>
-            <button wire:click="$set('activeModuleTab', 'dailylogs')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'dailylogs' ? 'bg-emerald-700 text-white shadow-md shadow-emerald-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200' }}">
-                <span>🎙️ KI-Bautagebuch</span>
-            </button>
-            <button wire:click="$set('activeModuleTab', 'datev')" class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2 {{ $activeModuleTab === 'datev' ? 'bg-purple-700 text-white shadow-md shadow-purple-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200' }}">
-                <span>📊 DATEV & Finanzen</span>
-            </button>
-        </div>
-
-        <!-- Interactive Module Showcase Screen (Light High-Contrast) -->
-        <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-xl">
+        <!-- Module Selector with Alpine.js (Instant 0ms tab switching without server requests) -->
+        <div x-data="{ activeModuleTab: 'cockpit' }">
             
-            @if ($activeModuleTab === 'cockpit')
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <!-- Module Selector Tabs -->
+            <div class="flex flex-wrap items-center justify-center gap-2 mb-8">
+                <button type="button" @click="activeModuleTab = 'cockpit'" 
+                        :class="activeModuleTab === 'cockpit' ? 'bg-blue-700 text-white shadow-md shadow-blue-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200'"
+                        class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2">
+                    <span>🏗️ Baustellen-Cockpit</span>
+                </button>
+                <button type="button" @click="activeModuleTab = 'contacts360'" 
+                        :class="activeModuleTab === 'contacts360' ? 'bg-indigo-700 text-white shadow-md shadow-indigo-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200'"
+                        class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2">
+                    <span>👥 360° Kunden-Zentrale</span>
+                </button>
+                <button type="button" @click="activeModuleTab = 'supplements'" 
+                        :class="activeModuleTab === 'supplements' ? 'bg-amber-600 text-white shadow-md shadow-amber-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200'"
+                        class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2">
+                    <span>📑 VOB/B Nachträge</span>
+                </button>
+                <button type="button" @click="activeModuleTab = 'measurements'" 
+                        :class="activeModuleTab === 'measurements' ? 'bg-cyan-700 text-white shadow-md shadow-cyan-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200'"
+                        class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2">
+                    <span>📐 VOB/C Aufmaßblatt</span>
+                </button>
+                <button type="button" @click="activeModuleTab = 'dailylogs'" 
+                        :class="activeModuleTab === 'dailylogs' ? 'bg-emerald-700 text-white shadow-md shadow-emerald-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200'"
+                        class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2">
+                    <span>🎙️ KI-Bautagebuch</span>
+                </button>
+                <button type="button" @click="activeModuleTab = 'datev'" 
+                        :class="activeModuleTab === 'datev' ? 'bg-purple-700 text-white shadow-md shadow-purple-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200'"
+                        class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2">
+                    <span>📊 DATEV & Finanzen</span>
+                </button>
+            </div>
+
+            <!-- Interactive Module Showcase Screen (Light High-Contrast) -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-xl min-h-[380px]">
+                
+                <!-- Tab 1: Cockpit -->
+                <div x-show="activeModuleTab === 'cockpit'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                     <div class="lg:col-span-5 space-y-4">
                         <span class="text-xs font-black uppercase text-blue-700 tracking-wider">Kernmodul 01</span>
                         <h3 class="text-2xl font-black text-slate-950">Baustellen-Cockpit & Soll/Ist-Steuerung</h3>
@@ -785,7 +800,7 @@ new class extends Component {
                             <p class="flex items-center gap-2">✅ Kalenderwochen-Terminplan (Start-KW bis End-KW)</p>
                             <p class="flex items-center gap-2">✅ Wetter-API mit automatischer Temperatur & Niederschlag</p>
                         </div>
-                        <button wire:click="openDemoModal('bautraeger')" class="px-4 py-2 bg-blue-700 hover:bg-blue-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
+                        <button type="button" wire:click="openDemoModal('bautraeger')" class="px-4 py-2 bg-blue-700 hover:bg-blue-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
                             Cockpit live testen →
                         </button>
                     </div>
@@ -811,10 +826,9 @@ new class extends Component {
                         </div>
                     </div>
                 </div>
-            @endif
 
-            @if ($activeModuleTab === 'contacts360')
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Tab 2: Contacts 360 -->
+                <div x-show="activeModuleTab === 'contacts360'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                     <div class="lg:col-span-5 space-y-4">
                         <span class="text-xs font-black uppercase text-indigo-700 tracking-wider">Kernmodul 02</span>
                         <h3 class="text-2xl font-black text-slate-950">360° Kunden- & Bauherren-Zentrale</h3>
@@ -826,7 +840,7 @@ new class extends Component {
                             <p class="flex items-center gap-2">✅ Zeitgestempeltes Telefon- & Notizjournal</p>
                             <p class="flex items-center gap-2">✅ KI-Chefbauleiter Dossier für jedes Kundenprofil</p>
                         </div>
-                        <button wire:click="openDemoModal('generalunternehmer')" class="px-4 py-2 bg-indigo-700 hover:bg-indigo-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
+                        <button type="button" wire:click="openDemoModal('generalunternehmer')" class="px-4 py-2 bg-indigo-700 hover:bg-indigo-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
                             Kunden-Zentrale testen →
                         </button>
                     </div>
@@ -845,10 +859,9 @@ new class extends Component {
                         </div>
                     </div>
                 </div>
-            @endif
 
-            @if ($activeModuleTab === 'supplements')
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Tab 3: Supplements -->
+                <div x-show="activeModuleTab === 'supplements'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                     <div class="lg:col-span-5 space-y-4">
                         <span class="text-xs font-black uppercase text-amber-700 tracking-wider">Kernmodul 03</span>
                         <h3 class="text-2xl font-black text-slate-950">VOB/B Nachtragsmanagement (§ 2)</h3>
@@ -860,7 +873,7 @@ new class extends Component {
                             <p class="flex items-center gap-2">✅ PDF-Nachtragsangebot mit rechtssicherem VOB-Briefkopf</p>
                             <p class="flex items-center gap-2">✅ Status: Eingereicht, Geprüft, Beauftragt, Abgerechnet</p>
                         </div>
-                        <button wire:click="openDemoModal('sanierung_abdichtung')" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
+                        <button type="button" wire:click="openDemoModal('sanierung_abdichtung')" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
                             Nachtragsmodul ansehen →
                         </button>
                     </div>
@@ -879,10 +892,9 @@ new class extends Component {
                         </div>
                     </div>
                 </div>
-            @endif
 
-            @if ($activeModuleTab === 'measurements')
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Tab 4: Measurements -->
+                <div x-show="activeModuleTab === 'measurements'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                     <div class="lg:col-span-5 space-y-4">
                         <span class="text-xs font-black uppercase text-cyan-700 tracking-wider">Kernmodul 04</span>
                         <h3 class="text-2xl font-black text-slate-950">Digitales Aufmaßblatt (VOB/C / DIN 18299)</h3>
@@ -894,7 +906,7 @@ new class extends Component {
                             <p class="flex items-center gap-2">✅ Automatischer VOB-Abzug nach DIN 18299 / DIN 18336</p>
                             <p class="flex items-center gap-2">✅ 1-Klick Übergabe in die Schlussrechnung</p>
                         </div>
-                        <button wire:click="openDemoModal('hoch_tiefbau')" class="px-4 py-2 bg-cyan-700 hover:bg-cyan-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
+                        <button type="button" wire:click="openDemoModal('hoch_tiefbau')" class="px-4 py-2 bg-cyan-700 hover:bg-cyan-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
                             Aufmaß-Engine testen →
                         </button>
                     </div>
@@ -916,10 +928,9 @@ new class extends Component {
                         </div>
                     </div>
                 </div>
-            @endif
 
-            @if ($activeModuleTab === 'dailylogs')
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Tab 5: Daily Logs -->
+                <div x-show="activeModuleTab === 'dailylogs'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                     <div class="lg:col-span-5 space-y-4">
                         <span class="text-xs font-black uppercase text-emerald-700 tracking-wider">Kernmodul 05</span>
                         <h3 class="text-2xl font-black text-slate-950">KI-Bautagebuch & Sprachmemo (Whisper)</h3>
@@ -931,7 +942,7 @@ new class extends Component {
                             <p class="flex items-center gap-2">✅ Integrierter Fotoupload mit Beschriftung</p>
                             <p class="flex items-center gap-2">✅ Digitaler Freigabe-Link & PDF-Versand an Bauherrn</p>
                         </div>
-                        <button wire:click="openDemoModal('bautraeger')" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
+                        <button type="button" wire:click="openDemoModal('bautraeger')" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
                             Sprach-Bautagebuch testen →
                         </button>
                     </div>
@@ -949,10 +960,9 @@ new class extends Component {
                         </div>
                     </div>
                 </div>
-            @endif
 
-            @if ($activeModuleTab === 'datev')
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Tab 6: DATEV -->
+                <div x-show="activeModuleTab === 'datev'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                     <div class="lg:col-span-5 space-y-4">
                         <span class="text-xs font-black uppercase text-purple-700 tracking-wider">Kernmodul 06</span>
                         <h3 class="text-2xl font-black text-slate-950">DATEV-Export & Subunternehmer-Controlling</h3>
@@ -964,7 +974,7 @@ new class extends Component {
                             <p class="flex items-center gap-2">✅ Automatische § 13b UStG Steuerschlüssel-Zuordnung</p>
                             <p class="flex items-center gap-2">✅ Rechnungsfreigabe-Workflow & Zahlungsüberwachung</p>
                         </div>
-                        <button wire:click="openDemoModal('generalunternehmer')" class="px-4 py-2 bg-purple-700 hover:bg-purple-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
+                        <button type="button" wire:click="openDemoModal('generalunternehmer')" class="px-4 py-2 bg-purple-700 hover:bg-purple-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
                             DATEV-Workflow testen →
                         </button>
                     </div>
@@ -981,7 +991,8 @@ new class extends Component {
                         </div>
                     </div>
                 </div>
-            @endif
+
+            </div>
 
         </div>
 
@@ -1346,54 +1357,46 @@ new class extends Component {
                 </h2>
             </div>
 
-            <div class="space-y-3 text-xs">
+            <div x-data="{ openFaq: 0 }" class="space-y-3 text-xs">
                 
                 <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs card-lift">
-                    <button wire:click="toggleFaq(0)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
+                    <button type="button" @click="openFaq = (openFaq === 0 ? null : 0)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
                         <span>Ist die Software auf Smartphones und Tablets auf der Baustelle nutzbar?</span>
-                        <span class="text-blue-700 text-base font-bold">{{ $openFaqIndex === 0 ? '−' : '+' }}</span>
+                        <span class="text-blue-700 text-base font-bold" x-text="openFaq === 0 ? '−' : '+'">−</span>
                     </button>
-                    @if ($openFaqIndex === 0)
-                        <p class="mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium">
-                            Ja! BT Bautechnik Cockpit ist als Progressive Web App (PWA) konzipiert. Es läuft reaktionsschnell auf jedem iPhone, Android-Smartphone, iPad oder Laptop – ohne umständliche App-Store Installation.
-                        </p>
-                    @endif
+                    <p x-show="openFaq === 0" x-cloak class="mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium">
+                        Ja! BT Bautechnik Cockpit ist als Progressive Web App (PWA) konzipiert. Es läuft reaktionsschnell auf jedem iPhone, Android-Smartphone, iPad oder Laptop – ohne umständliche App-Store Installation.
+                    </p>
                 </div>
 
                 <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs card-lift">
-                    <button wire:click="toggleFaq(1)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
+                    <button type="button" @click="openFaq = (openFaq === 1 ? null : 1)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
                         <span>Wie funktioniert die Nachtragserstellung nach VOB/B § 2?</span>
-                        <span class="text-blue-700 text-base font-bold">{{ $openFaqIndex === 1 ? '−' : '+' }}</span>
+                        <span class="text-blue-700 text-base font-bold" x-text="openFaq === 1 ? '−' : '+'">+</span>
                     </button>
-                    @if ($openFaqIndex === 1)
-                        <p class="mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium">
-                            Das System unterscheidet automatisch zwischen Leistungsänderungen (§ 2 Abs. 5) und unvorhergesehenen Zusatzleistungen (§ 2 Abs. 6). Sie geben Titel und Menge ein – das System erstellt sofort das unterschriftsreife Nachtragsangebot als PDF mit rechtssicherer Klausulierung.
-                        </p>
-                    @endif
+                    <p x-show="openFaq === 1" x-cloak class="mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium">
+                        Das System unterscheidet automatisch zwischen Leistungsänderungen (§ 2 Abs. 5) und unvorhergesehenen Zusatzleistungen (§ 2 Abs. 6). Sie geben Titel und Menge ein – das System erstellt sofort das unterschriftsreife Nachtragsangebot als PDF mit rechtssicherer Klausulierung.
+                    </p>
                 </div>
 
                 <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs card-lift">
-                    <button wire:click="toggleFaq(2)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
+                    <button type="button" @click="openFaq = (openFaq === 2 ? null : 2)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
                         <span>Kann mein Steuerberater die Rechnungen und Kosten direkt importieren?</span>
-                        <span class="text-blue-700 text-base font-bold">{{ $openFaqIndex === 2 ? '−' : '+' }}</span>
+                        <span class="text-blue-700 text-base font-bold" x-text="openFaq === 2 ? '−' : '+'">+</span>
                     </button>
-                    @if ($openFaqIndex === 2)
-                        <p class="mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium">
-                            Ja. Das System verfügt über eine integrierte DATEV CSV-Schnittstelle nach SKR03 und SKR04 inklusive automatischem Buchungsschlüssel für Nachunternehmer-Rechnungen (§ 13b UStG Bauleistungen).
-                        </p>
-                    @endif
+                    <p x-show="openFaq === 2" x-cloak class="mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium">
+                        Ja. Das System verfügt über eine integrierte DATEV CSV-Schnittstelle nach SKR03 und SKR04 inklusive automatischem Buchungsschlüssel für Nachunternehmer-Rechnungen (§ 13b UStG Bauleistungen).
+                    </p>
                 </div>
 
                 <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs card-lift">
-                    <button wire:click="toggleFaq(3)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
+                    <button type="button" @click="openFaq = (openFaq === 3 ? null : 3)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
                         <span>Können wir das System unverbindlich testen?</span>
-                        <span class="text-blue-700 text-base font-bold">{{ $openFaqIndex === 3 ? '−' : '+' }}</span>
+                        <span class="text-blue-700 text-base font-bold" x-text="openFaq === 3 ? '−' : '+'">+</span>
                     </button>
-                    @if ($openFaqIndex === 3)
-                        <p class="mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium">
-                            Absolut. Klicken Sie einfach auf "Demo anfordern". Wir zeigen Ihnen in 15 Minuten per Videoschalte oder direkt vor Ort, wie Sie das System für Ihre Baustellen einrichten.
-                        </p>
-                    @endif
+                    <p x-show="openFaq === 3" x-cloak class="mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium">
+                        Absolut. Klicken Sie einfach auf "Demo anfordern". Wir zeigen Ihnen in 15 Minuten per Videoschalte oder direkt vor Ort, wie Sie das System für Ihre Baustellen einrichten.
+                    </p>
                 </div>
 
             </div>

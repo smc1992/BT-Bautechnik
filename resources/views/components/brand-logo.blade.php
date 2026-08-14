@@ -2,10 +2,10 @@
 
 @php
     $imgHeight = match($size) {
-        'small' => 'h-9',
-        'large' => 'h-14',
-        'icon' => 'h-11',
-        default => 'h-11',
+        'small' => 'h-10',
+        'large' => 'h-16',
+        'icon' => 'h-12',
+        default => 'h-12 sm:h-13',
     };
 
     $titleSize = match($size) {
@@ -22,13 +22,11 @@
 @endphp
 
 <div {{ $attributes->merge(['class' => 'inline-flex items-center gap-3 select-none group']) }}>
-    <!-- Architectural Building B + Crane T Monogram Icon -->
+    <!-- Architectural Building B + Crane T Monogram Icon (Bold & Uncut) -->
     <div class="relative flex items-center justify-center shrink-0">
-        <div class="p-1 rounded-2xl bg-white border border-slate-200/90 shadow-sm group-hover:scale-105 group-hover:border-blue-300 transition-all duration-300">
-            <img src="{{ asset('logo-icon-transparent.png') }}?v=3" 
-                 alt="BT Bautechnik (Gebäude B & Kran T)" 
-                 class="{{ $imgHeight }} w-auto object-contain drop-shadow-2xs">
-        </div>
+        <img src="{{ asset('logo-icon-transparent.png') }}?v=5" 
+             alt="BT Bautechnik (Gebäude B & Kran T)" 
+             class="{{ $imgHeight }} w-auto object-contain drop-shadow-xs group-hover:scale-105 transition-transform duration-300">
     </div>
 
     @if($variant === 'full')

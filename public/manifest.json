@@ -1,25 +1,37 @@
 {
-  "name": "BT Bautechnik - Digitale Bauleitung & Handwerker ERP",
+  "name": "BT Bautechnik - Bauleiter- & Bauträger-Software",
   "short_name": "BT Bautechnik",
-  "description": "Bautagebuch, Nachtragsmanagement, Digitales Aufmaß, Mobile Zeiterfassung & Gerätepark",
+  "description": "Die Bauleiter- und Bauträger-Software aus der Baupraxis: Bautagebuch, VOB/B Nachträge, Digitales Aufmaß DIN 18299 & DATEV Finanzen.",
   "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#0f172a",
-  "theme_color": "#2563eb",
+  "background_color": "#ffffff",
+  "theme_color": "#1d4ed8",
   "categories": ["business", "productivity", "utilities"],
   "icons": [
     {
       "src": "/favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "sizes": "64x64 48x48 32x32 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "/logo.png",
-      "sizes": "192x192 512x512",
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "shortcuts": [
@@ -27,25 +39,25 @@
       "name": "Bautagebuch (Audio)",
       "short_name": "Bautagebuch",
       "url": "/bautagebuch",
-      "icons": [{ "src": "/favicon.ico", "sizes": "64x64" }]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Zeiterfassung (Stempeluhr)",
       "short_name": "Stempeluhr",
       "url": "/zeiterfassung",
-      "icons": [{ "src": "/favicon.ico", "sizes": "64x64" }]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Digitales Aufmaß",
+      "name": "Digitales Aufmaß (DIN 18299)",
       "short_name": "Aufmaß",
       "url": "/aufmass",
-      "icons": [{ "src": "/favicon.ico", "sizes": "64x64" }]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Nachträge (VOB/B)",
       "short_name": "Nachträge",
       "url": "/nachtraege",
-      "icons": [{ "src": "/favicon.ico", "sizes": "64x64" }]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

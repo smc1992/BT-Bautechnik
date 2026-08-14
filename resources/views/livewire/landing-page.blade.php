@@ -224,8 +224,8 @@ new class extends Component {
 
             </div>
 
-            <!-- Crisp Architectural Cockpit Preview Card (High Contrast) -->
-            <div class="mt-14 max-w-5xl mx-auto rounded-3xl p-3 sm:p-4 bg-gradient-to-b from-blue-100 via-slate-200 to-amber-50 border border-slate-300 shadow-2xl">
+            <!-- Crisp Architectural Cockpit Preview Card (High Contrast with Real Construction Photography) -->
+            <div class="mt-14 max-w-6xl mx-auto rounded-3xl p-3 sm:p-4 bg-gradient-to-b from-blue-100 via-slate-200 to-amber-50 border border-slate-300 shadow-2xl reveal-on-scroll">
                 <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-inner">
                     
                     <!-- Window bar -->
@@ -240,72 +240,92 @@ new class extends Component {
                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/30 text-amber-300 border border-amber-400/40">
                                 BT BAUTECHNIK UG
                             </span>
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/30 text-emerald-300 border border-emerald-400/40">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/30 text-emerald-300 border border-emerald-400/40 animate-pulse">
                                 LIVE COCKPIT
                             </span>
                         </div>
                     </div>
 
-                    <!-- Mockup Body (Clean Slate / High Contrast) -->
-                    <div class="p-5 sm:p-7 space-y-6 bg-slate-50">
+                    <!-- Split Mockup & On-Site Action Photo -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 bg-slate-50">
                         
-                        <!-- Project Banner Header -->
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-                            <div>
-                                <span class="text-[10px] font-mono text-blue-700 font-black uppercase tracking-wider">BAUVORHABEN #2026-081</span>
-                                <h3 class="text-base sm:text-lg font-black text-slate-950">WEG Maximilianstraße 44 – Tiefgaragenabdichtung & Sanierung</h3>
-                                <p class="text-xs text-slate-500 font-medium">Auftraggeber / Bauherr: Hausverwaltung Müller & Partner GmbH (Nürnberg)</p>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="px-3 py-1 rounded-xl bg-blue-50 text-blue-800 border border-blue-200 font-black text-xs">
-                                    KW 32 – KW 38
-                                </span>
-                                <span class="px-3 py-1 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 font-black text-xs">
-                                    Im Plan
-                                </span>
+                        <!-- Left: Real Bauleiter On-Site Tablet Photography -->
+                        <div class="lg:col-span-5 relative overflow-hidden border-b lg:border-b-0 lg:border-r border-slate-200 group">
+                            <img src="{{ asset('images/bauleiter-tablet-hero.jpg') }}" 
+                                 alt="Bauleiter vor Ort mit digitalem BT Bautechnik Tablet Cockpit" 
+                                 class="w-full h-full object-cover min-h-[300px] lg:min-h-[440px] group-hover:scale-105 transition-transform duration-700">
+                            
+                            <!-- Floating Glass Badge over photo -->
+                            <div class="absolute bottom-4 left-4 right-4 bg-slate-950/85 backdrop-blur-md text-white p-3.5 rounded-2xl border border-white/20 shadow-lg">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                    <span class="text-xs font-black text-amber-300 uppercase tracking-wider">Echte Baustelle vor Ort</span>
+                                </div>
+                                <p class="text-xs text-slate-200 font-medium">
+                                    Bautagesberichte, digitale VOB/C Aufmaße und Mängelerfassung in Echtzeit auf dem Tablet.
+                                </p>
                             </div>
                         </div>
 
-                        <!-- Progress & Budget Cards -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-                                <span class="text-[10px] text-slate-500 font-bold uppercase">Geplantes Budget</span>
-                                <p class="text-base font-black text-slate-900 mt-0.5">85.000,00 €</p>
-                                <div class="w-full bg-slate-100 h-2 rounded-full mt-2 overflow-hidden">
-                                    <div class="bg-blue-600 h-full w-[65%]"></div>
+                        <!-- Right: Interactive Cockpit KPIs & Status -->
+                        <div class="lg:col-span-7 p-5 sm:p-7 space-y-5 flex flex-col justify-between">
+                            
+                            <!-- Project Banner Header -->
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+                                <div>
+                                    <span class="text-[10px] font-mono text-blue-700 font-black uppercase tracking-wider">BAUVORHABEN #2026-081</span>
+                                    <h3 class="text-base font-black text-slate-950">WEG Maximilianstraße 44 – Tiefgaragenabdichtung</h3>
+                                    <p class="text-xs text-slate-500 font-medium">Auftraggeber / Bauherr: Hausverwaltung Müller & Partner GmbH</p>
+                                </div>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <span class="px-3 py-1 rounded-xl bg-blue-50 text-blue-800 border border-blue-200 font-black text-xs">
+                                        KW 32 – 38
+                                    </span>
+                                    <span class="px-3 py-1 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 font-black text-xs flex items-center gap-1">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Im Plan
+                                    </span>
                                 </div>
                             </div>
-                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-                                <span class="text-[10px] text-slate-500 font-bold uppercase">Nachtragsvolumen (VOB/B)</span>
-                                <p class="text-base font-black text-amber-700 mt-0.5">+ 12.450,00 €</p>
-                                <span class="text-[10px] text-emerald-700 font-bold">3 freigegeben, 1 in Prüfung</span>
-                            </div>
-                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-                                <span class="text-[10px] text-slate-500 font-bold uppercase">Aufmaßstand (VOB/C)</span>
-                                <p class="text-base font-black text-blue-700 mt-0.5">620 m² / 750 m²</p>
-                                <span class="text-[10px] text-slate-600 font-bold">82% fertiggestellt</span>
-                            </div>
-                        </div>
 
-                        <!-- Mini Sub Action Bar -->
-                        <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-2 text-xs">
-                            <div class="flex items-center gap-2 text-slate-700 font-medium">
-                                <span>🎙️ Bautagesbericht heute per Sprachmemo erfasst</span>
-                                <span class="text-slate-300">•</span>
-                                <span class="text-slate-600">Wetter: 22°C trocken</span>
-                                <span class="text-slate-300">•</span>
-                                <span class="text-slate-600">4 Monteure vor Ort</span>
+                            <!-- Progress & Budget Cards -->
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs card-lift">
+                                    <span class="text-[10px] text-slate-500 font-bold uppercase">Geplantes Budget</span>
+                                    <p class="text-base font-black text-slate-900 mt-0.5">85.000,00 €</p>
+                                    <div class="w-full bg-slate-100 h-2 rounded-full mt-2 overflow-hidden">
+                                        <div class="bg-blue-600 h-full w-[65%]"></div>
+                                    </div>
+                                </div>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs card-lift">
+                                    <span class="text-[10px] text-slate-500 font-bold uppercase">Nachträge (VOB/B)</span>
+                                    <p class="text-base font-black text-amber-700 mt-0.5">+ 12.450,00 €</p>
+                                    <span class="text-[10px] text-emerald-700 font-bold">3 freigegeben, 1 offen</span>
+                                </div>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs card-lift">
+                                    <span class="text-[10px] text-slate-500 font-bold uppercase">Aufmaß (VOB/C)</span>
+                                    <p class="text-base font-black text-blue-700 mt-0.5">620 m² / 750 m²</p>
+                                    <span class="text-[10px] text-slate-600 font-bold">82% fertiggestellt</span>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg font-bold text-[11px]">
-                                    📑 Nachtrags-PDF erzeugt
-                                </span>
-                                <span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg font-bold text-[11px]">
-                                    📐 Aufmaß exportiert
-                                </span>
-                            </div>
-                        </div>
 
+                            <!-- Mini Sub Action Bar -->
+                            <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-2 text-xs">
+                                <div class="flex items-center gap-2 text-slate-700 font-medium">
+                                    <span>🎙️ Bautagesbericht heute per Sprachmemo erfasst</span>
+                                    <span class="text-slate-300">•</span>
+                                    <span class="text-slate-600">4 Monteure vor Ort</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg font-bold text-[11px]">
+                                        📑 Nachtrags-PDF erzeugt
+                                    </span>
+                                    <span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg font-bold text-[11px]">
+                                        📐 Aufmaß exportiert
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -316,11 +336,11 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 3. DIE STORY: VON DER BRANCHE FÜR DIE BRANCHE                              -->
     <!-- ========================================================================= -->
-    <section id="story" class="py-20 bg-white border-y border-slate-200 relative">
+    <section id="story" class="py-20 bg-white border-y border-slate-200 relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 
-                <div class="lg:col-span-6 space-y-6">
+                <div class="lg:col-span-6 space-y-6 reveal-on-scroll">
                     <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-black uppercase">
                         <span>🧱 Aus der Praxis für die Baupraxis</span>
                     </div>
@@ -337,15 +357,15 @@ new class extends Component {
                             Jedes Modul in diesem Cockpit wurde aus einem echten Baustellen-Problem entwickelt:
                         </p>
                         <ul class="space-y-3 list-none pl-0">
-                            <li class="flex items-start gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                            <li class="flex items-start gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200 card-lift">
                                 <span class="text-amber-600 font-bold text-base">⚠️</span>
                                 <span><strong>VOB-Nachträge gingen verloren:</strong> Weil Poliere vor Ort keine Zeit hatten, Angebote am Schreibtisch zu tippen. Heute erstellen wir Nachtragsangebote nach § 2 VOB/B mit 2 Klicks vor Ort.</span>
                             </li>
-                            <li class="flex items-start gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                            <li class="flex items-start gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200 card-lift">
                                 <span class="text-blue-600 font-bold text-base">🎙️</span>
                                 <span><strong>Mühsame Bautagebücher:</strong> Nach 10 Stunden Baustelle schreibt kein Bauleiter lange Berichte. Ein 30-Sekunden Sprachmemo genügt und die KI formuliert den fertigen Bericht inklusive Wetter & Fotos.</span>
                             </li>
-                            <li class="flex items-start gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                            <li class="flex items-start gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200 card-lift">
                                 <span class="text-emerald-600 font-bold text-base">📊</span>
                                 <span><strong>Abrechnungs-Chaos beim Steuerberater:</strong> Statt Belege per Post zu schicken, exportiert das System fertige DATEV-Buchungsstapel (SKR03/SKR04) inkl. § 13b UStG Nachunternehmer-Zuordnung.</span>
                             </li>
@@ -359,46 +379,64 @@ new class extends Component {
                     </div>
                 </div>
 
-                <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 shadow-xs card-lift hover:border-amber-300 group cursor-default">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform duration-300">
-                            🧱
+                <!-- Right Column: Bauträger Office Photography + 4 Feature Cards -->
+                <div class="lg:col-span-6 space-y-5 reveal-on-scroll reveal-delay-200">
+                    
+                    <!-- Bauträger Planning Office Image -->
+                    <div class="relative rounded-3xl overflow-hidden border border-slate-200 shadow-md group">
+                        <img src="{{ asset('images/bautraeger-office-cockpit.jpg') }}" 
+                             alt="BT Bautechnik Bauträger Planungsbüro & Projektmanagement" 
+                             class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-5">
+                            <span class="text-xs font-black text-white bg-blue-600/90 backdrop-blur-xs px-3 py-1 rounded-xl">
+                                🏢 Planungsbüro & Baustellen-Zentrale Berching
+                            </span>
                         </div>
-                        <h4 class="font-black text-slate-900 text-base">Echtes Bauunternehmen</h4>
-                        <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                            Keine theoretische Spielerei: Wir nutzen die Software täglich auf unseren eigenen Baustellen in Bayern.
-                        </p>
                     </div>
 
-                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 shadow-xs card-lift hover:border-blue-300 group cursor-default">
-                        <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform duration-300">
-                            📑
+                    <!-- 4 Compact Core Value Pillars -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div class="bg-slate-50 p-4.5 rounded-2xl border border-slate-200 space-y-2 shadow-xs card-lift hover:border-amber-300 group cursor-default">
+                            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
+                                🧱
+                            </div>
+                            <h4 class="font-black text-slate-900 text-sm">Echtes Bauunternehmen</h4>
+                            <p class="text-[11.5px] text-slate-600 leading-relaxed font-medium">
+                                Wir nutzen die Software täglich auf unseren eigenen Baustellen in Bayern.
+                            </p>
                         </div>
-                        <h4 class="font-black text-slate-900 text-base">VOB/B Nachtragsautomatik</h4>
-                        <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                            Nachträge nach § 2 Abs. 5/6 sofort mit fertigem Briefkopf und rechtssicherem PDF versenden.
-                        </p>
+
+                        <div class="bg-slate-50 p-4.5 rounded-2xl border border-slate-200 space-y-2 shadow-xs card-lift hover:border-blue-300 group cursor-default">
+                            <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
+                                📑
+                            </div>
+                            <h4 class="font-black text-slate-900 text-sm">VOB/B Nachtragsautomatik</h4>
+                            <p class="text-[11.5px] text-slate-600 leading-relaxed font-medium">
+                                Nachträge nach § 2 Abs. 5/6 sofort mit fertigem Briefkopf versenden.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-50 p-4.5 rounded-2xl border border-slate-200 space-y-2 shadow-xs card-lift hover:border-indigo-300 group cursor-default">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
+                                👥
+                            </div>
+                            <h4 class="font-black text-slate-900 text-sm">360° Kunden-Zentrale</h4>
+                            <p class="text-[11.5px] text-slate-600 leading-relaxed font-medium">
+                                Der Bauherr als Dreh- und Angelpunkt für alle Baustellen & Abrechnungen.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-50 p-4.5 rounded-2xl border border-slate-200 space-y-2 shadow-xs card-lift hover:border-emerald-300 group cursor-default">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
+                                📊
+                            </div>
+                            <h4 class="font-black text-slate-900 text-sm">DATEV Buchungsstapel</h4>
+                            <p class="text-[11.5px] text-slate-600 leading-relaxed font-medium">
+                                SKR03/SKR04 Export für Ihren Steuerberater ohne Doppeleingaben.
+                            </p>
+                        </div>
                     </div>
 
-                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 shadow-xs card-lift hover:border-indigo-300 group cursor-default">
-                        <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform duration-300">
-                            👥
-                        </div>
-                        <h4 class="font-black text-slate-900 text-base">360° Kunden-Zentrale</h4>
-                        <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                            Der Bauherr als Dreh- und Angelpunkt: Baustellen, Aufmaße und Rechnungen direkt steuern.
-                        </p>
-                    </div>
-
-                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 shadow-xs card-lift hover:border-emerald-300 group cursor-default">
-                        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform duration-300">
-                            📊
-                        </div>
-                        <h4 class="font-black text-slate-900 text-base">DATEV Buchungsstapel</h4>
-                        <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                            SKR03/SKR04 Export für Ihren Steuerberater ohne lästige Doppeleingaben.
-                        </p>
-                    </div>
                 </div>
 
             </div>
@@ -408,7 +446,7 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 4. INTERAKTIVER MODULE EXPLORER (LIGHT THEME TABS & PREVIEWS)             -->
     <!-- ========================================================================= -->
-    <section id="module" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="module" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal-on-scroll">
         
         <div class="text-center max-w-3xl mx-auto space-y-3 mb-10">
             <span class="px-3 py-1 rounded-full bg-blue-100 border border-blue-200 text-blue-800 text-xs font-black uppercase">
@@ -665,7 +703,7 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 5. INTERAKTIVER ROI & ERSPARNISRECHNER                                    -->
     <!-- ========================================================================= -->
-    <section id="rechner" class="py-20 bg-slate-100 border-t border-slate-200 relative">
+    <section id="rechner" class="py-20 bg-slate-100 border-t border-slate-200 relative reveal-on-scroll">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div class="text-center max-w-3xl mx-auto space-y-3 mb-12">
@@ -683,7 +721,7 @@ new class extends Component {
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto">
                 
                 <!-- Left: Interactive Sliders (6 cols) -->
-                <div class="lg:col-span-6 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                <div class="lg:col-span-6 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 card-lift">
                     
                     <!-- Slider 1: Baustellen -->
                     <div class="space-y-2">
@@ -733,7 +771,7 @@ new class extends Component {
                 </div>
 
                 <!-- Right: Calculated Results (6 cols) -->
-                <div class="lg:col-span-6 bg-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-2xl space-y-6">
+                <div class="lg:col-span-6 bg-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-2xl space-y-6 card-lift">
                     
                     <div class="space-y-1">
                         <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider">Ihr kalkulierter Jahresvorteil</span>
@@ -770,7 +808,7 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 6. VORHER VS. NACHHER VERGLEICH (LIGHT SPLIT CARDS)                       -->
     <!-- ========================================================================= -->
-    <section id="vorteile" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="vorteile" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal-on-scroll">
         
         <div class="text-center max-w-3xl mx-auto space-y-3 mb-12">
             <span class="px-3 py-1 rounded-full bg-cyan-100 border border-cyan-200 text-cyan-800 text-xs font-black uppercase">
@@ -784,7 +822,7 @@ new class extends Component {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             
             <!-- BEFORE CARD -->
-            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-rose-200 shadow-sm space-y-5">
+            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-rose-200 shadow-sm space-y-5 card-lift">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-black">
                         ✕
@@ -820,8 +858,8 @@ new class extends Component {
             </div>
 
             <!-- AFTER CARD -->
-            <div class="bg-white p-6 sm:p-8 rounded-3xl border-2 border-blue-600 shadow-xl space-y-5 relative">
-                <div class="absolute -top-3 right-6 px-3 py-1 bg-blue-600 text-white rounded-full text-[10px] font-black tracking-wider uppercase">
+            <div class="bg-white p-6 sm:p-8 rounded-3xl border-2 border-blue-600 shadow-xl space-y-5 relative card-lift">
+                <div class="absolute -top-3 right-6 px-3 py-1 bg-blue-600 text-white rounded-full text-[10px] font-black tracking-wider uppercase shadow-xs">
                     Empfohlener Standard
                 </div>
 
@@ -866,7 +904,7 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 7. FAQ SECTION                                                            -->
     <!-- ========================================================================= -->
-    <section id="faq" class="py-20 bg-slate-100 border-t border-slate-200">
+    <section id="faq" class="py-20 bg-slate-100 border-t border-slate-200 reveal-on-scroll">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div class="text-center space-y-3 mb-10">
@@ -880,7 +918,7 @@ new class extends Component {
 
             <div class="space-y-3 text-xs">
                 
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs">
+                <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs card-lift">
                     <button wire:click="toggleFaq(0)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
                         <span>Ist die Software auf Smartphones und Tablets auf der Baustelle nutzbar?</span>
                         <span class="text-blue-700 text-base font-bold">{{ $openFaqIndex === 0 ? '−' : '+' }}</span>
@@ -892,7 +930,7 @@ new class extends Component {
                     @endif
                 </div>
 
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs">
+                <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs card-lift">
                     <button wire:click="toggleFaq(1)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
                         <span>Wie funktioniert die Nachtragserstellung nach VOB/B § 2?</span>
                         <span class="text-blue-700 text-base font-bold">{{ $openFaqIndex === 1 ? '−' : '+' }}</span>
@@ -904,7 +942,7 @@ new class extends Component {
                     @endif
                 </div>
 
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs">
+                <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs card-lift">
                     <button wire:click="toggleFaq(2)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
                         <span>Kann mein Steuerberater die Rechnungen und Kosten direkt importieren?</span>
                         <span class="text-blue-700 text-base font-bold">{{ $openFaqIndex === 2 ? '−' : '+' }}</span>
@@ -916,7 +954,7 @@ new class extends Component {
                     @endif
                 </div>
 
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs">
+                <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs card-lift">
                     <button wire:click="toggleFaq(3)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
                         <span>Können wir das System unverbindlich testen?</span>
                         <span class="text-blue-700 text-base font-bold">{{ $openFaqIndex === 3 ? '−' : '+' }}</span>
@@ -936,7 +974,7 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 8. BIG CTA BOTTOM BANNER                                                  -->
     <!-- ========================================================================= -->
-    <section class="py-20 relative overflow-hidden bg-white border-t border-slate-200">
+    <section class="py-20 relative overflow-hidden bg-white border-t border-slate-200 reveal-on-scroll">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <div class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white p-8 sm:p-12 rounded-3xl shadow-2xl space-y-6">
                 <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight">

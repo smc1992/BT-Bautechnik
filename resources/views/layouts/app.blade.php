@@ -7,11 +7,15 @@
 
         <title>{{ config('app.name', 'BT Bautechnik') }} - Cockpit & Controlling</title>
 
-        <!-- PWA Manifest & Theme -->
-        <link rel="manifest" href="/manifest.json">
-        <meta name="theme-color" content="#2563eb">
+        <!-- PWA Manifest & Icons -->
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v=4">
+        <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('icon-192.png') }}?v=4">
+        <link rel="icon" type="image/png" sizes="512x512" href="{{ asset('icon-512.png') }}?v=4">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v=4">
+        <link rel="manifest" href="{{ asset('manifest.json') }}?v=4">
+        <meta name="theme-color" content="#1d4ed8">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
         <meta name="apple-mobile-web-app-title" content="BT Bautechnik">
 
         <!-- Fonts -->

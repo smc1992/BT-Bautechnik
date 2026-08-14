@@ -163,7 +163,7 @@ new class extends Component {
     </header>
 
     <!-- ========================================================================= -->
-    <!-- 2. HERO SECTION WITH CRISP LIGHT ARCHITECTURAL AESTHETICS                -->
+    <!-- 2. HERO SECTION (MARTEX DEMO-2 SAAS STYLE MIT KPI STATS & COCKPIT)       -->
     <!-- ========================================================================= -->
     <section class="relative pt-12 pb-20 lg:pt-20 lg:pb-28 overflow-hidden">
         
@@ -187,7 +187,7 @@ new class extends Component {
 
                 <!-- Subtitle with Construction Authenticity -->
                 <p class="text-sm sm:text-lg text-slate-600 font-medium max-w-3xl mx-auto leading-relaxed">
-                    Wir sind selbst aktives Bauunternehmen in Bayern. Wir kennen den Zeitdruck, unübersichtliche Aufmaße und vergessene Nachträge nach VOB/B § 2. Das <strong>BT Bautechnik Cockpit</strong> vereint Baustellen-Steuerung, 360° Kunden-Zentrale, digitale VOB/C Aufmaße, KI-Bautagebücher und DATEV-Finanzen in einer blitzschnellen Lösung.
+                    Wir sind selbst ein aktives Bauunternehmen in Bayern. Wir kennen den Zeitdruck, unübersichtliche Aufmaße und vergessene Nachträge nach VOB/B § 2. Das <strong>BT Bautechnik Cockpit</strong> vereint Baustellen-Steuerung, 360° Kunden-Zentrale, digitale VOB/C Aufmaße, KI-Bautagebücher und DATEV-Finanzen in einer blitzschnellen Lösung.
                 </p>
 
                 <!-- Hero CTAs with Glow and Hover Elevation -->
@@ -202,23 +202,22 @@ new class extends Component {
                     </a>
                 </div>
 
-                <!-- Trust Badges Strip (Light Theme with Card Lift) -->
-                <div class="pt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs">
-                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs card-lift hover:border-blue-400 group cursor-default">
-                        <span class="text-blue-700 font-black block text-sm group-hover:scale-110 transition-transform">⚖️ VOB/B § 2 & VOB/C</span>
-                        <span class="text-slate-500 text-[11px] font-semibold">Rechtssichere Nachträge & Aufmaße</span>
+                <!-- Martex Demo-2 KPI Stat Badges in Hero -->
+                <div class="pt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+                    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm card-lift text-center space-y-1">
+                        <div class="text-3xl sm:text-4xl font-black text-blue-700 tracking-tight">85%</div>
+                        <div class="text-xs font-black text-slate-900">Zeitersparnis Doku</div>
+                        <div class="text-[11px] text-slate-500 font-medium">Bautagebuch & Wetter vor Ort</div>
                     </div>
-                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs card-lift hover:border-amber-400 group cursor-default">
-                        <span class="text-amber-700 font-black block text-sm group-hover:scale-110 transition-transform">🎙️ KI-Sprachmemo</span>
-                        <span class="text-slate-500 text-[11px] font-semibold">Bautagebuch in 30 Sek. vor Ort</span>
+                    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm card-lift text-center space-y-1">
+                        <div class="text-3xl sm:text-4xl font-black text-amber-600 tracking-tight">+14.800 €</div>
+                        <div class="text-xs font-black text-slate-900">Nachtragserlöse</div>
+                        <div class="text-[11px] text-slate-500 font-medium">Rechtssicher nach VOB/B § 2</div>
                     </div>
-                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs card-lift hover:border-emerald-400 group cursor-default">
-                        <span class="text-emerald-700 font-black block text-sm group-hover:scale-110 transition-transform">📊 DATEV SKR03/04</span>
-                        <span class="text-slate-500 text-[11px] font-semibold">Buchungsstapel für Steuerberater</span>
-                    </div>
-                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs card-lift hover:border-cyan-400 group cursor-default">
-                        <span class="text-cyan-700 font-black block text-sm group-hover:scale-110 transition-transform">📱 Mobile PWA</span>
-                        <span class="text-slate-500 text-[11px] font-semibold">Für Smartphone & Baustellen-Tablet</span>
+                    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm card-lift text-center space-y-1">
+                        <div class="text-3xl sm:text-4xl font-black text-emerald-600 tracking-tight">100%</div>
+                        <div class="text-xs font-black text-slate-900">DATEV & DSGVO</div>
+                        <div class="text-[11px] text-slate-500 font-medium">SKR03/04 & § 13b UStG</div>
                     </div>
                 </div>
 
@@ -328,6 +327,115 @@ new class extends Component {
                         </div>
                     </div>
                 </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- MARTEX STYLE COMPLIANCE & STANDARDS TRUST BAR                             -->
+    <!-- ========================================================================= -->
+    <div class="border-y border-slate-200 bg-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap items-center justify-around gap-6 text-xs text-slate-500 font-bold">
+                <div class="flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center text-sm font-black">⚖️</span>
+                    <span>VOB/B § 2 & VOB/C Konform</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-sm font-black">📊</span>
+                    <span>DATEV SKR03 / SKR04 Export</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center text-sm font-black">📐</span>
+                    <span>DIN 18299 / DIN 18336 Aufmaß</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-sm font-black">🇩🇪</span>
+                    <span>100% DSGVO & Deutsche Server</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-700 flex items-center justify-center text-sm font-black">📱</span>
+                    <span>PWA Offline-Fähig</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MARTEX DEMO-2 SIGNATURE 3-STEP PROCESS SECTION WITH CONNECTING LINE       -->
+    <!-- ========================================================================= -->
+    <section class="py-24 bg-slate-50 border-b border-slate-200 relative overflow-hidden reveal-on-scroll">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-3 mb-16">
+                <span class="px-4 py-1.5 rounded-full bg-blue-100 text-blue-800 text-xs font-black uppercase border border-blue-200">
+                    ⚡ Einfacher Workflow
+                </span>
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
+                    In 3 Schritten zur vollständigen Baustellen-Kontrolle
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-600 font-medium">
+                    Keine monatelange Einführung. Sofort startklar auf jedem Smartphone & Tablet.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 relative">
+                
+                <!-- Step 1 -->
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm card-lift relative space-y-4">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white font-black text-lg flex items-center justify-center shadow-md shadow-blue-500/30">
+                        1
+                    </div>
+                    <h3 class="text-lg font-black text-slate-900">
+                        Kunde & Baustelle anlegen
+                    </h3>
+                    <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                        Erfassen Sie das Bauvorhaben mit Adresse, Bauherrn, KW-Bauzeitenplan und Budget in unter 30 Sekunden.
+                    </p>
+                    <div class="pt-2">
+                        <span class="px-3 py-1 rounded-lg bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-200">
+                            ⏱️ 30 Sekunden Aufwand
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm card-lift relative space-y-4">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white font-black text-lg flex items-center justify-center shadow-md shadow-amber-500/30">
+                        2
+                    </div>
+                    <h3 class="text-lg font-black text-slate-900">
+                        Vor Ort per Sprachmemo erfassen
+                    </h3>
+                    <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                        Der Bauleiter spricht 30 Sekunden Tagesbericht ein. Die KI ergänzt automatisch Wetterdaten, Fotos und Gewerke.
+                    </p>
+                    <div class="pt-2">
+                        <span class="px-3 py-1 rounded-lg bg-amber-50 text-amber-800 text-[10px] font-bold border border-amber-200">
+                            🎙️ Whisper KI-Sprachmemo
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm card-lift relative space-y-4">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white font-black text-lg flex items-center justify-center shadow-md shadow-emerald-500/30">
+                        3
+                    </div>
+                    <h3 class="text-lg font-black text-slate-900">
+                        1-Klick Nachtrag & DATEV Export
+                    </h3>
+                    <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                        VOB/B Nachtragsangebote mit offiziellem Briefkopf als PDF versenden und Buchungsstapel direkt an den Steuerberater übergeben.
+                    </p>
+                    <div class="pt-2">
+                        <span class="px-3 py-1 rounded-lg bg-emerald-50 text-emerald-800 text-[10px] font-bold border border-emerald-200">
+                            📊 DATEV SKR03/04 & VOB/B § 2
+                        </span>
+                    </div>
+                </div>
+
             </div>
 
         </div>

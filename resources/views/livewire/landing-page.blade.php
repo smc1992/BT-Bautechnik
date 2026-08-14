@@ -256,22 +256,23 @@ new class extends Component {
     </header>
 
     <!-- ========================================================================= -->
+    <!-- ========================================================================= -->
     <!-- 2. HERO SECTION (MARTEX DEMO-2 SAAS STYLE MIT KPI STATS & COCKPIT)       -->
     <!-- ========================================================================= -->
-    <section class="relative pt-12 pb-20 lg:pt-20 lg:pb-28 overflow-hidden">
+    <section class="relative pt-8 pb-14 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-28 overflow-hidden">
         
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             
-            <div class="text-center max-w-4xl mx-auto space-y-6">
+            <div class="text-center max-w-4xl mx-auto space-y-4 sm:space-y-6">
                 
                 <!-- Origin Badge with Micro-Animation Float -->
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-amber-300 text-amber-900 text-xs font-black shadow-xs animate-float">
-                    <span class="flex h-2 w-2 rounded-full bg-amber-500 animate-ping"></span>
-                    <span>🏗️ Entwickelt von der BT Bautechnik UG – Aus der echten Baupraxis für Bauträger & Bauleiter</span>
+                <div class="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-white border border-amber-300 text-amber-900 text-[10.5px] sm:text-xs font-black shadow-xs animate-float text-left sm:text-center leading-snug">
+                    <span class="flex h-2 w-2 rounded-full bg-amber-500 animate-ping shrink-0"></span>
+                    <span>🏗️ Entwickelt von der BT Bautechnik UG – Aus der Baupraxis für Bauträger & Bauleiter</span>
                 </div>
 
                 <!-- Main Hero Headline -->
-                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950 leading-tight sm:leading-[1.12]">
+                <h1 class="text-2xl sm:text-4xl lg:text-6xl font-black tracking-tight text-slate-950 leading-tight sm:leading-[1.12]">
                     Die Bauleiter- & Bauträger-Software,<br>
                     <span class="bg-gradient-to-r from-blue-700 via-indigo-700 to-amber-600 bg-clip-text text-transparent">
                         die direkt auf der Baustelle geboren wurde.
@@ -279,75 +280,77 @@ new class extends Component {
                 </h1>
 
                 <!-- Subtitle with Construction Authenticity -->
-                <p class="text-sm sm:text-lg text-slate-600 font-medium max-w-3xl mx-auto leading-relaxed">
+                <p class="text-xs sm:text-base lg:text-lg text-slate-600 font-medium max-w-3xl mx-auto leading-relaxed">
                     Wir sind selbst ein aktives Bauunternehmen in Bayern. Wir kennen den Zeitdruck, unübersichtliche Aufmaße und vergessene Nachträge nach VOB/B § 2. Das <strong>BT Bautechnik Cockpit</strong> vereint Baustellen-Steuerung, 360° Kunden-Zentrale, digitale VOB/C Aufmaße, KI-Bautagebücher und DATEV-Finanzen in einer blitzschnellen Lösung.
                 </p>
 
                 <!-- Hero CTAs with Glow and Hover Elevation -->
-                <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <button wire:click="openDemoModal" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-700 via-indigo-700 to-amber-600 hover:from-blue-600 hover:to-amber-500 text-white font-black text-sm rounded-2xl shadow-xl shadow-blue-600/20 hover:shadow-amber-500/25 transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2 btn-press">
+                <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                    <button wire:click="openDemoModal" class="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 bg-gradient-to-r from-blue-700 via-indigo-700 to-amber-600 hover:from-blue-600 hover:to-amber-500 text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-xl shadow-blue-600/20 hover:shadow-amber-500/25 transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2 btn-press">
                         <span>🚀 Kostenlose Live-Demo vereinbaren</span>
                         <span class="inline-block transition-transform group-hover:translate-x-1">→</span>
                     </button>
 
-                    <a href="https://wa.me/4917612345678?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20gerne%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="w-full sm:w-auto px-6 py-4 bg-white hover:bg-slate-50 text-slate-800 font-black text-sm rounded-2xl border border-slate-300 shadow-sm transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                    <a href="https://wa.me/4917612345678?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20gerne%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="w-full sm:w-auto px-5 sm:px-6 py-3.5 sm:py-4 bg-white hover:bg-slate-50 text-slate-800 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl border border-slate-300 shadow-sm transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
                         <span>💬 Direkt per WhatsApp anfragen</span>
                     </a>
                 </div>
 
                 <!-- Lexend Eight Style 5-Star Builder Trust Badge -->
-                <div class="pt-3 flex items-center justify-center gap-3">
+                <div class="pt-2 sm:pt-3 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-center">
                     <div class="flex items-center text-amber-400 text-xs">
                         <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
                     </div>
-                    <span class="text-xs text-slate-600 font-bold">
+                    <span class="text-[11px] sm:text-xs text-slate-600 font-bold">
                         <strong class="text-slate-900">4.9 / 5.0</strong> von über 120 Bauleitern & Bauträgern geschätzt
                     </span>
                     <span class="hidden sm:inline-block text-slate-300">•</span>
-                    <span class="hidden sm:inline-flex items-center gap-1 text-xs text-emerald-700 font-bold">
+                    <span class="inline-flex items-center gap-1 text-[11px] sm:text-xs text-emerald-700 font-bold">
                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Keine Kreditkarte erforderlich
                     </span>
                 </div>
 
                 <!-- Martex Demo-2 KPI Stat Badges in Hero -->
-                <div class="pt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
-                    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm card-lift text-center space-y-1">
-                        <div class="text-3xl sm:text-4xl font-black text-blue-700 tracking-tight">85%</div>
+                <div class="pt-4 sm:pt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-3xl mx-auto">
+                    <div class="bg-white p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm card-lift text-center space-y-1">
+                        <div class="text-2xl sm:text-4xl font-black text-blue-700 tracking-tight">85%</div>
                         <div class="text-xs font-black text-slate-900">Zeitersparnis Doku</div>
-                        <div class="text-[11px] text-slate-500 font-medium">Bautagebuch & Wetter vor Ort</div>
+                        <div class="text-[10.5px] sm:text-[11px] text-slate-500 font-medium">Bautagebuch & Wetter vor Ort</div>
                     </div>
-                    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm card-lift text-center space-y-1">
-                        <div class="text-3xl sm:text-4xl font-black text-amber-600 tracking-tight">+14.800 €</div>
+                    <div class="bg-white p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm card-lift text-center space-y-1">
+                        <div class="text-2xl sm:text-4xl font-black text-amber-600 tracking-tight">+14.800 €</div>
                         <div class="text-xs font-black text-slate-900">Nachtragserlöse</div>
-                        <div class="text-[11px] text-slate-500 font-medium">Rechtssicher nach VOB/B § 2</div>
+                        <div class="text-[10.5px] sm:text-[11px] text-slate-500 font-medium">Rechtssicher nach VOB/B § 2</div>
                     </div>
-                    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm card-lift text-center space-y-1">
-                        <div class="text-3xl sm:text-4xl font-black text-emerald-600 tracking-tight">100%</div>
+                    <div class="bg-white p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm card-lift text-center space-y-1">
+                        <div class="text-2xl sm:text-4xl font-black text-emerald-600 tracking-tight">100%</div>
                         <div class="text-xs font-black text-slate-900">DATEV & DSGVO</div>
-                        <div class="text-[11px] text-slate-500 font-medium">SKR03/04 & § 13b UStG</div>
+                        <div class="text-[10.5px] sm:text-[11px] text-slate-500 font-medium">SKR03/04 & § 13b UStG</div>
                     </div>
                 </div>
 
             </div>
 
             <!-- Crisp Architectural Cockpit Preview Card (High Contrast with Real Construction Photography) -->
-            <div class="mt-14 max-w-6xl mx-auto rounded-3xl p-3 sm:p-4 bg-gradient-to-b from-blue-100 via-slate-200 to-amber-50 border border-slate-300 shadow-2xl reveal-on-scroll">
-                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-inner">
+            <div class="mt-10 sm:mt-14 max-w-6xl mx-auto rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 bg-gradient-to-b from-blue-100 via-slate-200 to-amber-50 border border-slate-300 shadow-2xl reveal-on-scroll">
+                <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200 overflow-hidden shadow-inner">
                     
                     <!-- Window bar -->
-                    <div class="px-5 py-3.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-white">
-                        <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-rose-500"></span>
-                            <span class="w-3 h-3 rounded-full bg-amber-500"></span>
-                            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-                            <span class="text-xs text-slate-300 font-mono ml-2">bautechnik-bt.de / bauleiter-cockpit / live</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/30 text-amber-300 border border-amber-400/40">
-                                BT BAUTECHNIK UG
+                    <div class="px-3.5 sm:px-5 py-2.5 sm:py-3.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-white">
+                        <div class="flex items-center gap-1.5 sm:gap-2">
+                            <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-rose-500"></span>
+                            <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-amber-500"></span>
+                            <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500"></span>
+                            <span class="text-[11px] sm:text-xs text-slate-300 font-mono ml-1 sm:ml-2">
+                                bautechnik-bt.de<span class="hidden sm:inline"> / bauleiter-cockpit / live</span>
                             </span>
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/30 text-emerald-300 border border-emerald-400/40 animate-pulse">
-                                LIVE COCKPIT
+                        </div>
+                        <div class="flex items-center gap-1.5 sm:gap-2">
+                            <span class="hidden xs:inline-block px-2 sm:px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-black bg-amber-500/30 text-amber-300 border border-amber-400/40">
+                                BT BAUTECHNIK
+                            </span>
+                            <span class="px-2 sm:px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-black bg-emerald-500/30 text-emerald-300 border border-emerald-400/40 animate-pulse">
+                                LIVE
                             </span>
                         </div>
                     </div>
@@ -359,74 +362,74 @@ new class extends Component {
                         <div class="lg:col-span-5 relative overflow-hidden border-b lg:border-b-0 lg:border-r border-slate-200 group">
                             <img src="{{ asset('images/bauleiter-tablet-hero.jpg') }}" 
                                  alt="Bauleiter vor Ort mit digitalem BT Bautechnik Tablet Cockpit" 
-                                 class="w-full h-full object-cover min-h-[300px] lg:min-h-[440px] group-hover:scale-105 transition-transform duration-700">
+                                 class="w-full h-56 sm:h-72 lg:h-full object-cover min-h-[220px] lg:min-h-[440px] group-hover:scale-105 transition-transform duration-700">
                             
                             <!-- Floating Glass Badge over photo -->
-                            <div class="absolute bottom-4 left-4 right-4 bg-slate-950/85 backdrop-blur-md text-white p-3.5 rounded-2xl border border-white/20 shadow-lg">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                                    <span class="text-xs font-black text-amber-300 uppercase tracking-wider">Echte Baustelle vor Ort</span>
+                            <div class="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 bg-slate-950/85 backdrop-blur-md text-white p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-white/20 shadow-lg">
+                                <div class="flex items-center gap-2 mb-0.5 sm:mb-1">
+                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                    <span class="text-[10px] sm:text-xs font-black text-amber-300 uppercase tracking-wider">Echte Baustelle vor Ort</span>
                                 </div>
-                                <p class="text-xs text-slate-200 font-medium">
-                                    Bautagesberichte, digitale VOB/C Aufmaße und Mängelerfassung in Echtzeit auf dem Tablet.
+                                <p class="text-[11px] sm:text-xs text-slate-200 font-medium leading-relaxed">
+                                    Bautagesberichte, digitale VOB/C Aufmaße und Mängelerfassung in Echtzeit auf dem Smartphone & Tablet.
                                 </p>
                             </div>
                         </div>
 
                         <!-- Right: Interactive Cockpit KPIs & Status -->
-                        <div class="lg:col-span-7 p-5 sm:p-7 space-y-5 flex flex-col justify-between">
+                        <div class="lg:col-span-7 p-3.5 sm:p-7 space-y-3.5 sm:space-y-5 flex flex-col justify-between">
                             
                             <!-- Project Banner Header -->
-                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-3 bg-white p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200 shadow-xs">
                                 <div>
-                                    <span class="text-[10px] font-mono text-blue-700 font-black uppercase tracking-wider">BAUVORHABEN #2026-081</span>
-                                    <h3 class="text-base font-black text-slate-950">WEG Maximilianstraße 44 – Tiefgaragenabdichtung</h3>
-                                    <p class="text-xs text-slate-500 font-medium">Auftraggeber / Bauherr: Hausverwaltung Müller & Partner GmbH</p>
+                                    <span class="text-[9px] sm:text-[10px] font-mono text-blue-700 font-black uppercase tracking-wider">BAUVORHABEN #2026-081</span>
+                                    <h3 class="text-sm sm:text-base font-black text-slate-950">WEG Maximilianstraße 44 – Tiefgaragenabdichtung</h3>
+                                    <p class="text-[11px] sm:text-xs text-slate-500 font-medium">Auftraggeber / Bauherr: Hausverwaltung Müller & Partner GmbH</p>
                                 </div>
                                 <div class="flex items-center gap-2 shrink-0">
-                                    <span class="px-3 py-1 rounded-xl bg-blue-50 text-blue-800 border border-blue-200 font-black text-xs">
+                                    <span class="px-2.5 py-1 rounded-lg sm:rounded-xl bg-blue-50 text-blue-800 border border-blue-200 font-black text-[10px] sm:text-xs">
                                         KW 32 – 38
                                     </span>
-                                    <span class="px-3 py-1 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 font-black text-xs flex items-center gap-1">
-                                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Im Plan
+                                    <span class="px-2.5 py-1 rounded-lg sm:rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 font-black text-[10px] sm:text-xs flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Im Plan
                                     </span>
                                 </div>
                             </div>
 
                             <!-- Progress & Budget Cards -->
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs card-lift">
-                                    <span class="text-[10px] text-slate-500 font-bold uppercase">Geplantes Budget</span>
-                                    <p class="text-base font-black text-slate-900 mt-0.5">85.000,00 €</p>
-                                    <div class="w-full bg-slate-100 h-2 rounded-full mt-2 overflow-hidden">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+                                <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs card-lift">
+                                    <span class="text-[9px] sm:text-[10px] text-slate-500 font-bold uppercase">Geplantes Budget</span>
+                                    <p class="text-sm sm:text-base font-black text-slate-900 mt-0.5">85.000,00 €</p>
+                                    <div class="w-full bg-slate-100 h-1.5 sm:h-2 rounded-full mt-2 overflow-hidden">
                                         <div class="bg-blue-600 h-full w-[65%]"></div>
                                     </div>
                                 </div>
-                                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs card-lift">
-                                    <span class="text-[10px] text-slate-500 font-bold uppercase">Nachträge (VOB/B)</span>
-                                    <p class="text-base font-black text-amber-700 mt-0.5">+ 12.450,00 €</p>
-                                    <span class="text-[10px] text-emerald-700 font-bold">3 freigegeben, 1 offen</span>
+                                <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs card-lift">
+                                    <span class="text-[9px] sm:text-[10px] text-slate-500 font-bold uppercase">Nachträge (VOB/B)</span>
+                                    <p class="text-sm sm:text-base font-black text-amber-700 mt-0.5">+ 12.450,00 €</p>
+                                    <span class="text-[9.5px] sm:text-[10px] text-emerald-700 font-bold">3 freigegeben, 1 offen</span>
                                 </div>
-                                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs card-lift">
-                                    <span class="text-[10px] text-slate-500 font-bold uppercase">Aufmaß (VOB/C)</span>
-                                    <p class="text-base font-black text-blue-700 mt-0.5">620 m² / 750 m²</p>
-                                    <span class="text-[10px] text-slate-600 font-bold">82% fertiggestellt</span>
+                                <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs card-lift">
+                                    <span class="text-[9px] sm:text-[10px] text-slate-500 font-bold uppercase">Aufmaß (VOB/C)</span>
+                                    <p class="text-sm sm:text-base font-black text-blue-700 mt-0.5">620 m² / 750 m²</p>
+                                    <span class="text-[9.5px] sm:text-[10px] text-slate-600 font-bold">82% fertiggestellt</span>
                                 </div>
                             </div>
 
                             <!-- Mini Sub Action Bar -->
-                            <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-2 text-xs">
-                                <div class="flex items-center gap-2 text-slate-700 font-medium">
-                                    <span>🎙️ Bautagesbericht heute per Sprachmemo erfasst</span>
+                            <div class="p-2.5 sm:p-3 bg-white rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
+                                <div class="flex items-center gap-1.5 text-slate-700 font-medium text-[11px] sm:text-xs">
+                                    <span>🎙️ Bautagesbericht heute per Sprachmemo</span>
                                     <span class="text-slate-300">•</span>
-                                    <span class="text-slate-600">4 Monteure vor Ort</span>
+                                    <span class="text-slate-600">4 Monteure</span>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg font-bold text-[11px]">
-                                        📑 Nachtrags-PDF erzeugt
+                                <div class="flex items-center gap-1.5 w-full sm:w-auto justify-end">
+                                    <span class="px-2 py-0.5 sm:py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg font-bold text-[10px] sm:text-[11px]">
+                                        📑 Nachtrags-PDF
                                     </span>
-                                    <span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg font-bold text-[11px]">
-                                        📐 Aufmaß exportiert
+                                    <span class="px-2 py-0.5 sm:py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg font-bold text-[10px] sm:text-[11px]">
+                                        📐 Aufmaß
                                     </span>
                                 </div>
                             </div>
@@ -442,28 +445,28 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- MARTEX STYLE COMPLIANCE & STANDARDS TRUST BAR                             -->
     <!-- ========================================================================= -->
-    <div class="border-y border-slate-200 bg-white py-8">
+    <div class="border-y border-slate-200 bg-white py-6 sm:py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-wrap items-center justify-around gap-6 text-xs text-slate-500 font-bold">
-                <div class="flex items-center gap-2">
-                    <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center text-sm font-black">⚖️</span>
-                    <span>VOB/B § 2 & VOB/C Konform</span>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6 text-[11px] sm:text-xs text-slate-600 font-bold">
+                <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 sm:bg-transparent">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center text-xs sm:text-sm font-black shrink-0">⚖️</span>
+                    <span class="leading-tight">VOB/B § 2 & VOB/C</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-sm font-black">📊</span>
-                    <span>DATEV SKR03 / SKR04 Export</span>
+                <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 sm:bg-transparent">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-xs sm:text-sm font-black shrink-0">📊</span>
+                    <span class="leading-tight">DATEV SKR03 / SKR04</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center text-sm font-black">📐</span>
-                    <span>DIN 18299 / DIN 18336 Aufmaß</span>
+                <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 sm:bg-transparent">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center text-xs sm:text-sm font-black shrink-0">📐</span>
+                    <span class="leading-tight">DIN 18299 / 18533</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-sm font-black">🇩🇪</span>
-                    <span>100% DSGVO & Deutsche Server</span>
+                <div class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 sm:bg-transparent">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-xs sm:text-sm font-black shrink-0">🇩🇪</span>
+                    <span class="leading-tight">100% DSGVO (DE)</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-700 flex items-center justify-center text-sm font-black">📱</span>
-                    <span>PWA Offline-Fähig</span>
+                <div class="col-span-2 sm:col-span-1 flex items-center justify-center sm:justify-start gap-2 p-2 rounded-xl bg-slate-50 sm:bg-transparent">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-cyan-50 text-cyan-700 flex items-center justify-center text-xs sm:text-sm font-black shrink-0">📱</span>
+                    <span class="leading-tight">PWA Offline-Fähig</span>
                 </div>
             </div>
         </div>
@@ -472,14 +475,14 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- MARTEX DEMO-2 SIGNATURE 3-STEP PROCESS SECTION WITH CONNECTING LINE       -->
     <!-- ========================================================================= -->
-    <section class="py-24 bg-slate-50 border-b border-slate-200 relative overflow-hidden reveal-on-scroll">
+    <section class="py-14 sm:py-24 bg-slate-50 border-b border-slate-200 relative overflow-hidden reveal-on-scroll">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            <div class="text-center max-w-3xl mx-auto space-y-3 mb-16">
-                <span class="px-4 py-1.5 rounded-full bg-blue-100 text-blue-800 text-xs font-black uppercase border border-blue-200">
+            <div class="text-center max-w-3xl mx-auto space-y-2 sm:space-y-3 mb-10 sm:mb-16">
+                <span class="px-3.5 py-1 rounded-full bg-blue-100 text-blue-800 text-[10.5px] sm:text-xs font-black uppercase border border-blue-200">
                     ⚡ Einfacher Workflow
                 </span>
-                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
+                <h2 class="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
                     In 3 Schritten zur vollständigen Baustellen-Kontrolle
                 </h2>
                 <p class="text-xs sm:text-sm text-slate-600 font-medium">
@@ -487,57 +490,57 @@ new class extends Component {
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 relative">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 relative">
                 
                 <!-- Step 1 -->
-                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm card-lift relative space-y-4">
-                    <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white font-black text-lg flex items-center justify-center shadow-md shadow-blue-500/30">
+                <div class="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm card-lift relative space-y-3.5 sm:space-y-4">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-blue-600 text-white font-black text-base sm:text-lg flex items-center justify-center shadow-md shadow-blue-500/30">
                         1
                     </div>
-                    <h3 class="text-lg font-black text-slate-900">
+                    <h3 class="text-base sm:text-lg font-black text-slate-900">
                         Kunde & Baustelle anlegen
                     </h3>
                     <p class="text-xs text-slate-600 leading-relaxed font-medium">
                         Erfassen Sie das Bauvorhaben mit Adresse, Bauherrn, KW-Bauzeitenplan und Budget in unter 30 Sekunden.
                     </p>
-                    <div class="pt-2">
-                        <span class="px-3 py-1 rounded-lg bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-200">
+                    <div class="pt-1 sm:pt-2">
+                        <span class="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-200">
                             ⏱️ 30 Sekunden Aufwand
                         </span>
                     </div>
                 </div>
 
                 <!-- Step 2 -->
-                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm card-lift relative space-y-4">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white font-black text-lg flex items-center justify-center shadow-md shadow-amber-500/30">
+                <div class="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm card-lift relative space-y-3.5 sm:space-y-4">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-500 text-white font-black text-base sm:text-lg flex items-center justify-center shadow-md shadow-amber-500/30">
                         2
                     </div>
-                    <h3 class="text-lg font-black text-slate-900">
+                    <h3 class="text-base sm:text-lg font-black text-slate-900">
                         Vor Ort per Sprachmemo erfassen
                     </h3>
                     <p class="text-xs text-slate-600 leading-relaxed font-medium">
                         Der Bauleiter spricht 30 Sekunden Tagesbericht ein. Die KI ergänzt automatisch Wetterdaten, Fotos und Gewerke.
                     </p>
-                    <div class="pt-2">
-                        <span class="px-3 py-1 rounded-lg bg-amber-50 text-amber-800 text-[10px] font-bold border border-amber-200">
+                    <div class="pt-1 sm:pt-2">
+                        <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 text-[10px] font-bold border border-amber-200">
                             🎙️ Whisper KI-Sprachmemo
                         </span>
                     </div>
                 </div>
 
                 <!-- Step 3 -->
-                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm card-lift relative space-y-4">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white font-black text-lg flex items-center justify-center shadow-md shadow-emerald-500/30">
+                <div class="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm card-lift relative space-y-3.5 sm:space-y-4">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-600 text-white font-black text-base sm:text-lg flex items-center justify-center shadow-md shadow-emerald-500/30">
                         3
                     </div>
-                    <h3 class="text-lg font-black text-slate-900">
+                    <h3 class="text-base sm:text-lg font-black text-slate-900">
                         1-Klick Nachtrag & DATEV Export
                     </h3>
                     <p class="text-xs text-slate-600 leading-relaxed font-medium">
                         VOB/B Nachtragsangebote mit offiziellem Briefkopf als PDF versenden und Buchungsstapel direkt an den Steuerberater übergeben.
                     </p>
-                    <div class="pt-2">
-                        <span class="px-3 py-1 rounded-lg bg-emerald-50 text-emerald-800 text-[10px] font-bold border border-emerald-200">
+                    <div class="pt-1 sm:pt-2">
+                        <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 text-[10px] font-bold border border-emerald-200">
                             📊 DATEV SKR03/04 & VOB/B § 2
                         </span>
                     </div>
@@ -545,13 +548,16 @@ new class extends Component {
 
             </div>
 
+            </div>
+
         </div>
     </section>
 
     <!-- ========================================================================= -->
+    <!-- ========================================================================= -->
     <!-- 3. DIE STORY: VON DER BRANCHE FÜR DIE BRANCHE                              -->
     <!-- ========================================================================= -->
-    <section id="story" class="py-24 bg-gradient-to-b from-white via-slate-50/50 to-white border-y border-slate-200/90 relative overflow-hidden">
+    <section id="story" class="py-14 sm:py-24 bg-gradient-to-b from-white via-slate-50/50 to-white border-y border-slate-200/90 relative overflow-hidden">
         
         <!-- Background Ambient Glow -->
         <div class="absolute top-1/2 -left-40 w-96 h-96 bg-blue-100/40 rounded-full blur-3xl pointer-events-none"></div>
@@ -560,46 +566,46 @@ new class extends Component {
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             
             <!-- Section Header -->
-            <div class="max-w-3xl mb-14 space-y-3 reveal-on-scroll">
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-300 text-amber-900 text-xs font-black uppercase shadow-2xs">
+            <div class="max-w-3xl mb-10 sm:mb-14 space-y-3 reveal-on-scroll">
+                <div class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-amber-50 border border-amber-300 text-amber-900 text-[10.5px] sm:text-xs font-black uppercase shadow-2xs">
                     <span class="text-sm">🧱</span>
-                    <span>Aus der echten Baupraxis – Für Bauträger, Generalübernehmer & Bauleiter</span>
+                    <span>Aus der Praxis – Für Bauträger, GU & Bauleiter</span>
                 </div>
-                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight leading-tight">
+                <h2 class="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight leading-tight">
                     Wir bauen selbst.<br>
                     <span class="bg-gradient-to-r from-blue-700 via-indigo-700 to-amber-600 bg-clip-text text-transparent">
                         Wir kennen jeden Engpass auf der Baustelle.
                     </span>
                 </h2>
-                <p class="text-sm sm:text-base text-slate-600 font-medium leading-relaxed">
+                <p class="text-xs sm:text-base text-slate-600 font-medium leading-relaxed">
                     Hinter dieser Lösung steht kein reines Softwarehaus, sondern die <strong>BT Bautechnik UG (haftungsbeschränkt)</strong> mit Sitz in Berching (Bayern). Jede Funktion löst ein reales Problem, das wir selbst auf unseren Baustellen erlebt haben:
                 </p>
             </div>
 
             <!-- Bento Grid Showcase: 3 Interactive Problem/Solution Cards (Left) & Photo + 4 Core Cards (Right) -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
                 
                 <!-- Left Column: 3 Rich Problem -> Solution Cards (6 cols) -->
-                <div class="lg:col-span-6 space-y-5 reveal-on-scroll">
+                <div class="lg:col-span-6 space-y-4 sm:space-y-5 reveal-on-scroll">
                     
                     <!-- Card 1: Nachträge -->
-                    <div class="lexend-bento-card p-6 sm:p-8 space-y-4 group">
+                    <div class="lexend-bento-card p-5 sm:p-8 rounded-2xl sm:rounded-3xl space-y-3.5 sm:space-y-4 group">
                         <div class="flex items-center justify-between">
-                            <span class="px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
+                            <span class="px-3 py-0.5 sm:py-1 rounded-full text-[9.5px] sm:text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
                                 ⚠️ Das alte Problem
                             </span>
-                            <span class="text-xs font-black text-amber-600 flex items-center gap-1">
+                            <span class="text-[11px] sm:text-xs font-black text-amber-600 flex items-center gap-1">
                                 <span>VOB/B § 2 Abs. 5 & 6</span>
                             </span>
                         </div>
-                        <h3 class="font-black text-slate-900 text-lg group-hover:text-amber-600 transition-colors">
+                        <h3 class="font-black text-slate-900 text-base sm:text-lg group-hover:text-amber-600 transition-colors">
                             Nachträge wurden vergessen oder mündlich verhandelt
                         </h3>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium">
                             Weil Poliere und Bauleiter vor Ort keine Zeit hatten, am PC Angebote zu tippen, blieben berechtigte Mehrleistungen unvergütet.
                         </p>
-                        <div class="pt-3 border-t border-slate-100 flex items-center gap-2.5 text-xs font-bold text-emerald-900 bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200">
-                            <span class="text-lg">✨</span>
+                        <div class="pt-2 sm:pt-3 border-t border-slate-100 flex items-center gap-2.5 text-xs font-bold text-emerald-900 bg-emerald-50/80 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-emerald-200">
+                            <span class="text-base sm:text-lg">✨</span>
                             <span><strong>BT Lösung:</strong> Nachtragsangebot nach § 2 VOB/B mit 2 Klicks vor Ort als PDF erzeugen.</span>
                         </div>
                         <div class="pt-1 flex justify-end">
@@ -611,23 +617,23 @@ new class extends Component {
                     </div>
 
                     <!-- Card 2: Bautagebuch -->
-                    <div class="lexend-bento-card p-6 sm:p-8 space-y-4 group">
+                    <div class="lexend-bento-card p-5 sm:p-8 rounded-2xl sm:rounded-3xl space-y-3.5 sm:space-y-4 group">
                         <div class="flex items-center justify-between">
-                            <span class="px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
+                            <span class="px-3 py-0.5 sm:py-1 rounded-full text-[9.5px] sm:text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
                                 ⚠️ Das alte Problem
                             </span>
-                            <span class="text-xs font-black text-blue-600 flex items-center gap-1">
+                            <span class="text-[11px] sm:text-xs font-black text-blue-600 flex items-center gap-1">
                                 <span>KI-Sprachmemo (Whisper)</span>
                             </span>
                         </div>
-                        <h3 class="font-black text-slate-900 text-lg group-hover:text-blue-700 transition-colors">
+                        <h3 class="font-black text-slate-900 text-base sm:text-lg group-hover:text-blue-700 transition-colors">
                             Mühsame Bautagebücher nach 10 Stunden Arbeit
                         </h3>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium">
                             Niemand tippt abends gern Berichte. Die Folge: Lückenhafte Dokumentation und Beweisnot bei späteren Gewährleistungsstreitigkeiten.
                         </p>
-                        <div class="pt-3 border-t border-slate-100 flex items-center gap-2.5 text-xs font-bold text-blue-900 bg-blue-50/80 p-3.5 rounded-2xl border border-blue-200">
-                            <span class="text-lg">🎙️</span>
+                        <div class="pt-2 sm:pt-3 border-t border-slate-100 flex items-center gap-2.5 text-xs font-bold text-blue-900 bg-blue-50/80 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-blue-200">
+                            <span class="text-base sm:text-lg">🎙️</span>
                             <span><strong>BT Lösung:</strong> 30-Sekunden Sprachmemo einsprechen – KI formuliert fertigen Tagesbericht samt Wetter & Fotos.</span>
                         </div>
                         <div class="pt-1 flex justify-end">
@@ -639,23 +645,23 @@ new class extends Component {
                     </div>
 
                     <!-- Card 3: Steuerberater & Abrechnung -->
-                    <div class="lexend-bento-card p-6 sm:p-8 space-y-4 group">
+                    <div class="lexend-bento-card p-5 sm:p-8 rounded-2xl sm:rounded-3xl space-y-3.5 sm:space-y-4 group">
                         <div class="flex items-center justify-between">
-                            <span class="px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
+                            <span class="px-3 py-0.5 sm:py-1 rounded-full text-[9.5px] sm:text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
                                 ⚠️ Das alte Problem
                             </span>
-                            <span class="text-xs font-black text-emerald-600 flex items-center gap-1">
+                            <span class="text-[11px] sm:text-xs font-black text-emerald-600 flex items-center gap-1">
                                 <span>DATEV SKR03 / SKR04</span>
                             </span>
                         </div>
-                        <h3 class="font-black text-slate-900 text-lg group-hover:text-emerald-700 transition-colors">
+                        <h3 class="font-black text-slate-900 text-base sm:text-lg group-hover:text-emerald-700 transition-colors">
                             Abrechnungs-Chaos & manuelle Buchhaltungs-Übergabe
                         </h3>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium">
                             Belege per Post, fehlende Zuordnung nach § 13b UStG für Nachunternehmer und Verzögerungen beim Monatsabschluss.
                         </p>
-                        <div class="pt-3 border-t border-slate-100 flex items-center gap-2.5 text-xs font-bold text-emerald-900 bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200">
-                            <span class="text-lg">📊</span>
+                        <div class="pt-2 sm:pt-3 border-t border-slate-100 flex items-center gap-2.5 text-xs font-bold text-emerald-900 bg-emerald-50/80 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-emerald-200">
+                            <span class="text-base sm:text-lg">📊</span>
                             <span><strong>BT Lösung:</strong> Fertiger DATEV-Export auf Knopfdruck für Ihren Steuerberater ohne Doppeleingaben.</span>
                         </div>
                         <div class="pt-1 flex justify-end">
@@ -667,7 +673,7 @@ new class extends Component {
                     </div>
 
                     <div class="pt-2">
-                        <button wire:click="openDemoModal" class="w-full py-4 bg-gradient-to-r from-blue-700 via-indigo-700 to-amber-600 hover:from-blue-600 hover:to-amber-500 text-white font-black text-xs sm:text-sm rounded-2xl shadow-lg shadow-blue-600/20 transition cursor-pointer flex items-center justify-center gap-2 btn-press">
+                        <button wire:click="openDemoModal" class="w-full py-3.5 sm:py-4 bg-gradient-to-r from-blue-700 via-indigo-700 to-amber-600 hover:from-blue-600 hover:to-amber-500 text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-lg shadow-blue-600/20 transition cursor-pointer flex items-center justify-center gap-2 btn-press">
                             <span>Lernen Sie die BT Bauleiter-Suite unverbindlich kennen</span>
                             <span>→</span>
                         </button>
@@ -676,32 +682,32 @@ new class extends Component {
                 </div>
 
                 <!-- Right Column: Planning Office Photo + 4 High-Impact Value Cards (6 cols) -->
-                <div class="lg:col-span-6 space-y-6 reveal-on-scroll reveal-delay-200">
+                <div class="lg:col-span-6 space-y-5 sm:space-y-6 reveal-on-scroll reveal-delay-200">
                     
                     <!-- Bauträger Planning Office Image with Floating Badges -->
-                    <div class="relative rounded-3xl overflow-hidden border border-slate-200 shadow-xl group">
+                    <div class="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-200 shadow-xl group">
                         <img src="{{ asset('images/bautraeger-office-cockpit.jpg') }}" 
                              alt="BT Bautechnik Bauträger Planungsbüro & Projektmanagement" 
-                             class="w-full h-72 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-700">
+                             class="w-full h-56 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-700">
                         
                         <!-- Overlay Gradient & Glass Badges -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent flex flex-col justify-between p-6">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent flex flex-col justify-between p-4 sm:p-6">
                             <div class="flex justify-end">
-                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-white/90 backdrop-blur-md text-slate-900 shadow-md border border-white">
+                                <span class="px-2.5 sm:px-3 py-1 rounded-full text-[9.5px] sm:text-[10px] font-black uppercase bg-white/90 backdrop-blur-md text-slate-900 shadow-md border border-white">
                                     📍 Berching, Bayern
                                 </span>
                             </div>
-                            <div class="space-y-1.5">
+                            <div class="space-y-1 sm:space-y-1.5">
                                 <div class="flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                                    <span class="text-xs font-black text-amber-300 uppercase tracking-wider">
+                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                    <span class="text-[10px] sm:text-xs font-black text-amber-300 uppercase tracking-wider">
                                         Praxiseinsatz vor Ort
                                     </span>
                                 </div>
-                                <h4 class="text-base sm:text-lg font-black text-white leading-snug">
+                                <h4 class="text-sm sm:text-lg font-black text-white leading-snug">
                                     Planungsbüro & Baustellen-Zentrale BT Bautechnik UG
                                 </h4>
-                                <p class="text-xs text-slate-200 font-medium">
+                                <p class="text-[11px] sm:text-xs text-slate-200 font-medium">
                                     Wir testen und optimieren jedes Release täglich auf unseren eigenen Bauvorhaben.
                                 </p>
                             </div>
@@ -709,20 +715,20 @@ new class extends Component {
                     </div>
 
                     <!-- 4 Generously Padded, High-Contrast Lexend Bento Feature Cards -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                         
                         <!-- Card 1 -->
-                        <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group cursor-default">
+                        <div class="lexend-bento-card p-5 sm:p-6 rounded-2xl sm:rounded-3xl flex flex-col justify-between space-y-3.5 sm:space-y-4 group cursor-default">
                             <div class="flex items-center justify-between">
-                                <div class="lexend-icon-box w-12 h-12 bg-amber-100 text-amber-800 text-2xl font-bold">
+                                <div class="lexend-icon-box w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-100 text-amber-800 text-xl sm:text-2xl font-bold flex items-center justify-center">
                                     🧱
                                 </div>
-                                <span class="px-2.5 py-0.5 rounded-full text-[9.5px] font-black uppercase bg-amber-50 text-amber-800 border border-amber-200">
+                                <span class="px-2.5 py-0.5 rounded-full text-[9px] sm:text-[9.5px] font-black uppercase bg-amber-50 text-amber-800 border border-amber-200">
                                     100% Praxis
                                 </span>
                             </div>
                             <div>
-                                <h4 class="font-black text-slate-950 text-base group-hover:text-amber-700 transition-colors">
+                                <h4 class="font-black text-slate-950 text-sm sm:text-base group-hover:text-amber-700 transition-colors">
                                     Echtes Bauunternehmen
                                 </h4>
                                 <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
@@ -730,7 +736,7 @@ new class extends Component {
                                 </p>
                             </div>
                             <div class="pt-2 border-t border-slate-100">
-                                <span class="lexend-arrow-link text-amber-800">
+                                <span class="lexend-arrow-link text-amber-800 text-xs">
                                     <span>Praxis-Erfahrung</span>
                                     <span class="arrow-icon">→</span>
                                 </span>
@@ -738,17 +744,17 @@ new class extends Component {
                         </div>
 
                         <!-- Card 2 -->
-                        <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group cursor-default">
+                        <div class="lexend-bento-card p-5 sm:p-6 rounded-2xl sm:rounded-3xl flex flex-col justify-between space-y-3.5 sm:space-y-4 group cursor-default">
                             <div class="flex items-center justify-between">
-                                <div class="lexend-icon-box w-12 h-12 bg-blue-100 text-blue-800 text-2xl font-bold">
+                                <div class="lexend-icon-box w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-blue-100 text-blue-800 text-xl sm:text-2xl font-bold flex items-center justify-center">
                                     📑
                                 </div>
-                                <span class="px-2.5 py-0.5 rounded-full text-[9.5px] font-black uppercase bg-blue-50 text-blue-800 border border-blue-200">
+                                <span class="px-2.5 py-0.5 rounded-full text-[9px] sm:text-[9.5px] font-black uppercase bg-blue-50 text-blue-800 border border-blue-200">
                                     Rechtssicher
                                 </span>
                             </div>
                             <div>
-                                <h4 class="font-black text-slate-950 text-base group-hover:text-blue-700 transition-colors">
+                                <h4 class="font-black text-slate-950 text-sm sm:text-base group-hover:text-blue-700 transition-colors">
                                     VOB/B § 2 Automatik
                                 </h4>
                                 <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
@@ -756,7 +762,7 @@ new class extends Component {
                                 </p>
                             </div>
                             <div class="pt-2 border-t border-slate-100">
-                                <span class="lexend-arrow-link text-blue-800">
+                                <span class="lexend-arrow-link text-blue-800 text-xs">
                                     <span>VOB-Konform</span>
                                     <span class="arrow-icon">→</span>
                                 </span>
@@ -764,17 +770,17 @@ new class extends Component {
                         </div>
 
                         <!-- Card 3 -->
-                        <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group cursor-default">
+                        <div class="lexend-bento-card p-5 sm:p-6 rounded-2xl sm:rounded-3xl flex flex-col justify-between space-y-3.5 sm:space-y-4 group cursor-default">
                             <div class="flex items-center justify-between">
-                                <div class="lexend-icon-box w-12 h-12 bg-indigo-100 text-indigo-800 text-2xl font-bold">
+                                <div class="lexend-icon-box w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-indigo-100 text-indigo-800 text-xl sm:text-2xl font-bold flex items-center justify-center">
                                     👥
                                 </div>
-                                <span class="px-2.5 py-0.5 rounded-full text-[9.5px] font-black uppercase bg-indigo-50 text-indigo-800 border border-indigo-200">
+                                <span class="px-2.5 py-0.5 rounded-full text-[9px] sm:text-[9.5px] font-black uppercase bg-indigo-50 text-indigo-800 border border-indigo-200">
                                     Alles vernetzt
                                 </span>
                             </div>
                             <div>
-                                <h4 class="font-black text-slate-950 text-base group-hover:text-indigo-700 transition-colors">
+                                <h4 class="font-black text-slate-950 text-sm sm:text-base group-hover:text-indigo-700 transition-colors">
                                     360° Kunden-Zentrale
                                 </h4>
                                 <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
@@ -782,7 +788,7 @@ new class extends Component {
                                 </p>
                             </div>
                             <div class="pt-2 border-t border-slate-100">
-                                <span class="lexend-arrow-link text-indigo-800">
+                                <span class="lexend-arrow-link text-indigo-800 text-xs">
                                     <span>360° Übersicht</span>
                                     <span class="arrow-icon">→</span>
                                 </span>
@@ -790,17 +796,17 @@ new class extends Component {
                         </div>
 
                         <!-- Card 4 -->
-                        <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group cursor-default">
+                        <div class="lexend-bento-card p-5 sm:p-6 rounded-2xl sm:rounded-3xl flex flex-col justify-between space-y-3.5 sm:space-y-4 group cursor-default">
                             <div class="flex items-center justify-between">
-                                <div class="lexend-icon-box w-12 h-12 bg-emerald-100 text-emerald-800 text-2xl font-bold">
+                                <div class="lexend-icon-box w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-100 text-emerald-800 text-xl sm:text-2xl font-bold flex items-center justify-center">
                                     📊
                                 </div>
-                                <span class="px-2.5 py-0.5 rounded-full text-[9.5px] font-black uppercase bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                <span class="px-2.5 py-0.5 rounded-full text-[9px] sm:text-[9.5px] font-black uppercase bg-emerald-50 text-emerald-800 border border-emerald-200">
                                     DATEV SKR03/04
                                 </span>
                             </div>
                             <div>
-                                <h4 class="font-black text-slate-950 text-base group-hover:text-emerald-700 transition-colors">
+                                <h4 class="font-black text-slate-950 text-sm sm:text-base group-hover:text-emerald-700 transition-colors">
                                     Steuerberater Export
                                 </h4>
                                 <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
@@ -808,7 +814,7 @@ new class extends Component {
                                 </p>
                             </div>
                             <div class="pt-2 border-t border-slate-100">
-                                <span class="lexend-arrow-link text-emerald-800">
+                                <span class="lexend-arrow-link text-emerald-800 text-xs">
                                     <span>DATEV-Ready</span>
                                     <span class="arrow-icon">→</span>
                                 </span>
@@ -826,10 +832,10 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 4. INTERAKTIVER MODULE EXPLORER (LIGHT THEME TABS & PREVIEWS)             -->
     <!-- ========================================================================= -->
-    <section id="module" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal-on-scroll">
+    <section id="module" class="py-14 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal-on-scroll">
         
-        <div class="text-center max-w-3xl mx-auto space-y-3 mb-10">
-            <span class="px-3 py-1 rounded-full bg-blue-100 border border-blue-200 text-blue-800 text-xs font-black uppercase">
+        <div class="text-center max-w-3xl mx-auto space-y-2 sm:space-y-3 mb-8 sm:mb-10">
+            <span class="px-3.5 py-1 rounded-full bg-blue-100 border border-blue-200 text-blue-800 text-[10.5px] sm:text-xs font-black uppercase">
                 🚀 Die All-in-One ERP Suite
             </span>
             <h2 class="text-2xl sm:text-4xl font-black text-slate-950 tracking-tight">
@@ -843,67 +849,67 @@ new class extends Component {
         <!-- Module Selector with Alpine.js (Instant 0ms tab switching without server requests) -->
         <div x-data="{ activeModuleTab: 'cockpit' }">
             
-            <!-- Module Selector Tabs -->
-            <div class="flex flex-wrap items-center justify-center gap-2 mb-8">
+            <!-- Module Selector Tabs with Smooth Horizontal Scroll on Mobile -->
+            <div class="flex items-center gap-1.5 sm:gap-2 mb-6 sm:mb-8 overflow-x-auto no-scrollbar pb-2 sm:flex-wrap sm:justify-center px-1">
                 <button type="button" @click="activeModuleTab = 'cockpit'" 
                         :class="activeModuleTab === 'cockpit' ? 'bg-blue-700 text-white shadow-md shadow-blue-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200'"
-                        class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2">
+                        class="whitespace-nowrap shrink-0 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-1.5 sm:gap-2">
                     <span>🏗️ Baustellen-Cockpit</span>
                 </button>
                 <button type="button" @click="activeModuleTab = 'contacts360'" 
                         :class="activeModuleTab === 'contacts360' ? 'bg-indigo-700 text-white shadow-md shadow-indigo-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200'"
-                        class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2">
+                        class="whitespace-nowrap shrink-0 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-1.5 sm:gap-2">
                     <span>👥 360° Kunden-Zentrale</span>
                 </button>
                 <button type="button" @click="activeModuleTab = 'supplements'" 
                         :class="activeModuleTab === 'supplements' ? 'bg-amber-600 text-white shadow-md shadow-amber-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200'"
-                        class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2">
+                        class="whitespace-nowrap shrink-0 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-1.5 sm:gap-2">
                     <span>📑 VOB/B Nachträge</span>
                 </button>
                 <button type="button" @click="activeModuleTab = 'measurements'" 
                         :class="activeModuleTab === 'measurements' ? 'bg-cyan-700 text-white shadow-md shadow-cyan-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200'"
-                        class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2">
+                        class="whitespace-nowrap shrink-0 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-1.5 sm:gap-2">
                     <span>📐 VOB/C Aufmaßblatt</span>
                 </button>
                 <button type="button" @click="activeModuleTab = 'dailylogs'" 
                         :class="activeModuleTab === 'dailylogs' ? 'bg-emerald-700 text-white shadow-md shadow-emerald-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200'"
-                        class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2">
+                        class="whitespace-nowrap shrink-0 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-1.5 sm:gap-2">
                     <span>🎙️ KI-Bautagebuch</span>
                 </button>
                 <button type="button" @click="activeModuleTab = 'datev'" 
                         :class="activeModuleTab === 'datev' ? 'bg-purple-700 text-white shadow-md shadow-purple-600/20' : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200'"
-                        class="px-4 py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-2">
+                        class="whitespace-nowrap shrink-0 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-black transition cursor-pointer btn-press flex items-center gap-1.5 sm:gap-2">
                     <span>📊 DATEV & Finanzen</span>
                 </button>
             </div>
 
             <!-- Interactive Module Showcase Screen (Light High-Contrast) -->
-            <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-xl min-h-[380px]">
+            <div class="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-xl min-h-[360px]">
                 
                 <!-- Tab 1: Cockpit -->
-                <div x-show="activeModuleTab === 'cockpit'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                    <div class="lg:col-span-5 space-y-4">
-                        <span class="text-xs font-black uppercase text-blue-700 tracking-wider">Kernmodul 01</span>
-                        <h3 class="text-2xl font-black text-slate-950">Baustellen-Cockpit & Soll/Ist-Steuerung</h3>
+                <div x-show="activeModuleTab === 'cockpit'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
+                    <div class="lg:col-span-5 space-y-3 sm:space-y-4">
+                        <span class="text-[10px] sm:text-xs font-black uppercase text-blue-700 tracking-wider">Kernmodul 01</span>
+                        <h3 class="text-xl sm:text-2xl font-black text-slate-950">Baustellen-Cockpit & Soll/Ist-Steuerung</h3>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium">
                             Behalten Sie jedes Bauvorhaben im Griff: Budgetüberwachung, Bauzeitenplan nach Kalenderwochen, automatische Wetteraufzeichnung und lückenloses Fotoprotokoll.
                         </p>
-                        <div class="space-y-2 text-xs font-bold text-slate-700">
+                        <div class="space-y-1.5 sm:space-y-2 text-xs font-bold text-slate-700">
                             <p class="flex items-center gap-2">✅ Echtzeit-Budgetverbrauch mit Soll/Ist-Kosten</p>
                             <p class="flex items-center gap-2">✅ Kalenderwochen-Terminplan (Start-KW bis End-KW)</p>
                             <p class="flex items-center gap-2">✅ Wetter-API mit automatischer Temperatur & Niederschlag</p>
                         </div>
-                        <button type="button" wire:click="openDemoModal('bautraeger')" class="px-4 py-2 bg-blue-700 hover:bg-blue-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
+                        <button type="button" wire:click="openDemoModal('bautraeger')" class="px-4 py-2.5 bg-blue-700 hover:bg-blue-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
                             Cockpit live testen →
                         </button>
                     </div>
 
-                    <div class="lg:col-span-7 bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
-                        <div class="flex justify-between items-center pb-3 border-b border-slate-200">
+                    <div class="lg:col-span-7 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3 sm:space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 sm:gap-2 pb-2.5 sm:pb-3 border-b border-slate-200">
                             <span class="font-black text-xs text-slate-900">🏢 Projekt: Neubau Wohnanlage Regensburg</span>
                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800">KW 28 – KW 42</span>
                         </div>
-                        <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center text-xs">
                             <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-xs">
                                 <span class="text-[9px] text-slate-500 block font-bold">BUDGET SOLL</span>
                                 <span class="font-black text-slate-900 text-sm">120.000 €</span>
@@ -921,29 +927,29 @@ new class extends Component {
                 </div>
 
                 <!-- Tab 2: Contacts 360 -->
-                <div x-show="activeModuleTab === 'contacts360'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                    <div class="lg:col-span-5 space-y-4">
-                        <span class="text-xs font-black uppercase text-indigo-700 tracking-wider">Kernmodul 02</span>
-                        <h3 class="text-2xl font-black text-slate-950">360° Kunden- & Bauherren-Zentrale</h3>
+                <div x-show="activeModuleTab === 'contacts360'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
+                    <div class="lg:col-span-5 space-y-3 sm:space-y-4">
+                        <span class="text-[10px] sm:text-xs font-black uppercase text-indigo-700 tracking-wider">Kernmodul 02</span>
+                        <h3 class="text-xl sm:text-2xl font-black text-slate-950">360° Kunden- & Bauherren-Zentrale</h3>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium">
                             Da der Kunde der Eigentümer der Baustellen ist, steuern Sie alles direkt aus dem Kunden heraus: Neue Baustellen anlegen, VOB-Nachträge erfassen, Aufmaße abrufen und Mängel überwachen.
                         </p>
-                        <div class="space-y-2 text-xs font-bold text-slate-700">
+                        <div class="space-y-1.5 sm:space-y-2 text-xs font-bold text-slate-700">
                             <p class="flex items-center gap-2">✅ 1-Klick-Aktionen pro Kunde (Baustelle, Nachtrag, Aufmaß, Rechnung)</p>
                             <p class="flex items-center gap-2">✅ Zeitgestempeltes Telefon- & Notizjournal</p>
                             <p class="flex items-center gap-2">✅ KI-Chefbauleiter Dossier für jedes Kundenprofil</p>
                         </div>
-                        <button type="button" wire:click="openDemoModal('generalunternehmer')" class="px-4 py-2 bg-indigo-700 hover:bg-indigo-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
+                        <button type="button" wire:click="openDemoModal('generalunternehmer')" class="px-4 py-2.5 bg-indigo-700 hover:bg-indigo-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
                             Kunden-Zentrale testen →
                         </button>
                     </div>
 
-                    <div class="lg:col-span-7 bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+                    <div class="lg:col-span-7 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
                         <div class="flex justify-between items-center">
                             <span class="font-black text-xs text-slate-900">👤 Kunde: Hausverwaltung Schmidt & Co.</span>
                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-indigo-100 text-indigo-800">4 Baustellen</span>
                         </div>
-                        <div class="p-3 bg-white rounded-xl border border-slate-200 flex flex-wrap gap-2 text-xs">
+                        <div class="p-3 bg-white rounded-xl border border-slate-200 flex flex-wrap gap-1.5 sm:gap-2 text-[10.5px] sm:text-xs">
                             <span class="px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg font-bold">🏗️ + Baustelle</span>
                             <span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg font-bold">📑 + Nachtrag</span>
                             <span class="px-2.5 py-1 bg-cyan-50 text-cyan-700 border border-cyan-200 rounded-lg font-bold">📐 + Aufmaß</span>
@@ -954,62 +960,62 @@ new class extends Component {
                 </div>
 
                 <!-- Tab 3: Supplements -->
-                <div x-show="activeModuleTab === 'supplements'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                    <div class="lg:col-span-5 space-y-4">
-                        <span class="text-xs font-black uppercase text-amber-700 tracking-wider">Kernmodul 03</span>
-                        <h3 class="text-2xl font-black text-slate-950">VOB/B Nachtragsmanagement (§ 2)</h3>
+                <div x-show="activeModuleTab === 'supplements'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
+                    <div class="lg:col-span-5 space-y-3 sm:space-y-4">
+                        <span class="text-[10px] sm:text-xs font-black uppercase text-amber-700 tracking-wider">Kernmodul 03</span>
+                        <h3 class="text-xl sm:text-2xl font-black text-slate-950">VOB/B Nachtragsmanagement (§ 2)</h3>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium">
                             Schluss mit vergessenen oder abgewiesenen Nachträgen. Erfassen Sie Mehrleistungen nach § 2 Abs. 5 oder § 2 Abs. 6 sofort mit rechtssicherem PDF-Export.
                         </p>
-                        <div class="space-y-2 text-xs font-bold text-slate-700">
+                        <div class="space-y-1.5 sm:space-y-2 text-xs font-bold text-slate-700">
                             <p class="flex items-center gap-2">✅ Automatische VOB-Begründung & Fristüberwachung</p>
                             <p class="flex items-center gap-2">✅ PDF-Nachtragsangebot mit rechtssicherem VOB-Briefkopf</p>
                             <p class="flex items-center gap-2">✅ Status: Eingereicht, Geprüft, Beauftragt, Abgerechnet</p>
                         </div>
-                        <button type="button" wire:click="openDemoModal('sanierung_abdichtung')" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
+                        <button type="button" wire:click="openDemoModal('sanierung_abdichtung')" class="px-4 py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
                             Nachtragsmodul ansehen →
                         </button>
                     </div>
 
-                    <div class="lg:col-span-7 bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
-                        <div class="flex justify-between items-center pb-2 border-b border-slate-200">
+                    <div class="lg:col-span-7 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 pb-2 border-b border-slate-200">
                             <span class="font-black text-xs text-slate-900">📑 Nachtragsangebot NT-03 nach VOB/B § 2 Abs. 5</span>
                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-800">BEAUFTRAGT</span>
                         </div>
-                        <p class="text-xs text-slate-700 font-medium">
+                        <p class="text-xs text-slate-700 font-medium leading-relaxed">
                             Titel: Zusätzliche Hohlkehlenabdichtung & Bitumen-Dickbeschichtung Rampe UG 2
                         </p>
                         <div class="flex justify-between items-center p-3 bg-white rounded-xl border border-slate-200 text-xs">
                             <span class="text-slate-500 font-medium">Nachtragssumme Netto:</span>
-                            <span class="text-base font-black text-amber-700">4.850,00 €</span>
+                            <span class="text-sm sm:text-base font-black text-amber-700">4.850,00 €</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Tab 4: Measurements -->
-                <div x-show="activeModuleTab === 'measurements'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                    <div class="lg:col-span-5 space-y-4">
-                        <span class="text-xs font-black uppercase text-cyan-700 tracking-wider">Kernmodul 04</span>
-                        <h3 class="text-2xl font-black text-slate-950">Digitales Aufmaßblatt (VOB/C / DIN 18299)</h3>
+                <div x-show="activeModuleTab === 'measurements'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
+                    <div class="lg:col-span-5 space-y-3 sm:space-y-4">
+                        <span class="text-[10px] sm:text-xs font-black uppercase text-cyan-700 tracking-wider">Kernmodul 04</span>
+                        <h3 class="text-xl sm:text-2xl font-black text-slate-950">Digitales Aufmaßblatt (VOB/C / DIN 18299)</h3>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium">
                             Erfassen Sie Mengen direkt vor Ort mit Raummaßen (Länge × Breite × Höhe / Faktor), automatischem VOB-Abzug für Öffnungen und sofortigem PDF-Prüfprotokoll für den Bauherrn.
                         </p>
-                        <div class="space-y-2 text-xs font-bold text-slate-700">
+                        <div class="space-y-1.5 sm:space-y-2 text-xs font-bold text-slate-700">
                             <p class="flex items-center gap-2">✅ Flexible Formeln (z. B. 12.50 * 4.20 * 2)</p>
                             <p class="flex items-center gap-2">✅ Automatischer VOB-Abzug nach DIN 18299 / DIN 18336</p>
                             <p class="flex items-center gap-2">✅ 1-Klick Übergabe in die Schlussrechnung</p>
                         </div>
-                        <button type="button" wire:click="openDemoModal('hoch_tiefbau')" class="px-4 py-2 bg-cyan-700 hover:bg-cyan-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
+                        <button type="button" wire:click="openDemoModal('hoch_tiefbau')" class="px-4 py-2.5 bg-cyan-700 hover:bg-cyan-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
                             Aufmaß-Engine testen →
                         </button>
                     </div>
 
-                    <div class="lg:col-span-7 bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+                    <div class="lg:col-span-7 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
                         <div class="flex justify-between items-center pb-2 border-b border-slate-200">
                             <span class="font-black text-xs text-slate-900">📐 Aufmaßblatt AM-2026-004 (Bodenplatte TG)</span>
                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-cyan-100 text-cyan-800">DIN 18299</span>
                         </div>
-                        <div class="space-y-2 text-xs font-mono">
+                        <div class="space-y-2 text-[11px] sm:text-xs font-mono">
                             <div class="p-2.5 bg-white rounded-lg flex justify-between border border-slate-200">
                                 <span>Fläche Achse 1-4: 18.50 × 8.20</span>
                                 <span class="font-bold text-blue-700">= 151,70 m²</span>
@@ -1023,31 +1029,31 @@ new class extends Component {
                 </div>
 
                 <!-- Tab 5: Daily Logs -->
-                <div x-show="activeModuleTab === 'dailylogs'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                    <div class="lg:col-span-5 space-y-4">
-                        <span class="text-xs font-black uppercase text-emerald-700 tracking-wider">Kernmodul 05</span>
-                        <h3 class="text-2xl font-black text-slate-950">KI-Bautagebuch & Sprachmemo (Whisper)</h3>
+                <div x-show="activeModuleTab === 'dailylogs'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
+                    <div class="lg:col-span-5 space-y-3 sm:space-y-4">
+                        <span class="text-[10px] sm:text-xs font-black uppercase text-emerald-700 tracking-wider">Kernmodul 05</span>
+                        <h3 class="text-xl sm:text-2xl font-black text-slate-950">KI-Bautagebuch & Sprachmemo (Whisper)</h3>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium">
                             Kein Bauleiter tippt gern Berichte auf der Baustelle. Nehmen Sie einfach 30 Sekunden Sprachmemo auf – die KI formuliert einen druckreifen, rechtssicheren Bautagesbericht mit Wetter, Anwesenden und Gewerken.
                         </p>
-                        <div class="space-y-2 text-xs font-bold text-slate-700">
+                        <div class="space-y-1.5 sm:space-y-2 text-xs font-bold text-slate-700">
                             <p class="flex items-center gap-2">✅ KI-Sprachaufnahme & automatische Text-Strukturierung</p>
                             <p class="flex items-center gap-2">✅ Integrierter Fotoupload mit Beschriftung</p>
                             <p class="flex items-center gap-2">✅ Digitaler Freigabe-Link & PDF-Versand an Bauherrn</p>
                         </div>
-                        <button type="button" wire:click="openDemoModal('bautraeger')" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
+                        <button type="button" wire:click="openDemoModal('bautraeger')" class="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
                             Sprach-Bautagebuch testen →
                         </button>
                     </div>
 
-                    <div class="lg:col-span-7 bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
-                        <div class="flex items-center gap-3 p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-900">
+                    <div class="lg:col-span-7 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
+                        <div class="flex items-center gap-2.5 p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-900">
                             <span class="text-lg">🎙️</span>
                             <span class="font-medium font-sans">"Heute 4 Mann vor Ort, Abdichtung TG fertiggestellt, 2 Paletten Bitumen verbraucht, Wetter trocken 21 Grad."</span>
                         </div>
                         <div class="p-3.5 bg-white rounded-xl border border-slate-200 space-y-1.5 text-xs text-slate-700">
                             <span class="text-[10px] text-emerald-700 font-black uppercase">✨ KI-Generierter Bericht:</span>
-                            <p class="leading-relaxed">
+                            <p class="leading-relaxed text-[11px] sm:text-xs">
                                 <strong>Ausgeführte Leistungen:</strong> Fertigstellung der Flächenabdichtung Tiefgaragenebene 1 gem. DIN 18533. <strong>Personal:</strong> 4 Fachkräfte vor Ort. <strong>Witterung:</strong> 21°C, heiter, optimale Verarbeitungsbedingungen.
                             </p>
                         </div>
@@ -1055,32 +1061,32 @@ new class extends Component {
                 </div>
 
                 <!-- Tab 6: DATEV -->
-                <div x-show="activeModuleTab === 'datev'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                    <div class="lg:col-span-5 space-y-4">
-                        <span class="text-xs font-black uppercase text-purple-700 tracking-wider">Kernmodul 06</span>
-                        <h3 class="text-2xl font-black text-slate-950">DATEV-Export & Subunternehmer-Controlling</h3>
+                <div x-show="activeModuleTab === 'datev'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
+                    <div class="lg:col-span-5 space-y-3 sm:space-y-4">
+                        <span class="text-[10px] sm:text-xs font-black uppercase text-purple-700 tracking-wider">Kernmodul 06</span>
+                        <h3 class="text-xl sm:text-2xl font-black text-slate-950">DATEV-Export & Subunternehmer-Controlling</h3>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium">
                             Übertragen Sie alle Ausgangs- und Eingangsrechnungen, Nachunternehmer-Rechnungen (§ 13b UStG) und Projektkosten im standardisierten DATEV-Format direkt an Ihren Steuerberater.
                         </p>
-                        <div class="space-y-2 text-xs font-bold text-slate-700">
+                        <div class="space-y-1.5 sm:space-y-2 text-xs font-bold text-slate-700">
                             <p class="flex items-center gap-2">✅ DATEV Buchungsstapel CSV (SKR03 & SKR04)</p>
                             <p class="flex items-center gap-2">✅ Automatische § 13b UStG Steuerschlüssel-Zuordnung</p>
                             <p class="flex items-center gap-2">✅ Rechnungsfreigabe-Workflow & Zahlungsüberwachung</p>
                         </div>
-                        <button type="button" wire:click="openDemoModal('generalunternehmer')" class="px-4 py-2 bg-purple-700 hover:bg-purple-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
+                        <button type="button" wire:click="openDemoModal('generalunternehmer')" class="px-4 py-2.5 bg-purple-700 hover:bg-purple-600 text-white font-black text-xs rounded-xl shadow-xs cursor-pointer btn-press">
                             DATEV-Workflow testen →
                         </button>
                     </div>
 
-                    <div class="lg:col-span-7 bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+                    <div class="lg:col-span-7 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
                         <div class="flex justify-between items-center pb-2 border-b border-slate-200">
                             <span class="font-black text-xs text-slate-900">📊 DATEV SKR03 Buchungsstapel Export</span>
                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-purple-100 text-purple-800">STEUERBERATER READY</span>
                         </div>
-                        <div class="p-3 bg-white rounded-xl border border-slate-200 font-mono text-[11px] text-slate-700 space-y-1">
-                            <p>Umsatz;S/H;Konto;Gegenkonto;BU;Beleg1;Datum;Text</p>
-                            <p class="text-emerald-700 font-bold">14850.00;S;8400;10000;;RE-2026-041;1408;AR WEG Maxstr</p>
-                            <p class="text-amber-700 font-bold">4200.00;H;3100;70000;19;ER-88412;1408;Subunt. Abdichtung</p>
+                        <div class="p-3 bg-white rounded-xl border border-slate-200 font-mono text-[10px] sm:text-[11px] text-slate-700 space-y-1 overflow-x-auto">
+                            <p class="whitespace-nowrap">Umsatz;S/H;Konto;Gegenkonto;BU;Beleg1;Datum;Text</p>
+                            <p class="text-emerald-700 font-bold whitespace-nowrap">14850.00;S;8400;10000;;RE-2026-041;1408;AR WEG Maxstr</p>
+                            <p class="text-amber-700 font-bold whitespace-nowrap">4200.00;H;3100;70000;19;ER-88412;1408;Subunt. Abdichtung</p>
                         </div>
                     </div>
                 </div>
@@ -1094,19 +1100,19 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 5. LEXEND EIGHT STYLE INTEGRATIONS & BAU-ÖKOSYSTEM CLOUD                  -->
     <!-- ========================================================================= -->
-    <section id="integrations" class="py-24 bg-white border-t border-slate-200 relative overflow-hidden reveal-on-scroll">
+    <section id="integrations" class="py-14 sm:py-24 bg-white border-t border-slate-200 relative overflow-hidden reveal-on-scroll">
         
         <!-- Ambient background aura -->
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-r from-blue-100/40 via-amber-100/30 to-emerald-100/40 rounded-full blur-3xl pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             
-            <div class="text-center max-w-3xl mx-auto space-y-3 mb-16">
-                <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-800 text-xs font-black uppercase shadow-2xs">
+            <div class="text-center max-w-3xl mx-auto space-y-2 sm:space-y-3 mb-10 sm:mb-16">
+                <span class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-800 text-[10.5px] sm:text-xs font-black uppercase shadow-2xs">
                     <span>🔌</span>
                     <span>Nahtlose Schnittstellen & Standards</span>
                 </span>
-                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
+                <h2 class="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
                     Maximale Konnektivität für Ihren <span class="bg-gradient-to-r from-blue-700 via-indigo-700 to-amber-600 bg-clip-text text-transparent">Baualltag</span>
                 </h2>
                 <p class="text-xs sm:text-sm text-slate-600 font-medium max-w-2xl mx-auto">
@@ -1115,20 +1121,20 @@ new class extends Component {
             </div>
 
             <!-- Integrations Bento Cards Grid (Lexend Style) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 
                 <!-- Item 1: DATEV -->
-                <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group">
+                <div class="lexend-bento-card p-5 sm:p-6 rounded-2xl sm:rounded-3xl flex flex-col justify-between space-y-3.5 sm:space-y-4 group">
                     <div class="flex items-center justify-between">
-                        <div class="lexend-icon-box w-12 h-12 bg-emerald-100 text-emerald-800 text-xl font-black">
+                        <div class="lexend-icon-box w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-100 text-emerald-800 text-xl font-black flex items-center justify-center">
                             📊
                         </div>
-                        <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        <span class="px-2.5 py-0.5 rounded-full text-[9px] sm:text-[9.5px] font-black uppercase bg-emerald-50 text-emerald-800 border border-emerald-200">
                             Nativ
                         </span>
                     </div>
                     <div>
-                        <h4 class="font-black text-slate-900 text-base group-hover:text-emerald-700 transition-colors">
+                        <h4 class="font-black text-slate-900 text-sm sm:text-base group-hover:text-emerald-700 transition-colors">
                             DATEV SKR03 & SKR04
                         </h4>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
@@ -1144,15 +1150,15 @@ new class extends Component {
                 </div>
 
                 <!-- Item 2: VOB/B & VOB/C -->
-                <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group">
-                    <div class="lexend-icon-box w-12 h-12 bg-blue-100 text-blue-800 text-xl font-black">
+                <div class="lexend-bento-card p-5 sm:p-6 rounded-2xl sm:rounded-3xl flex flex-col justify-between space-y-3.5 sm:space-y-4 group">
+                    <div class="lexend-icon-box w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-blue-100 text-blue-800 text-xl font-black flex items-center justify-center">
                         ⚖️
                     </div>
-                    <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-blue-50 text-blue-800 border border-blue-200 w-fit">
+                    <span class="px-2.5 py-0.5 rounded-full text-[9px] sm:text-[9.5px] font-black uppercase bg-blue-50 text-blue-800 border border-blue-200 w-fit">
                         Rechtskonform
                     </span>
                     <div>
-                        <h4 class="font-black text-slate-900 text-base group-hover:text-blue-700 transition-colors">
+                        <h4 class="font-black text-slate-900 text-sm sm:text-base group-hover:text-blue-700 transition-colors">
                             VOB/B § 2 & VOB/C
                         </h4>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
@@ -1168,15 +1174,15 @@ new class extends Component {
                 </div>
 
                 <!-- Item 3: WhatsApp & Messenger -->
-                <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group">
-                    <div class="lexend-icon-box w-12 h-12 bg-emerald-100 text-emerald-800 text-xl font-black">
+                <div class="lexend-bento-card p-5 sm:p-6 rounded-2xl sm:rounded-3xl flex flex-col justify-between space-y-3.5 sm:space-y-4 group">
+                    <div class="lexend-icon-box w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-100 text-emerald-800 text-xl font-black flex items-center justify-center">
                         💬
                     </div>
-                    <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-50 text-emerald-800 border border-emerald-200 w-fit">
+                    <span class="px-2.5 py-0.5 rounded-full text-[9px] sm:text-[9.5px] font-black uppercase bg-emerald-50 text-emerald-800 border border-emerald-200 w-fit">
                         Sofortkontakt
                     </span>
                     <div>
-                        <h4 class="font-black text-slate-900 text-base group-hover:text-emerald-700 transition-colors">
+                        <h4 class="font-black text-slate-900 text-sm sm:text-base group-hover:text-emerald-700 transition-colors">
                             WhatsApp Business
                         </h4>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
@@ -1192,15 +1198,15 @@ new class extends Component {
                 </div>
 
                 <!-- Item 4: Mobile PWA -->
-                <div class="lexend-bento-card p-6 flex flex-col justify-between space-y-4 group">
-                    <div class="lexend-icon-box w-12 h-12 bg-amber-100 text-amber-800 text-xl font-black">
+                <div class="lexend-bento-card p-5 sm:p-6 rounded-2xl sm:rounded-3xl flex flex-col justify-between space-y-3.5 sm:space-y-4 group">
+                    <div class="lexend-icon-box w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-100 text-amber-800 text-xl font-black flex items-center justify-center">
                         📱
                     </div>
-                    <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-50 text-amber-800 border border-amber-200 w-fit">
+                    <span class="px-2.5 py-0.5 rounded-full text-[9px] sm:text-[9.5px] font-black uppercase bg-amber-50 text-amber-800 border border-amber-200 w-fit">
                         iOS & Android
                     </span>
                     <div>
-                        <h4 class="font-black text-slate-900 text-base group-hover:text-amber-700 transition-colors">
+                        <h4 class="font-black text-slate-900 text-sm sm:text-base group-hover:text-amber-700 transition-colors">
                             PWA Baustellen-App
                         </h4>
                         <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
@@ -1218,15 +1224,15 @@ new class extends Component {
             </div>
 
             <!-- Bottom Integrations Ribbon with Direct CTA -->
-            <div class="mt-10 p-6 rounded-3xl bg-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
-                <div class="flex items-center gap-4">
-                    <span class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-2xl">⚡</span>
+            <div class="mt-8 sm:mt-10 p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-slate-900 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 shadow-xl">
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <span class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white/10 flex items-center justify-center text-xl sm:text-2xl shrink-0">⚡</span>
                     <div>
-                        <h4 class="font-black text-sm sm:text-base text-white">Sie nutzen individuelle Bauprogramme oder AVA-Software?</h4>
-                        <p class="text-xs text-slate-400 font-medium">Wir unterstützen flexible Excel-, CSV- und PDF-Importe für reibungslosen Datenfluss.</p>
+                        <h4 class="font-black text-xs sm:text-base text-white">Sie nutzen individuelle Bauprogramme oder AVA-Software?</h4>
+                        <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Wir unterstützen flexible Excel-, CSV- und PDF-Importe für reibungslosen Datenfluss.</p>
                     </div>
                 </div>
-                <button wire:click="openDemoModal" class="px-6 py-3.5 bg-gradient-to-r from-blue-600 to-amber-500 hover:from-blue-500 hover:to-amber-400 text-white font-black text-xs rounded-xl shadow-md transition cursor-pointer shrink-0 btn-press">
+                <button wire:click="openDemoModal" class="w-full sm:w-auto px-5 sm:px-6 py-3 sm:py-3.5 bg-gradient-to-r from-blue-600 to-amber-500 hover:from-blue-500 hover:to-amber-400 text-white font-black text-xs rounded-xl shadow-md transition cursor-pointer shrink-0 btn-press">
                     Individuelle Schnittstellen anfragen →
                 </button>
             </div>
@@ -1237,11 +1243,11 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 6. INTERAKTIVER ROI & ERSPARNISRECHNER                                    -->
     <!-- ========================================================================= -->
-    <section id="rechner" class="py-20 bg-slate-100 border-t border-slate-200 relative reveal-on-scroll">
+    <section id="rechner" class="py-14 sm:py-20 bg-slate-100 border-t border-slate-200 relative reveal-on-scroll">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            <div class="text-center max-w-3xl mx-auto space-y-3 mb-12">
-                <span class="px-3 py-1 rounded-full bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-black uppercase">
+            <div class="text-center max-w-3xl mx-auto space-y-2 sm:space-y-3 mb-8 sm:mb-12">
+                <span class="px-3.5 py-1 rounded-full bg-emerald-100 border border-emerald-200 text-emerald-800 text-[10.5px] sm:text-xs font-black uppercase">
                     🧮 Wirtschaftlichkeitsrechner
                 </span>
                 <h2 class="text-2xl sm:text-4xl font-black text-slate-950 tracking-tight">
@@ -1252,16 +1258,16 @@ new class extends Component {
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center max-w-5xl mx-auto">
                 
                 <!-- Left: Interactive Sliders (6 cols) -->
-                <div class="lg:col-span-6 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 card-lift">
+                <div class="lg:col-span-6 bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm space-y-5 sm:space-y-6 card-lift">
                     
                     <!-- Slider 1: Baustellen -->
-                    <div class="space-y-2">
+                    <div class="space-y-1.5 sm:space-y-2">
                         <div class="flex justify-between items-center text-xs">
                             <label class="font-bold text-slate-800">Gleichzeitige Baustellen:</label>
-                            <span class="px-3 py-1 rounded-xl bg-blue-50 text-blue-700 font-black text-sm border border-blue-200">
+                            <span class="px-2.5 sm:px-3 py-1 rounded-lg sm:rounded-xl bg-blue-50 text-blue-700 font-black text-xs sm:text-sm border border-blue-200">
                                 {{ $roiProjectCount }} Baustellen
                             </span>
                         </div>
@@ -1273,10 +1279,10 @@ new class extends Component {
                     </div>
 
                     <!-- Slider 2: Mitarbeiter -->
-                    <div class="space-y-2">
+                    <div class="space-y-1.5 sm:space-y-2">
                         <div class="flex justify-between items-center text-xs">
                             <label class="font-bold text-slate-800">Mitarbeiter & Bauleiter:</label>
-                            <span class="px-3 py-1 rounded-xl bg-indigo-50 text-indigo-700 font-black text-sm border border-indigo-200">
+                            <span class="px-2.5 sm:px-3 py-1 rounded-lg sm:rounded-xl bg-indigo-50 text-indigo-700 font-black text-xs sm:text-sm border border-indigo-200">
                                 {{ $roiWorkerCount }} Personen
                             </span>
                         </div>
@@ -1288,10 +1294,10 @@ new class extends Component {
                     </div>
 
                     <!-- Slider 3: Stundensatz -->
-                    <div class="space-y-2">
+                    <div class="space-y-1.5 sm:space-y-2">
                         <div class="flex justify-between items-center text-xs">
                             <label class="font-bold text-slate-800">Kalkulatorischer Stundensatz:</label>
-                            <span class="px-3 py-1 rounded-xl bg-amber-50 text-amber-800 font-black text-sm border border-amber-200">
+                            <span class="px-2.5 sm:px-3 py-1 rounded-lg sm:rounded-xl bg-amber-50 text-amber-800 font-black text-xs sm:text-sm border border-amber-200">
                                 {{ $roiHourlyRate }} € / Std.
                             </span>
                         </div>
@@ -1305,25 +1311,25 @@ new class extends Component {
                 </div>
 
                 <!-- Right: Calculated Results (6 cols) -->
-                <div class="lg:col-span-6 bg-slate-900 text-white p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-2xl space-y-6 card-lift">
+                <div class="lg:col-span-6 bg-slate-900 text-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-800 shadow-2xl space-y-5 sm:space-y-6 card-lift">
                     
                     <div class="space-y-1">
                         <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider">Ihr kalkulierter Jahresvorteil</span>
-                        <h4 class="text-3xl sm:text-4xl font-black text-white tabular-nums">
+                        <h4 class="text-2xl sm:text-4xl font-black text-white tabular-nums">
                             ~ {{ number_format($this->totalValuePerYear, 0, ',', '.') }} € <span class="text-xs text-slate-400 font-medium">/ Jahr</span>
                         </h4>
                     </div>
 
-                    <div class="space-y-3 text-xs pt-2 border-t border-slate-800">
-                        <div class="flex justify-between items-center p-3 bg-slate-950/80 rounded-xl border border-white/5">
+                    <div class="space-y-2.5 sm:space-y-3 text-xs pt-2 border-t border-slate-800">
+                        <div class="flex justify-between items-center p-2.5 sm:p-3 bg-slate-950/80 rounded-xl border border-white/5">
                             <span class="text-slate-300">⏱️ Eingesparte Büro- & Doku-Zeit:</span>
                             <span class="font-black text-blue-400 tabular-nums">~ {{ $this->savedHoursPerMonth }} Std. / Monat</span>
                         </div>
-                        <div class="flex justify-between items-center p-3 bg-slate-950/80 rounded-xl border border-white/5">
+                        <div class="flex justify-between items-center p-2.5 sm:p-3 bg-slate-950/80 rounded-xl border border-white/5">
                             <span class="text-slate-300">💶 Bürokratiekosten-Ersparnis:</span>
                             <span class="font-black text-emerald-400 tabular-nums">{{ number_format($this->savedCostPerYear, 0, ',', '.') }} € / Jahr</span>
                         </div>
-                        <div class="flex justify-between items-center p-3 bg-slate-950/80 rounded-xl border border-white/5">
+                        <div class="flex justify-between items-center p-2.5 sm:p-3 bg-slate-950/80 rounded-xl border border-white/5">
                             <span class="text-slate-300">📈 Zusätzliche Nachtragserlöse (VOB/B):</span>
                             <span class="font-black text-amber-400 tabular-nums">+ {{ number_format($this->additionalSupplementRevenue, 0, ',', '.') }} € / Jahr</span>
                         </div>
@@ -1342,10 +1348,10 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 6. VORHER VS. NACHHER VERGLEICH (LIGHT SPLIT CARDS)                       -->
     <!-- ========================================================================= -->
-    <section id="vorteile" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal-on-scroll">
+    <section id="vorteile" class="py-14 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal-on-scroll">
         
-        <div class="text-center max-w-3xl mx-auto space-y-3 mb-12">
-            <span class="px-3 py-1 rounded-full bg-cyan-100 border border-cyan-200 text-cyan-800 text-xs font-black uppercase">
+        <div class="text-center max-w-3xl mx-auto space-y-2 sm:space-y-3 mb-8 sm:mb-12">
+            <span class="px-3.5 py-1 rounded-full bg-cyan-100 border border-cyan-200 text-cyan-800 text-[10.5px] sm:text-xs font-black uppercase">
                 ⚡ Der direkte Vergleich
             </span>
             <h2 class="text-2xl sm:text-4xl font-black text-slate-950 tracking-tight">
@@ -1353,21 +1359,21 @@ new class extends Component {
             </h2>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto">
             
             <!-- BEFORE CARD -->
-            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-rose-200 shadow-sm space-y-5 card-lift">
+            <div class="bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-rose-200 shadow-sm space-y-4 sm:space-y-5 card-lift">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-black">
+                    <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-black text-sm">
                         ✕
                     </div>
                     <div>
-                        <h4 class="font-black text-slate-900 text-base">Klassischer Baualltag (Vorher)</h4>
-                        <span class="text-[11px] text-rose-700 font-bold">Hoher Zeitverlust & Haftungsrisiko</span>
+                        <h4 class="font-black text-slate-900 text-sm sm:text-base">Klassischer Baualltag (Vorher)</h4>
+                        <span class="text-[10.5px] sm:text-[11px] text-rose-700 font-bold">Hoher Zeitverlust & Haftungsrisiko</span>
                     </div>
                 </div>
 
-                <ul class="space-y-3 text-xs text-slate-600 font-medium">
+                <ul class="space-y-2.5 sm:space-y-3 text-xs text-slate-600 font-medium">
                     <li class="flex items-start gap-2">
                         <span class="text-rose-600 font-bold">✕</span>
                         <span>Papier-Bautagebücher werden unvollständig oder erst Tage später ausgefüllt.</span>
@@ -1392,22 +1398,22 @@ new class extends Component {
             </div>
 
             <!-- AFTER CARD -->
-            <div class="bg-white p-6 sm:p-8 rounded-3xl border-2 border-blue-600 shadow-xl space-y-5 relative card-lift">
-                <div class="absolute -top-3 right-6 px-3 py-1 bg-blue-600 text-white rounded-full text-[10px] font-black tracking-wider uppercase shadow-xs">
+            <div class="bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border-2 border-blue-600 shadow-xl space-y-4 sm:space-y-5 relative card-lift">
+                <div class="absolute -top-3 right-4 sm:right-6 px-3 py-0.5 sm:py-1 bg-blue-600 text-white rounded-full text-[9px] sm:text-[10px] font-black tracking-wider uppercase shadow-xs">
                     Empfohlener Standard
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
+                    <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-sm">
                         ✓
                     </div>
                     <div>
-                        <h4 class="font-black text-slate-900 text-base">Mit BT Bautechnik Cockpit (Nachher)</h4>
-                        <span class="text-[11px] text-emerald-700 font-bold">100% rechtssicher, digital & rentabel</span>
+                        <h4 class="font-black text-slate-900 text-sm sm:text-base">Mit BT Bautechnik Cockpit (Nachher)</h4>
+                        <span class="text-[10.5px] sm:text-[11px] text-emerald-700 font-bold">100% rechtssicher, digital & rentabel</span>
                     </div>
                 </div>
 
-                <ul class="space-y-3 text-xs text-slate-700 font-semibold">
+                <ul class="space-y-2.5 sm:space-y-3 text-xs text-slate-700 font-semibold">
                     <li class="flex items-start gap-2">
                         <span class="text-emerald-600 font-bold">✓</span>
                         <span>30-Sekunden Sprachmemo erzeugt das fertige Bautagebuch samt Wetter & Fotos.</span>
@@ -1438,11 +1444,11 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 7. FAQ SECTION                                                            -->
     <!-- ========================================================================= -->
-    <section id="faq" class="py-20 bg-slate-100 border-t border-slate-200 reveal-on-scroll">
+    <section id="faq" class="py-14 sm:py-20 bg-slate-100 border-t border-slate-200 reveal-on-scroll">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            <div class="text-center space-y-3 mb-10">
-                <span class="px-3 py-1 rounded-full bg-white border border-slate-200 text-slate-700 text-xs font-black uppercase">
+            <div class="text-center space-y-2 sm:space-y-3 mb-8 sm:mb-10">
+                <span class="px-3.5 py-1 rounded-full bg-white border border-slate-200 text-slate-700 text-[10.5px] sm:text-xs font-black uppercase">
                     💬 Häufige Fragen
                 </span>
                 <h2 class="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">
@@ -1450,44 +1456,44 @@ new class extends Component {
                 </h2>
             </div>
 
-            <div x-data="{ openFaq: 0 }" class="space-y-3 text-xs">
+            <div x-data="{ openFaq: 0 }" class="space-y-2.5 sm:space-y-3 text-xs">
                 
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs card-lift">
-                    <button type="button" @click="openFaq = (openFaq === 0 ? null : 0)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
+                <div class="bg-white border border-slate-200 rounded-xl sm:rounded-2xl p-3.5 sm:p-4 transition shadow-xs card-lift">
+                    <button type="button" @click="openFaq = (openFaq === 0 ? null : 0)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-xs sm:text-sm cursor-pointer gap-2">
                         <span>Ist die Software auf Smartphones und Tablets auf der Baustelle nutzbar?</span>
-                        <span class="text-blue-700 text-base font-bold" x-text="openFaq === 0 ? '−' : '+'">−</span>
+                        <span class="text-blue-700 text-sm sm:text-base font-bold shrink-0" x-text="openFaq === 0 ? '−' : '+'">−</span>
                     </button>
-                    <p x-show="openFaq === 0" x-cloak class="mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium">
+                    <p x-show="openFaq === 0" x-cloak class="mt-2.5 sm:mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium text-xs">
                         Ja! BT Bautechnik Cockpit ist als Progressive Web App (PWA) konzipiert. Es läuft reaktionsschnell auf jedem iPhone, Android-Smartphone, iPad oder Laptop – ohne umständliche App-Store Installation.
                     </p>
                 </div>
 
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs card-lift">
-                    <button type="button" @click="openFaq = (openFaq === 1 ? null : 1)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
+                <div class="bg-white border border-slate-200 rounded-xl sm:rounded-2xl p-3.5 sm:p-4 transition shadow-xs card-lift">
+                    <button type="button" @click="openFaq = (openFaq === 1 ? null : 1)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-xs sm:text-sm cursor-pointer gap-2">
                         <span>Wie funktioniert die Nachtragserstellung nach VOB/B § 2?</span>
-                        <span class="text-blue-700 text-base font-bold" x-text="openFaq === 1 ? '−' : '+'">+</span>
+                        <span class="text-blue-700 text-sm sm:text-base font-bold shrink-0" x-text="openFaq === 1 ? '−' : '+'">+</span>
                     </button>
-                    <p x-show="openFaq === 1" x-cloak class="mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium">
+                    <p x-show="openFaq === 1" x-cloak class="mt-2.5 sm:mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium text-xs">
                         Das System unterscheidet automatisch zwischen Leistungsänderungen (§ 2 Abs. 5) und unvorhergesehenen Zusatzleistungen (§ 2 Abs. 6). Sie geben Titel und Menge ein – das System erstellt sofort das unterschriftsreife Nachtragsangebot als PDF mit rechtssicherer Klausulierung.
                     </p>
                 </div>
 
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs card-lift">
-                    <button type="button" @click="openFaq = (openFaq === 2 ? null : 2)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
+                <div class="bg-white border border-slate-200 rounded-xl sm:rounded-2xl p-3.5 sm:p-4 transition shadow-xs card-lift">
+                    <button type="button" @click="openFaq = (openFaq === 2 ? null : 2)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-xs sm:text-sm cursor-pointer gap-2">
                         <span>Kann mein Steuerberater die Rechnungen und Kosten direkt importieren?</span>
-                        <span class="text-blue-700 text-base font-bold" x-text="openFaq === 2 ? '−' : '+'">+</span>
+                        <span class="text-blue-700 text-sm sm:text-base font-bold shrink-0" x-text="openFaq === 2 ? '−' : '+'">+</span>
                     </button>
-                    <p x-show="openFaq === 2" x-cloak class="mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium">
+                    <p x-show="openFaq === 2" x-cloak class="mt-2.5 sm:mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium text-xs">
                         Ja. Das System verfügt über eine integrierte DATEV CSV-Schnittstelle nach SKR03 und SKR04 inklusive automatischem Buchungsschlüssel für Nachunternehmer-Rechnungen (§ 13b UStG Bauleistungen).
                     </p>
                 </div>
 
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 transition shadow-xs card-lift">
-                    <button type="button" @click="openFaq = (openFaq === 3 ? null : 3)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-sm cursor-pointer">
+                <div class="bg-white border border-slate-200 rounded-xl sm:rounded-2xl p-3.5 sm:p-4 transition shadow-xs card-lift">
+                    <button type="button" @click="openFaq = (openFaq === 3 ? null : 3)" class="w-full flex justify-between items-center text-left font-black text-slate-900 text-xs sm:text-sm cursor-pointer gap-2">
                         <span>Können wir das System unverbindlich testen?</span>
-                        <span class="text-blue-700 text-base font-bold" x-text="openFaq === 3 ? '−' : '+'">+</span>
+                        <span class="text-blue-700 text-sm sm:text-base font-bold shrink-0" x-text="openFaq === 3 ? '−' : '+'">+</span>
                     </button>
-                    <p x-show="openFaq === 3" x-cloak class="mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium">
+                    <p x-show="openFaq === 3" x-cloak class="mt-2.5 sm:mt-3 text-slate-600 leading-relaxed pt-2 border-t border-slate-100 font-medium text-xs">
                         Absolut. Klicken Sie einfach auf "Demo anfordern". Wir zeigen Ihnen in 15 Minuten per Videoschalte oder direkt vor Ort, wie Sie das System für Ihre Baustellen einrichten.
                     </p>
                 </div>
@@ -1500,20 +1506,20 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 8. BIG CTA BOTTOM BANNER                                                  -->
     <!-- ========================================================================= -->
-    <section class="py-20 relative overflow-hidden bg-white border-t border-slate-200 reveal-on-scroll">
+    <section class="py-14 sm:py-20 relative overflow-hidden bg-white border-t border-slate-200 reveal-on-scroll">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <div class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white p-8 sm:p-12 rounded-3xl shadow-2xl space-y-6">
-                <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight">
+            <div class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white p-6 sm:p-12 rounded-2xl sm:rounded-3xl shadow-2xl space-y-4 sm:space-y-6">
+                <h2 class="text-xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
                     Bereit, Ihre Baustellen & Finanzen auf das nächste Level zu heben?
                 </h2>
                 <p class="text-xs sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed font-medium">
                     Schließen Sie sich zukunftsorientierten Bauunternehmen & Bauträgern an. Fordern Sie jetzt Ihre persönliche Live-Präsentation an.
                 </p>
                 <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-                    <button wire:click="openDemoModal" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-500 via-indigo-500 to-amber-500 hover:from-blue-400 hover:to-amber-400 text-white font-black text-xs rounded-xl shadow-xl transition cursor-pointer btn-press">
+                    <button wire:click="openDemoModal" class="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 bg-gradient-to-r from-blue-500 via-indigo-500 to-amber-500 hover:from-blue-400 hover:to-amber-400 text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-xl transition cursor-pointer btn-press">
                         🚀 Jetzt kostenlose Demo anfordern
                     </button>
-                    <a href="{{ route('login') }}" class="w-full sm:w-auto px-6 py-4 bg-white/10 hover:bg-white/20 text-white font-black text-xs rounded-xl border border-white/20 transition">
+                    <a href="{{ route('login') }}" class="w-full sm:w-auto px-5 sm:px-6 py-3.5 sm:py-4 bg-white/10 hover:bg-white/20 text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl border border-white/20 transition">
                         Bestehendes Kundenkonto Login ↗
                     </a>
                 </div>
@@ -1524,20 +1530,20 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 9. FOOTER WITH REAL LEGAL ENTITY & COMPLIANCE LINKS                       -->
     <!-- ========================================================================= -->
-    <footer class="border-t border-slate-200 bg-white py-12 text-xs text-slate-500">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+    <footer class="border-t border-slate-200 bg-white py-8 sm:py-12 text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6">
             
             <!-- Real Brand Identity in Footer -->
-            <div class="flex flex-col sm:flex-row items-center gap-3">
+            <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
                 <x-brand-logo size="small" />
                 <span class="text-slate-300 hidden sm:inline">•</span>
-                <span class="text-slate-500 text-center sm:text-left font-medium">
+                <span class="text-slate-500 text-[11px] sm:text-xs font-medium">
                     BT Bautechnik UG (haftungsbeschränkt) | Sollngriesbacher Str. 4, 92334 Berching 🇩🇪
                 </span>
             </div>
 
             <!-- Legal Pages Links -->
-            <div class="flex flex-wrap items-center justify-center gap-6 font-bold text-slate-700">
+            <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 font-bold text-slate-700 text-xs">
                 <a href="/impressum" class="hover:text-blue-700 transition">Impressum</a>
                 <a href="/datenschutz" class="hover:text-blue-700 transition">Datenschutz</a>
                 <a href="/agb" class="hover:text-blue-700 transition">AGB</a>
@@ -1550,17 +1556,17 @@ new class extends Component {
     <!-- 10. INTERACTIVE LEAD CAPTURE & DEMO REQUEST MODAL                         -->
     <!-- ========================================================================= -->
     @if ($showDemoModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-            <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 relative overflow-hidden">
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-sm">
+            <div class="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-5 sm:p-8 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl space-y-4 sm:space-y-6 relative">
                 
-                <button wire:click="closeDemoModal" class="absolute top-5 right-5 text-slate-400 hover:text-slate-900 text-xl font-bold cursor-pointer">✕</button>
+                <button wire:click="closeDemoModal" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 text-xl font-bold cursor-pointer">✕</button>
 
                 @if ($demoSuccess)
-                    <div class="py-8 text-center space-y-4">
-                        <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl mx-auto font-bold animate-bounce">
+                    <div class="py-6 sm:py-8 text-center space-y-3 sm:space-y-4">
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl sm:text-3xl mx-auto font-bold animate-bounce">
                             ✓
                         </div>
-                        <h3 class="text-xl font-black text-slate-900">Vielen Dank für Ihre Anfrage!</h3>
+                        <h3 class="text-lg sm:text-xl font-black text-slate-900">Vielen Dank für Ihre Anfrage!</h3>
                         <p class="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed font-medium">
                             Wir haben Ihre Daten erhalten. Unsere Bauleitung der <strong>BT Bautechnik UG</strong> wird sich in Kürze für eine persönliche Live-Präsentation bei Ihnen melden.
                         </p>
@@ -1572,12 +1578,12 @@ new class extends Component {
                     </div>
                 @else
                     <div class="space-y-1">
-                        <span class="text-[10px] font-black uppercase text-amber-700 tracking-wider">Unverbindliche Präsentation</span>
-                        <h3 class="text-xl font-black text-slate-900">Live-Demo für Ihr Bauunternehmen</h3>
+                        <span class="text-[9.5px] sm:text-[10px] font-black uppercase text-amber-700 tracking-wider">Unverbindliche Präsentation</span>
+                        <h3 class="text-lg sm:text-xl font-black text-slate-900">Live-Demo für Ihr Bauunternehmen</h3>
                         <p class="text-xs text-slate-500 font-medium">Erfahren Sie, wie BT Cockpit Ihren Baustellenalltag revolutioniert.</p>
                     </div>
 
-                    <form wire:submit="submitDemoRequest" class="space-y-3.5 text-xs">
+                    <form wire:submit="submitDemoRequest" class="space-y-3 sm:space-y-3.5 text-xs">
                         <div>
                             <label class="block font-bold text-slate-800 mb-1">Ihr Name / Ansprechpartner *</label>
                             <input wire:model="demoName" type="text" placeholder="z. B. Dipl.-Ing. Markus Huber" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-bold rounded-xl p-2.5 focus:border-blue-600 focus:outline-none" required>

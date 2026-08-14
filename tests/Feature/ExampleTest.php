@@ -1,7 +1,7 @@
 <?php
 
-it('redirects home to login', function () {
+it('renders the landing page on home route', function () {
     $response = $this->get('/');
 
-    $response->assertRedirect(route('login'));
+    $response->assertStatus(200);
 });

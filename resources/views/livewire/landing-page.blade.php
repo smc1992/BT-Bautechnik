@@ -336,105 +336,228 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 3. DIE STORY: VON DER BRANCHE FÜR DIE BRANCHE                              -->
     <!-- ========================================================================= -->
-    <section id="story" class="py-20 bg-white border-y border-slate-200 relative overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                
-                <div class="lg:col-span-6 space-y-6 reveal-on-scroll">
-                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-black uppercase">
-                        <span>🧱 Aus der Praxis für die Baupraxis</span>
-                    </div>
+    <section id="story" class="py-24 bg-gradient-to-b from-white via-slate-50/50 to-white border-y border-slate-200/90 relative overflow-hidden">
+        
+        <!-- Background Ambient Glow -->
+        <div class="absolute top-1/2 -left-40 w-96 h-96 bg-blue-100/40 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-amber-100/40 rounded-full blur-3xl pointer-events-none"></div>
 
-                    <h2 class="text-2xl sm:text-4xl font-black text-slate-950 tracking-tight leading-tight">
-                        Wir bauen selbst. Wir kennen den Baustellenalltag bis ins Detail.
-                    </h2>
-
-                    <div class="space-y-4 text-sm text-slate-700 leading-relaxed font-medium">
-                        <p>
-                            Hinter dieser Software steht kein anonymer Softwarekonzern, sondern die <strong>BT Bautechnik UG (haftungsbeschränkt)</strong> – ein eingetragenes, aktives Bauunternehmen mit Sitz in Berching (Bayern).
-                        </p>
-                        <p>
-                            Jedes Modul in diesem Cockpit wurde aus einem echten Baustellen-Problem entwickelt:
-                        </p>
-                        <ul class="space-y-3 list-none pl-0">
-                            <li class="flex items-start gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200 card-lift">
-                                <span class="text-amber-600 font-bold text-base">⚠️</span>
-                                <span><strong>VOB-Nachträge gingen verloren:</strong> Weil Poliere vor Ort keine Zeit hatten, Angebote am Schreibtisch zu tippen. Heute erstellen wir Nachtragsangebote nach § 2 VOB/B mit 2 Klicks vor Ort.</span>
-                            </li>
-                            <li class="flex items-start gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200 card-lift">
-                                <span class="text-blue-600 font-bold text-base">🎙️</span>
-                                <span><strong>Mühsame Bautagebücher:</strong> Nach 10 Stunden Baustelle schreibt kein Bauleiter lange Berichte. Ein 30-Sekunden Sprachmemo genügt und die KI formuliert den fertigen Bericht inklusive Wetter & Fotos.</span>
-                            </li>
-                            <li class="flex items-start gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200 card-lift">
-                                <span class="text-emerald-600 font-bold text-base">📊</span>
-                                <span><strong>Abrechnungs-Chaos beim Steuerberater:</strong> Statt Belege per Post zu schicken, exportiert das System fertige DATEV-Buchungsstapel (SKR03/SKR04) inkl. § 13b UStG Nachunternehmer-Zuordnung.</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="pt-2">
-                        <button wire:click="openDemoModal" class="px-6 py-3.5 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-600 hover:to-indigo-600 text-white font-black text-xs rounded-xl shadow-md shadow-blue-600/20 transition cursor-pointer btn-press">
-                            Lernen Sie die BT Bauleiter-Suite unverbindlich kennen →
-                        </button>
-                    </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            
+            <!-- Section Header -->
+            <div class="max-w-3xl mb-14 space-y-3 reveal-on-scroll">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-300 text-amber-900 text-xs font-black uppercase shadow-2xs">
+                    <span class="text-sm">🧱</span>
+                    <span>Aus der echten Baupraxis – Für Bauträger, Generalübernehmer & Bauleiter</span>
                 </div>
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight leading-tight">
+                    Wir bauen selbst.<br>
+                    <span class="bg-gradient-to-r from-blue-700 via-indigo-700 to-amber-600 bg-clip-text text-transparent">
+                        Wir kennen jeden Engpass auf der Baustelle.
+                    </span>
+                </h2>
+                <p class="text-sm sm:text-base text-slate-600 font-medium leading-relaxed">
+                    Hinter dieser Lösung steht kein reines Softwarehaus, sondern die <strong>BT Bautechnik UG (haftungsbeschränkt)</strong> mit Sitz in Berching (Bayern). Jede Funktion löst ein reales Problem, das wir selbst auf unseren Baustellen erlebt haben:
+                </p>
+            </div>
 
-                <!-- Right Column: Bauträger Office Photography + 4 Feature Cards -->
-                <div class="lg:col-span-6 space-y-5 reveal-on-scroll reveal-delay-200">
+            <!-- Bento Grid Showcase: 3 Interactive Problem/Solution Cards (Left) & Photo + 4 Core Cards (Right) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Left Column: 3 Rich Problem -> Solution Cards (6 cols) -->
+                <div class="lg:col-span-6 space-y-4 reveal-on-scroll">
                     
-                    <!-- Bauträger Planning Office Image -->
-                    <div class="relative rounded-3xl overflow-hidden border border-slate-200 shadow-md group">
-                        <img src="{{ asset('images/bautraeger-office-cockpit.jpg') }}" 
-                             alt="BT Bautechnik Bauträger Planungsbüro & Projektmanagement" 
-                             class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-5">
-                            <span class="text-xs font-black text-white bg-blue-600/90 backdrop-blur-xs px-3 py-1 rounded-xl">
-                                🏢 Planungsbüro & Baustellen-Zentrale Berching
+                    <!-- Card 1: Nachträge -->
+                    <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm hover:border-amber-400 card-lift transition-all space-y-3 group">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
+                                ⚠️ Das alte Problem
+                            </span>
+                            <span class="text-xs font-black text-amber-600 flex items-center gap-1">
+                                <span>VOB/B § 2 Abs. 5 & 6</span>
                             </span>
                         </div>
+                        <h3 class="font-black text-slate-900 text-base group-hover:text-amber-600 transition-colors">
+                            Nachträge wurden vergessen oder mündlich verhandelt
+                        </h3>
+                        <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                            Weil Poliere und Bauleiter vor Ort keine Zeit hatten, am PC Angebote zu tippen, blieben berechtigte Mehrleistungen unvergütet.
+                        </p>
+                        <div class="pt-2 border-t border-slate-100 flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50/70 p-3 rounded-2xl border border-emerald-200">
+                            <span class="text-base">✨</span>
+                            <span><strong>BT Lösung:</strong> Nachtragsangebot nach § 2 VOB/B mit 2 Klicks vor Ort als PDF erzeugen.</span>
+                        </div>
                     </div>
 
-                    <!-- 4 Compact Core Value Pillars -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <div class="bg-slate-50 p-4.5 rounded-2xl border border-slate-200 space-y-2 shadow-xs card-lift hover:border-amber-300 group cursor-default">
-                            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
-                                🧱
+                    <!-- Card 2: Bautagebuch -->
+                    <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm hover:border-blue-400 card-lift transition-all space-y-3 group">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
+                                ⚠️ Das alte Problem
+                            </span>
+                            <span class="text-xs font-black text-blue-600 flex items-center gap-1">
+                                <span>KI-Sprachmemo (Whisper)</span>
+                            </span>
+                        </div>
+                        <h3 class="font-black text-slate-900 text-base group-hover:text-blue-700 transition-colors">
+                            Mühsame Bautagebücher nach 10 Stunden Arbeit
+                        </h3>
+                        <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                            Niemand tippt abends gern Berichte. Die Folge: Lückenhafte Dokumentation und Beweisnot bei späteren Gewährleistungsstreitigkeiten.
+                        </p>
+                        <div class="pt-2 border-t border-slate-100 flex items-center gap-2 text-xs font-bold text-blue-900 bg-blue-50/70 p-3 rounded-2xl border border-blue-200">
+                            <span class="text-base">🎙️</span>
+                            <span><strong>BT Lösung:</strong> 30-Sekunden Sprachmemo einsprechen – KI formuliert fertigen Tagesbericht samt Wetter & Fotos.</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Steuerberater & Abrechnung -->
+                    <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm hover:border-emerald-400 card-lift transition-all space-y-3 group">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
+                                ⚠️ Das alte Problem
+                            </span>
+                            <span class="text-xs font-black text-emerald-600 flex items-center gap-1">
+                                <span>DATEV SKR03 / SKR04</span>
+                            </span>
+                        </div>
+                        <h3 class="font-black text-slate-900 text-base group-hover:text-emerald-700 transition-colors">
+                            Abrechnungs-Chaos & manuelle Buchhaltungs-Übergabe
+                        </h3>
+                        <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                            Belege per Post, fehlende Zuordnung nach § 13b UStG für Nachunternehmer und Verzögerungen beim Monatsabschluss.
+                        </p>
+                        <div class="pt-2 border-t border-slate-100 flex items-center gap-2 text-xs font-bold text-emerald-900 bg-emerald-50/70 p-3 rounded-2xl border border-emerald-200">
+                            <span class="text-base">📊</span>
+                            <span><strong>BT Lösung:</strong> Fertiger DATEV-Export auf Knopfdruck für Ihren Steuerberater ohne Doppeleingaben.</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-3">
+                        <button wire:click="openDemoModal" class="w-full py-4 bg-gradient-to-r from-blue-700 via-indigo-700 to-amber-600 hover:from-blue-600 hover:to-amber-500 text-white font-black text-xs sm:text-sm rounded-2xl shadow-lg shadow-blue-600/20 transition cursor-pointer flex items-center justify-center gap-2 btn-press">
+                            <span>Lernen Sie die BT Bauleiter-Suite unverbindlich kennen</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Right Column: Planning Office Photo + 4 High-Impact Value Cards (6 cols) -->
+                <div class="lg:col-span-6 space-y-6 reveal-on-scroll reveal-delay-200">
+                    
+                    <!-- Bauträger Planning Office Image with Floating Badges -->
+                    <div class="relative rounded-3xl overflow-hidden border border-slate-200 shadow-xl group">
+                        <img src="{{ asset('images/bautraeger-office-cockpit.jpg') }}" 
+                             alt="BT Bautechnik Bauträger Planungsbüro & Projektmanagement" 
+                             class="w-full h-72 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-700">
+                        
+                        <!-- Overlay Gradient & Glass Badges -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent flex flex-col justify-between p-6">
+                            <div class="flex justify-end">
+                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-white/90 backdrop-blur-md text-slate-900 shadow-md border border-white">
+                                    📍 Berching, Bayern
+                                </span>
                             </div>
-                            <h4 class="font-black text-slate-900 text-sm">Echtes Bauunternehmen</h4>
-                            <p class="text-[11.5px] text-slate-600 leading-relaxed font-medium">
-                                Wir nutzen die Software täglich auf unseren eigenen Baustellen in Bayern.
-                            </p>
+                            <div class="space-y-1.5">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                    <span class="text-xs font-black text-amber-300 uppercase tracking-wider">
+                                        Praxiseinsatz vor Ort
+                                    </span>
+                                </div>
+                                <h4 class="text-base sm:text-lg font-black text-white leading-snug">
+                                    Planungsbüro & Baustellen-Zentrale BT Bautechnik UG
+                                </h4>
+                                <p class="text-xs text-slate-200 font-medium">
+                                    Wir testen und optimieren jedes Release täglich auf unseren eigenen Bauvorhaben.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4 Generously Padded, High-Contrast Feature Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        
+                        <!-- Card 1 -->
+                        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm card-lift hover:border-amber-400 group cursor-default flex flex-col justify-between space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform">
+                                    🧱
+                                </div>
+                                <span class="px-2 py-0.5 rounded-md text-[9.5px] font-black uppercase bg-amber-50 text-amber-800 border border-amber-200">
+                                    100% Praxis
+                                </span>
+                            </div>
+                            <div>
+                                <h4 class="font-black text-slate-950 text-base group-hover:text-amber-700 transition-colors">
+                                    Echtes Bauunternehmen
+                                </h4>
+                                <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
+                                    Keine theoretische Spielerei: Entwickelt von aktiven Bauleitern für den harten Baustellenalltag in Bayern.
+                                </p>
+                            </div>
                         </div>
 
-                        <div class="bg-slate-50 p-4.5 rounded-2xl border border-slate-200 space-y-2 shadow-xs card-lift hover:border-blue-300 group cursor-default">
-                            <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
-                                📑
+                        <!-- Card 2 -->
+                        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm card-lift hover:border-blue-400 group cursor-default flex flex-col justify-between space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-800 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform">
+                                    📑
+                                </div>
+                                <span class="px-2 py-0.5 rounded-md text-[9.5px] font-black uppercase bg-blue-50 text-blue-800 border border-blue-200">
+                                    Rechtssicher
+                                </span>
                             </div>
-                            <h4 class="font-black text-slate-900 text-sm">VOB/B Nachtragsautomatik</h4>
-                            <p class="text-[11.5px] text-slate-600 leading-relaxed font-medium">
-                                Nachträge nach § 2 Abs. 5/6 sofort mit fertigem Briefkopf versenden.
-                            </p>
+                            <div>
+                                <h4 class="font-black text-slate-950 text-base group-hover:text-blue-700 transition-colors">
+                                    VOB/B § 2 Automatik
+                                </h4>
+                                <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
+                                    Mehrvergütung sofort mit offiziellem Briefkopf, Begründung und rechtssicherem PDF-Angebot versenden.
+                                </p>
+                            </div>
                         </div>
 
-                        <div class="bg-slate-50 p-4.5 rounded-2xl border border-slate-200 space-y-2 shadow-xs card-lift hover:border-indigo-300 group cursor-default">
-                            <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
-                                👥
+                        <!-- Card 3 -->
+                        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm card-lift hover:border-indigo-400 group cursor-default flex flex-col justify-between space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-800 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform">
+                                    👥
+                                </div>
+                                <span class="px-2 py-0.5 rounded-md text-[9.5px] font-black uppercase bg-indigo-50 text-indigo-800 border border-indigo-200">
+                                    Alles vernetzt
+                                </span>
                             </div>
-                            <h4 class="font-black text-slate-900 text-sm">360° Kunden-Zentrale</h4>
-                            <p class="text-[11.5px] text-slate-600 leading-relaxed font-medium">
-                                Der Bauherr als Dreh- und Angelpunkt für alle Baustellen & Abrechnungen.
-                            </p>
+                            <div>
+                                <h4 class="font-black text-slate-950 text-base group-hover:text-indigo-700 transition-colors">
+                                    360° Kunden-Zentrale
+                                </h4>
+                                <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
+                                    Der Bauherr im Mittelpunkt: Baustellen, Aufmaße, Rechnungen und Telefonnotizen mit einem Klick steuern.
+                                </p>
+                            </div>
                         </div>
 
-                        <div class="bg-slate-50 p-4.5 rounded-2xl border border-slate-200 space-y-2 shadow-xs card-lift hover:border-emerald-300 group cursor-default">
-                            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
-                                📊
+                        <!-- Card 4 -->
+                        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm card-lift hover:border-emerald-400 group cursor-default flex flex-col justify-between space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition-transform">
+                                    📊
+                                </div>
+                                <span class="px-2 py-0.5 rounded-md text-[9.5px] font-black uppercase bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                    DATEV SKR03/04
+                                </span>
                             </div>
-                            <h4 class="font-black text-slate-900 text-sm">DATEV Buchungsstapel</h4>
-                            <p class="text-[11.5px] text-slate-600 leading-relaxed font-medium">
-                                SKR03/SKR04 Export für Ihren Steuerberater ohne Doppeleingaben.
-                            </p>
+                            <div>
+                                <h4 class="font-black text-slate-950 text-base group-hover:text-emerald-700 transition-colors">
+                                    Steuerberater Export
+                                </h4>
+                                <p class="text-xs text-slate-600 leading-relaxed font-medium mt-1">
+                                    Inklusive § 13b UStG Steuerschlüsseln für Subunternehmer. Kein mühsames Nachbuchen am Monatsende.
+                                </p>
+                            </div>
                         </div>
+
                     </div>
 
                 </div>

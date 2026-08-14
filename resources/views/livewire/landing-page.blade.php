@@ -120,22 +120,24 @@ new class extends Component {
     <div class="fixed top-1/3 right-10 w-[500px] h-[500px] bg-amber-100/50 rounded-full blur-[160px] pointer-events-none -z-10"></div>
 
     <!-- ========================================================================= -->
-    <!-- 1. STICKY TOP NAVBAR (CLEAN WHITE / FROSTED GLASS)                        -->
     <!-- ========================================================================= -->
-    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/90 shadow-xs transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <!-- 1. STICKY TOP NAVBAR (CLEAN WHITE / FROSTED GLASS & FULL MOBILE NAV)      -->
+    <!-- ========================================================================= -->
+    <header x-data="{ mobileMenuOpen: false }" class="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-slate-200/90 shadow-xs transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2">
             
             <!-- Real Brand Logo Component -->
-            <a href="/" class="hover:opacity-95 transition group">
+            <a href="/" class="hover:opacity-95 transition group shrink-0">
                 <x-brand-logo size="default" />
             </a>
 
             <!-- Nav Links (Desktop) -->
-            <nav class="hidden lg:flex items-center gap-8 text-xs font-black text-slate-600">
+            <nav class="hidden lg:flex items-center gap-7 text-xs font-black text-slate-600">
                 <a href="#story" class="hover:text-blue-700 transition flex items-center gap-1">
                     <span>🧱 Baupraxis & Story</span>
                 </a>
                 <a href="#module" class="hover:text-blue-700 transition">ERP-Module & VOB</a>
+                <a href="#integrations" class="hover:text-blue-700 transition">Schnittstellen</a>
                 <a href="#rechner" class="hover:text-emerald-700 transition flex items-center gap-1.5 font-black text-emerald-700">
                     <span>🧮 Ersparnisrechner</span>
                 </a>
@@ -143,8 +145,8 @@ new class extends Component {
                 <a href="#faq" class="hover:text-slate-900 transition">FAQ</a>
             </nav>
 
-            <!-- Action Buttons -->
-            <div class="flex items-center gap-3">
+            <!-- Action Buttons (Desktop & Tablet) -->
+            <div class="hidden sm:flex items-center gap-2.5">
                 @auth
                     <a href="{{ route('dashboard') }}" class="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl shadow-xs transition flex items-center gap-2">
                         <span>📊 Zum Cockpit</span>
@@ -159,6 +161,97 @@ new class extends Component {
                     <span>✨ Live-Demo anfordern</span>
                 </button>
             </div>
+
+            <!-- Mobile Actions (Screen < 640px) -->
+            <div class="flex sm:hidden items-center gap-1.5 shrink-0">
+                <button type="button" wire:click="openDemoModal" class="px-2.5 py-2 bg-gradient-to-r from-blue-700 to-indigo-700 text-white font-black text-[11px] rounded-xl shadow-xs flex items-center gap-1 btn-press">
+                    <span>✨ Demo</span>
+                </button>
+
+                <!-- Hamburger Toggle Button -->
+                <button type="button" 
+                        @click="mobileMenuOpen = !mobileMenuOpen" 
+                        class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 focus:outline-none transition-colors cursor-pointer" 
+                        aria-label="Menü öffnen">
+                    <!-- Hamburger Icon when closed -->
+                    <svg x-show="!mobileMenuOpen" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <!-- Close Icon when open -->
+                    <svg x-show="mobileMenuOpen" x-cloak class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Mobile Slide-Down Drawer Navigation (Alpine.js) -->
+        <div x-show="mobileMenuOpen" 
+             x-cloak 
+             x-transition:enter="transition ease-out duration-250 transform" 
+             x-transition:enter-start="opacity-0 -translate-y-2" 
+             x-transition:enter-end="opacity-100 translate-y-0" 
+             x-transition:leave="transition ease-in duration-150 transform" 
+             x-transition:leave-start="opacity-100 translate-y-0" 
+             x-transition:leave-end="opacity-0 -translate-y-2" 
+             @click.away="mobileMenuOpen = false"
+             class="lg:hidden bg-white border-b border-slate-200 shadow-2xl px-4 py-5 space-y-4">
+            
+            <div class="space-y-1">
+                <span class="text-[10px] font-black uppercase text-slate-400 tracking-wider px-3 block mb-1">Navigation</span>
+                
+                <nav class="flex flex-col space-y-1">
+                    <a href="#story" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black text-slate-800 hover:text-blue-700 hover:bg-blue-50 transition">
+                        <span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center text-sm shrink-0">🧱</span>
+                        <span>Baupraxis & Story</span>
+                    </a>
+                    <a href="#module" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black text-slate-800 hover:text-blue-700 hover:bg-blue-50 transition">
+                        <span class="w-7 h-7 rounded-lg bg-blue-100 text-blue-800 flex items-center justify-center text-sm shrink-0">🏗️</span>
+                        <span>ERP-Module & Simulator</span>
+                    </a>
+                    <a href="#integrations" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black text-slate-800 hover:text-blue-700 hover:bg-blue-50 transition">
+                        <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-800 flex items-center justify-center text-sm shrink-0">🔌</span>
+                        <span>Schnittstellen & DATEV</span>
+                    </a>
+                    <a href="#rechner" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black text-slate-800 hover:text-emerald-700 hover:bg-emerald-50 transition">
+                        <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center text-sm shrink-0">🧮</span>
+                        <span>Ersparnisrechner</span>
+                    </a>
+                    <a href="#vorteile" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black text-slate-800 hover:text-blue-700 hover:bg-blue-50 transition">
+                        <span class="w-7 h-7 rounded-lg bg-cyan-100 text-cyan-800 flex items-center justify-center text-sm shrink-0">⚖️</span>
+                        <span>Vorher / Nachher Vergleich</span>
+                    </a>
+                    <a href="#faq" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black text-slate-800 hover:text-slate-900 hover:bg-slate-100 transition">
+                        <span class="w-7 h-7 rounded-lg bg-slate-100 text-slate-800 flex items-center justify-center text-sm shrink-0">💬</span>
+                        <span>Häufige Fragen (FAQ)</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Mobile Drawer Actions & CTA -->
+            <div class="pt-3 border-t border-slate-100 space-y-2">
+                <button type="button" wire:click="openDemoModal" @click="mobileMenuOpen = false" class="w-full py-3 bg-gradient-to-r from-blue-700 via-indigo-700 to-amber-600 text-white font-black text-xs rounded-xl shadow-md text-center flex items-center justify-center gap-2 btn-press">
+                    <span>✨ Kostenlose Live-Demo anfordern</span>
+                </button>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="py-2.5 bg-slate-900 text-white font-black text-xs rounded-xl text-center flex items-center justify-center gap-1.5">
+                            <span>📊 Zum Cockpit</span>
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-xs rounded-xl text-center flex items-center justify-center gap-1.5">
+                            <span>🔑 Login ↗</span>
+                        </a>
+                    @endauth
+                    
+                    <a href="https://wa.me/4917612345678?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-200 font-black text-xs rounded-xl text-center flex items-center justify-center gap-1.5">
+                        <span>💬 WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+
         </div>
     </header>
 

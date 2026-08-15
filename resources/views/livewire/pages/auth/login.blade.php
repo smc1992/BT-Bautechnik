@@ -27,8 +27,11 @@ new #[Layout('layouts.guest')] class extends Component
 <div class="space-y-6">
     <!-- Header inside Card -->
     <div class="space-y-1">
-        <h2 class="text-2xl font-black text-slate-900 tracking-tight">
-            Willkommen zurück 👋
+        <div class="arch-section-label mb-1">
+            <span>COCKPIT LOGIN</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
+            Mitarbeiter & Partner Login
         </h2>
         <p class="text-xs text-slate-500 font-medium">
             Melden Sie sich mit Ihren Zugangsdaten an, um fortzufahren.
@@ -41,7 +44,7 @@ new #[Layout('layouts.guest')] class extends Component
     <form wire:submit="login" class="space-y-4">
         <!-- Email Address -->
         <div class="space-y-1.5">
-            <label for="email" class="block text-xs font-bold text-slate-700">
+            <label for="email" class="block text-xs font-bold text-slate-800">
                 E-Mail-Adresse
             </label>
             <div class="relative">
@@ -49,8 +52,12 @@ new #[Layout('layouts.guest')] class extends Component
                        type="email" name="email" 
                        required autofocus autocomplete="username" 
                        placeholder="name@bt-bautechnik.de"
-                       class="w-full bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 rounded-xl pl-10 pr-4 py-2.5 text-xs font-medium transition shadow-2xs">
-                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">✉️</span>
+                       class="w-full bg-slate-50 border border-slate-300 text-slate-950 placeholder-slate-400 focus:bg-white focus:border-slate-950 focus:ring-2 focus:ring-amber-500/20 rounded-xl pl-10 pr-4 py-2.5 text-xs font-medium transition shadow-2xs">
+                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                </span>
             </div>
             <x-input-error :messages="$errors->get('form.email')" class="mt-1" />
         </div>
@@ -58,11 +65,11 @@ new #[Layout('layouts.guest')] class extends Component
         <!-- Password -->
         <div class="space-y-1.5" x-data="{ showPassword: false }">
             <div class="flex items-center justify-between">
-                <label for="password" class="block text-xs font-bold text-slate-700">
+                <label for="password" class="block text-xs font-bold text-slate-800">
                     Passwort
                 </label>
                 @if (Route::has('password.request'))
-                    <a class="text-[11px] font-bold text-blue-600 hover:text-blue-700 hover:underline" href="{{ route('password.request') }}" wire:navigate>
+                    <a class="text-[11px] font-bold text-amber-700 hover:text-amber-800 hover:underline" href="{{ route('password.request') }}" wire:navigate>
                         Passwort vergessen?
                     </a>
                 @endif
@@ -74,8 +81,12 @@ new #[Layout('layouts.guest')] class extends Component
                        name="password"
                        required autocomplete="current-password" 
                        placeholder="••••••••••••"
-                       class="w-full bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 rounded-xl pl-10 pr-10 py-2.5 text-xs font-medium transition shadow-2xs">
-                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔒</span>
+                       class="w-full bg-slate-50 border border-slate-300 text-slate-950 placeholder-slate-400 focus:bg-white focus:border-slate-950 focus:ring-2 focus:ring-amber-500/20 rounded-xl pl-10 pr-10 py-2.5 text-xs font-medium transition shadow-2xs">
+                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </span>
                 
                 <button type="button" @click="showPassword = !showPassword" 
                         class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer">
@@ -98,21 +109,22 @@ new #[Layout('layouts.guest')] class extends Component
         <!-- Remember Me -->
         <div class="flex items-center justify-between pt-1">
             <label for="remember" class="inline-flex items-center cursor-pointer">
-                <input wire:model="form.remember" id="remember" type="checkbox" class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 shadow-xs cursor-pointer" name="remember">
-                <span class="ms-2 text-xs font-semibold text-slate-600 select-none">Angemeldet bleiben</span>
+                <input wire:model="form.remember" id="remember" type="checkbox" class="w-4 h-4 rounded border-slate-300 text-slate-950 focus:ring-amber-500 shadow-xs cursor-pointer accent-amber-500" name="remember">
+                <span class="ms-2 text-xs font-semibold text-slate-700 select-none">Angemeldet bleiben</span>
             </label>
         </div>
 
         <!-- Primary Submit Button -->
         <div class="pt-2">
             <button type="submit" wire:loading.attr="disabled"
-                    class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98] text-white font-extrabold text-xs rounded-xl shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer btn-press disabled:opacity-50">
+                    class="w-full py-3.5 px-4 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs sm:text-sm rounded-xl border border-slate-800 shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer btn-press disabled:opacity-50">
                 <span wire:loading.remove wire:target="login" class="flex items-center gap-2">
-                    <span>Anmelden</span>
-                    <span>➔</span>
+                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                    <span>Im Cockpit anmelden</span>
+                    <span class="text-amber-400 ml-1">→</span>
                 </span>
                 <span wire:loading wire:target="login" class="flex items-center gap-2">
-                    <span class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    <span class="w-3.5 h-3.5 border-2 border-white/30 border-t-amber-400 rounded-full animate-spin"></span>
                     <span>Authentifiziere...</span>
                 </span>
             </button>

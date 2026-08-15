@@ -17,28 +17,13 @@ new class extends Component
 }; ?>
 
 @php
-    $isBaustellenActive = request()->routeIs('dashboard', 'planning', 'work-schedule', 'daily-logs', 'defects');
-    $isFinanzenActive = request()->routeIs('invoices', 'subcontractor-invoices', 'analytics', 'materials');
+    $isBaustellenGroup = request()->routeIs('dashboard', 'planning', 'work-schedule', 'daily-logs', 'defects', 'supplements', 'measurements', 'project-plans', 'equipment');
+    $isFinanzenActive = request()->routeIs('invoices', 'subcontractor-invoices', 'analytics', 'materials', 'time-tracking');
     $isCrmActive = request()->routeIs('contacts', 'company-settings');
     $isKiActive = request()->routeIs('ai-agent', 'knowledge-base');
-
-    if ($isFinanzenActive) {
-        $navBg = 'bg-slate-950/95 backdrop-blur-md text-white border-b-2 border-emerald-500 shadow-md shadow-emerald-950/20';
-        $badgeClass = 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
-    } elseif ($isCrmActive) {
-        $navBg = 'bg-slate-950/95 backdrop-blur-md text-white border-b-2 border-purple-500 shadow-md shadow-purple-950/20';
-        $badgeClass = 'bg-purple-500/20 text-purple-300 border border-purple-500/40';
-    } elseif ($isKiActive) {
-        $navBg = 'bg-slate-950/95 backdrop-blur-md text-white border-b-2 border-cyan-500 shadow-md shadow-cyan-950/20';
-        $badgeClass = 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40';
-    } else {
-        // Baustellen / Dashboard default
-        $navBg = 'bg-slate-950/95 backdrop-blur-md text-white border-b-2 border-blue-500 shadow-md shadow-blue-950/20';
-        $badgeClass = 'bg-blue-500/20 text-blue-300 border border-blue-500/40';
-    }
 @endphp
 
-<nav x-data="{ open: false }" wire:key="topbar-navigation-header" class="{{ $navBg }} sticky top-0 z-40 transition-colors duration-200">
+<nav x-data="{ open: false }" wire:key="topbar-navigation-header" class="bg-[#091224] text-white border-b border-slate-800/80 sticky top-0 z-40 transition-colors duration-200">
     <!-- Primary Navigation Menu -->
     <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
@@ -48,7 +33,7 @@ new class extends Component
                 <!-- Logo Badge -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center group btn-press">
-                        <div class="bg-white px-3 py-1 rounded-xl shadow-xs border border-white/20 flex items-center justify-center h-9 group-hover:bg-slate-100 transition">
+                        <div class="bg-white px-3 py-1 rounded-xl shadow-xs border border-white/20 flex items-center justify-center h-9 group-hover:bg-slate-50 transition">
                             <x-application-logo class="h-6 w-auto object-contain" />
                         </div>
                     </a>
@@ -57,31 +42,37 @@ new class extends Component
                 <!-- Structured Desktop Navigation Links -->
                 <div class="hidden md:flex md:items-center md:gap-1.5">
                     <!-- 1. Dashboard -->
-                    <a wire:key="nav-btn-dashboard" href="{{ route('dashboard') }}" wire:navigate class="h-9 px-3 text-xs font-extrabold rounded-xl transition btn-press flex items-center gap-1.5 border {{ request()->routeIs('dashboard') ? 'bg-white/20 text-white border-white/20 shadow-2xs' : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10' }}">
-                        <span>📊</span> <span>{{ __('Dashboard') }}</span>
+                    <a wire:key="nav-btn-dashboard" href="{{ route('dashboard') }}" wire:navigate 
+                       class="h-9 px-3 text-xs font-bold rounded-xl transition btn-press flex items-center gap-1.5 border {{ request()->routeIs('dashboard') ? 'bg-white/15 text-amber-400 border-amber-500/40 shadow-2xs' : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10' }}">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                        </svg>
+                        <span>{{ __('Cockpit') }}</span>
                     </a>
 
                     <!-- 2. Baustellen Dropdown -->
-                    @php $isBaustellenGroup = request()->routeIs('planning', 'work-schedule', 'daily-logs', 'defects'); @endphp
                     <x-dropdown align="left" width="72" wire:key="nav-dropdown-baustellen">
                         <x-slot name="trigger">
-                            <button class="h-9 inline-flex items-center gap-1.5 px-3 text-xs font-extrabold rounded-xl transition btn-press cursor-pointer border {{ $isBaustellenGroup ? 'bg-blue-600 text-white border-blue-500/30 shadow-xs' : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10' }}">
-                                <span>🏗️</span> <span>Baustellen</span>
-                                <svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            <button class="h-9 inline-flex items-center gap-1.5 px-3 text-xs font-bold rounded-xl transition btn-press cursor-pointer border {{ $isBaustellenGroup && !request()->routeIs('dashboard') ? 'bg-white/15 text-amber-400 border-amber-500/40 shadow-2xs' : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10' }}">
+                                <svg class="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                                <span>Baustellen</span>
+                                <svg class="w-3 h-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
                         </x-slot>
                         <x-slot name="content">
-                            <x-dropdown-link :href="route('work-schedule')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap text-blue-700 font-extrabold">
-                                <span>👷</span> {{ __('Handwerker-Einsatzplaner') }}
+                            <x-dropdown-link :href="route('work-schedule')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap text-slate-800 hover:text-amber-700">
+                                <span>Einsatzplaner (Gewerke)</span>
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('planning')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap">
-                                <span>📅</span> {{ __('Bauzeitenplaner') }}
+                            <x-dropdown-link :href="route('planning')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap text-slate-800 hover:text-amber-700">
+                                <span>Bauzeitenplaner</span>
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('daily-logs')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap">
-                                <span>🎙️</span> {{ __('Bautagebuch & Berichte') }}
+                            <x-dropdown-link :href="route('daily-logs')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap text-slate-800 hover:text-amber-700">
+                                <span>Bautagebuch & Berichte</span>
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('defects')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap">
-                                <span>⚠️</span> {{ __('Mängel-Verwaltung') }}
+                            <x-dropdown-link :href="route('defects')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap text-slate-800 hover:text-amber-700">
+                                <span>Mängel-Verwaltung</span>
                             </x-dropdown-link>
                         </x-slot>
                     </x-dropdown>
@@ -89,23 +80,26 @@ new class extends Component
                     <!-- 3. Finanzen Dropdown -->
                     <x-dropdown align="left" width="72" wire:key="nav-dropdown-finanzen">
                         <x-slot name="trigger">
-                            <button class="h-9 inline-flex items-center gap-1.5 px-3 text-xs font-extrabold rounded-xl transition btn-press cursor-pointer border {{ $isFinanzenActive ? 'bg-emerald-600 text-white border-emerald-500/30 shadow-xs' : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10' }}">
-                                <span>💶</span> <span>Finanzen</span>
-                                <svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            <button class="h-9 inline-flex items-center gap-1.5 px-3 text-xs font-bold rounded-xl transition btn-press cursor-pointer border {{ $isFinanzenActive ? 'bg-white/15 text-amber-400 border-amber-500/40 shadow-2xs' : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10' }}">
+                                <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>Finanzen</span>
+                                <svg class="w-3 h-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
                         </x-slot>
                         <x-slot name="content">
-                            <x-dropdown-link :href="route('invoices')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap">
-                                <span>📄</span> {{ __('Rechnungen & Angebote') }}
+                            <x-dropdown-link :href="route('invoices')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap text-slate-800 hover:text-amber-700">
+                                <span>Rechnungen & Angebote</span>
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('subcontractor-invoices')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap">
-                                <span>🏗️</span> {{ __('Baukosten & Subunternehmer') }}
+                            <x-dropdown-link :href="route('subcontractor-invoices')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap text-slate-800 hover:text-amber-700">
+                                <span>Baukosten & Subunternehmer</span>
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('materials')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap">
-                                <span>📦</span> {{ __('Material- & Baustoffkatalog') }}
+                            <x-dropdown-link :href="route('materials')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap text-slate-800 hover:text-amber-700">
+                                <span>Material- & Baustoffkatalog</span>
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('analytics')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap text-blue-700">
-                                <span>📈</span> {{ __('Finanz- & Umsatz-Analytics') }}
+                            <x-dropdown-link :href="route('analytics')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap text-slate-800 hover:text-amber-700">
+                                <span>Finanz- & Umsatz-Analytics</span>
                             </x-dropdown-link>
                         </x-slot>
                     </x-dropdown>
@@ -113,31 +107,39 @@ new class extends Component
                     <!-- 4. CRM & Verwaltung Dropdown -->
                     <x-dropdown align="left" width="72" wire:key="nav-dropdown-crm">
                         <x-slot name="trigger">
-                            <button class="h-9 inline-flex items-center gap-1.5 px-3 text-xs font-extrabold rounded-xl transition btn-press cursor-pointer border {{ $isCrmActive ? 'bg-purple-600 text-white border-purple-500/30 shadow-xs' : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10' }}">
-                                <span>👥</span> <span>CRM & Firma</span>
-                                <svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            <button class="h-9 inline-flex items-center gap-1.5 px-3 text-xs font-bold rounded-xl transition btn-press cursor-pointer border {{ $isCrmActive ? 'bg-white/15 text-amber-400 border-amber-500/40 shadow-2xs' : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10' }}">
+                                <svg class="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                <span>CRM & Firma</span>
+                                <svg class="w-3 h-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
                         </x-slot>
                         <x-slot name="content">
-                            <x-dropdown-link :href="route('contacts')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap">
-                                <span>👥</span> {{ __('Kunden & Partner') }}
+                            <x-dropdown-link :href="route('contacts')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap text-slate-800 hover:text-amber-700">
+                                <span>Kunden & Partner</span>
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('company-settings')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap">
-                                <span>⚙️</span> {{ __('Firmeneinstellungen') }}
+                            <x-dropdown-link :href="route('company-settings')" wire:navigate class="flex items-center gap-2 font-bold text-xs py-2.5 whitespace-nowrap text-slate-800 hover:text-amber-700">
+                                <span>Firmeneinstellungen</span>
                             </x-dropdown-link>
                         </x-slot>
                     </x-dropdown>
 
                     <!-- 5. Wissen (RAG) -->
-                    <a wire:key="nav-btn-wissen" href="{{ route('knowledge-base') }}" wire:navigate class="h-9 px-3 text-xs font-extrabold rounded-xl transition btn-press flex items-center gap-1.5 border {{ request()->routeIs('knowledge-base') ? 'bg-cyan-600 text-white border-cyan-500/30 shadow-xs' : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10' }}">
-                        <span>📚</span> <span>{{ __('Wissen') }}</span>
+                    <a wire:key="nav-btn-wissen" href="{{ route('knowledge-base') }}" wire:navigate 
+                       class="h-9 px-3 text-xs font-bold rounded-xl transition btn-press flex items-center gap-1.5 border {{ request()->routeIs('knowledge-base') ? 'bg-white/15 text-amber-400 border-amber-500/40 shadow-2xs' : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10' }}">
+                        <svg class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        <span>{{ __('Wissen') }}</span>
                     </a>
 
                     <!-- 6. Featured KI-Agent Button Badge -->
                     <a wire:key="nav-btn-ki" href="{{ route('ai-agent') }}" wire:navigate 
-                       class="h-9 px-3.5 rounded-xl font-black text-xs text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-md shadow-blue-500/20 transition btn-press flex items-center gap-1.5 cursor-pointer border border-white/20">
-                        <span>🤖 KI-Agent</span>
-                        <span class="px-1.5 py-0.2 rounded-full text-[9px] font-black uppercase bg-white/20 text-white backdrop-blur-xs">PRO</span>
+                       class="h-9 px-3.5 rounded-xl font-black text-xs text-white bg-slate-900 hover:bg-slate-800 border border-amber-500/40 shadow-md transition btn-press flex items-center gap-1.5 cursor-pointer">
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                        <span class="text-amber-300">KI-Bauleiter</span>
+                        <span class="px-1.5 py-0.2 rounded-md text-[8.5px] font-black uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30">PRO</span>
                     </a>
                 </div>
             </div>
@@ -154,11 +156,11 @@ new class extends Component
 
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="h-9 inline-flex items-center px-3.5 border border-white/20 text-xs leading-4 font-extrabold rounded-xl text-white bg-white/10 hover:bg-white/20 focus:outline-none transition ease-in-out duration-150 btn-press cursor-pointer">
+                        <button class="h-9 inline-flex items-center px-3.5 border border-white/20 text-xs leading-4 font-bold rounded-xl text-white bg-white/10 hover:bg-white/20 focus:outline-none transition ease-in-out duration-150 btn-press cursor-pointer">
                             <div x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
 
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4 text-slate-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <div class="ms-1.5">
+                                <svg class="fill-current h-3.5 w-3.5 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
                             </div>
@@ -166,14 +168,20 @@ new class extends Component
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile')" wire:navigate class="flex items-center gap-2 font-bold text-xs">
-                            <span>👤</span> {{ __('Mein Profil') }}
+                        <x-dropdown-link :href="route('profile')" wire:navigate class="flex items-center gap-2 font-bold text-xs text-slate-800 hover:text-amber-700">
+                            <svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span>{{ __('Mein Profil') }}</span>
                         </x-dropdown-link>
 
                         <!-- Authentication -->
                         <button wire:click="logout" class="w-full text-start">
-                            <x-dropdown-link class="flex items-center gap-2 font-bold text-xs text-rose-600">
-                                <span>🚪</span> {{ __('Abmelden') }}
+                            <x-dropdown-link class="flex items-center gap-2 font-bold text-xs text-rose-600 hover:text-rose-700">
+                                <svg class="w-4 h-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                                <span>{{ __('Abmelden') }}</span>
                             </x-dropdown-link>
                         </button>
                     </x-slot>
@@ -182,7 +190,7 @@ new class extends Component
 
             <!-- Hamburger Mobile Menu Button -->
             <div class="-me-2 flex items-center md:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-xl text-slate-400 hover:text-slate-500 hover:bg-slate-100 focus:outline-none transition duration-150 ease-in-out cursor-pointer">
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 focus:outline-none transition duration-150 ease-in-out cursor-pointer">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'inline-flex': open, 'hidden': ! open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -201,91 +209,91 @@ new class extends Component
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 -translate-y-2"
          :class="{'block': open, 'hidden': ! open}" 
-         class="hidden md:hidden bg-white border-b border-slate-200/90 shadow-lg">
+         class="hidden md:hidden bg-slate-950 border-b border-slate-800 shadow-2xl">
         
         <div class="pt-3 pb-3 px-3 space-y-1.5">
             <!-- Featured KI-Agent Link in Mobile Menu -->
             <x-responsive-nav-link :href="route('ai-agent')" :active="request()->routeIs('ai-agent')" wire:navigate 
-                                  class="rounded-xl font-black text-blue-700 bg-blue-50/80 hover:bg-blue-100/80 border-l-4 border-blue-600 flex items-center justify-between shadow-2xs">
+                                  class="rounded-xl font-bold text-amber-300 bg-slate-900 border-l-4 border-amber-500 flex items-center justify-between">
                 <span class="flex items-center gap-2.5">
-                    <span class="text-base">🤖</span>
-                    <span>{{ __('KI-Agent Steuerzentrale') }}</span>
+                    <span>KI-Bauleiter Zentrale</span>
                 </span>
-                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-blue-200 text-blue-800">Autonom</span>
+                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300">PRO</span>
             </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('knowledge-base')" :active="request()->routeIs('knowledge-base')" wire:navigate 
-                                  class="rounded-xl font-extrabold text-indigo-700 bg-indigo-50/80 hover:bg-indigo-100/80 border-l-4 border-indigo-600 flex items-center justify-between shadow-2xs">
-                <span class="flex items-center gap-2.5">
-                    <span class="text-base">📚</span>
-                    <span>{{ __('Wissensdatenbank (RAG)') }}</span>
-                </span>
-                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-indigo-200 text-indigo-800">Vektoren</span>
+                                  class="rounded-xl font-bold text-slate-200 bg-slate-900/60 border-l-4 border-cyan-500 flex items-center justify-between">
+                <span>Wissensdatenbank (RAG)</span>
             </x-responsive-nav-link>
 
-            <div class="my-2 border-t border-slate-100"></div>
+            <div class="my-2 border-t border-slate-800"></div>
 
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate class="rounded-xl flex items-center gap-2.5 font-bold">
-                <span>📊</span> {{ __('Dashboard') }}
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate class="rounded-xl font-bold text-slate-200">
+                <span>Cockpit Dashboard</span>
             </x-responsive-nav-link>
 
             <!-- Baustellen Category -->
-            <div class="pt-2 text-[10px] font-black uppercase tracking-wider text-slate-400 px-3">Baustellen & Ausführung</div>
-            <x-responsive-nav-link :href="route('planning')" :active="request()->routeIs('planning')" wire:navigate class="rounded-xl flex items-center gap-2.5 font-semibold">
-                <span>📅</span> {{ __('Bauzeitenplaner') }}
+            <div class="pt-2 text-[10px] font-black uppercase tracking-wider text-amber-500 px-3">Baustellen & Ausführung</div>
+            <x-responsive-nav-link :href="route('work-schedule')" :active="request()->routeIs('work-schedule')" wire:navigate class="rounded-xl text-slate-300 font-semibold">
+                <span>Einsatzplaner</span>
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('daily-logs')" :active="request()->routeIs('daily-logs')" wire:navigate class="rounded-xl flex items-center gap-2.5 font-semibold">
-                <span>🎙️</span> {{ __('Bautagebuch & Berichte') }}
+            <x-responsive-nav-link :href="route('planning')" :active="request()->routeIs('planning')" wire:navigate class="rounded-xl text-slate-300 font-semibold">
+                <span>Bauzeitenplaner</span>
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('defects')" :active="request()->routeIs('defects')" wire:navigate class="rounded-xl flex items-center gap-2.5 font-semibold">
-                <span>⚠️</span> {{ __('Mängel-Verwaltung') }}
+            <x-responsive-nav-link :href="route('daily-logs')" :active="request()->routeIs('daily-logs')" wire:navigate class="rounded-xl text-slate-300 font-semibold">
+                <span>Bautagebuch</span>
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('defects')" :active="request()->routeIs('defects')" wire:navigate class="rounded-xl text-slate-300 font-semibold">
+                <span>Mängel-Verwaltung</span>
             </x-responsive-nav-link>
 
             <!-- Finanzen Category -->
-            <div class="pt-2 text-[10px] font-black uppercase tracking-wider text-slate-400 px-3">Finanzen & Controlling</div>
-            <x-responsive-nav-link :href="route('invoices')" :active="request()->routeIs('invoices')" wire:navigate class="rounded-xl flex items-center gap-2.5 font-semibold">
-                <span>📄</span> {{ __('Rechnungen & Angebote') }}
+            <div class="pt-2 text-[10px] font-black uppercase tracking-wider text-amber-500 px-3">Finanzen & Controlling</div>
+            <x-responsive-nav-link :href="route('invoices')" :active="request()->routeIs('invoices')" wire:navigate class="rounded-xl text-slate-300 font-semibold">
+                <span>Rechnungen & Angebote</span>
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('subcontractor-invoices')" :active="request()->routeIs('subcontractor-invoices')" wire:navigate class="rounded-xl flex items-center gap-2.5 font-semibold">
-                <span>🏗️</span> {{ __('Baukosten & Subunternehmer') }}
+            <x-responsive-nav-link :href="route('subcontractor-invoices')" :active="request()->routeIs('subcontractor-invoices')" wire:navigate class="rounded-xl text-slate-300 font-semibold">
+                <span>Subunternehmer-Kosten</span>
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('materials')" :active="request()->routeIs('materials')" wire:navigate class="rounded-xl flex items-center gap-2.5 font-semibold">
-                <span>📦</span> {{ __('Material- & Baustoffkatalog') }}
+            <x-responsive-nav-link :href="route('materials')" :active="request()->routeIs('materials')" wire:navigate class="rounded-xl text-slate-300 font-semibold">
+                <span>Materialkatalog</span>
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('analytics')" :active="request()->routeIs('analytics')" wire:navigate class="rounded-xl flex items-center gap-2.5 font-semibold text-blue-700">
-                <span>📈</span> {{ __('Finanz-Analytics') }}
+            <x-responsive-nav-link :href="route('analytics')" :active="request()->routeIs('analytics')" wire:navigate class="rounded-xl text-slate-300 font-semibold">
+                <span>Finanz-Analytics</span>
             </x-responsive-nav-link>
 
             <!-- CRM Category -->
-            <div class="pt-2 text-[10px] font-black uppercase tracking-wider text-slate-400 px-3">CRM & Verwaltung</div>
-            <x-responsive-nav-link :href="route('contacts')" :active="request()->routeIs('contacts')" wire:navigate class="rounded-xl flex items-center gap-2.5 font-semibold">
-                <span>👥</span> {{ __('Kunden & Partner') }}
+            <div class="pt-2 text-[10px] font-black uppercase tracking-wider text-amber-500 px-3">CRM & Verwaltung</div>
+            <x-responsive-nav-link :href="route('contacts')" :active="request()->routeIs('contacts')" wire:navigate class="rounded-xl text-slate-300 font-semibold">
+                <span>Kunden & Partner</span>
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('company-settings')" :active="request()->routeIs('company-settings')" wire:navigate class="rounded-xl flex items-center gap-2.5 font-semibold">
-                <span>⚙️</span> {{ __('Firmeneinstellungen') }}
+            <x-responsive-nav-link :href="route('company-settings')" :active="request()->routeIs('company-settings')" wire:navigate class="rounded-xl text-slate-300 font-semibold">
+                <span>Firmeneinstellungen</span>
             </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-4 px-4 border-t border-slate-200 bg-slate-50/50">
+        <div class="pt-4 pb-4 px-4 border-t border-slate-800 bg-slate-900/60">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
-                    👤
+                <div class="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 text-amber-400 flex items-center justify-center font-bold text-sm">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
                 </div>
                 <div>
-                    <div class="font-bold text-sm text-slate-900" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
-                    <div class="font-medium text-xs text-slate-500">{{ auth()->user()->email }}</div>
+                    <div class="font-bold text-sm text-white" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
+                    <div class="font-medium text-xs text-slate-400">{{ auth()->user()->email }}</div>
                 </div>
             </div>
 
             <div class="mt-4 space-y-1">
-                <x-responsive-nav-link :href="route('profile')" wire:navigate class="rounded-xl flex items-center gap-2">
-                    <span>👤</span> {{ __('Profil') }}
+                <x-responsive-nav-link :href="route('profile')" wire:navigate class="rounded-xl text-slate-300">
+                    <span>{{ __('Mein Profil') }}</span>
                 </x-responsive-nav-link>
 
                 <button wire:click="logout" class="w-full text-start">
-                    <x-responsive-nav-link class="rounded-xl flex items-center gap-2 text-rose-600 font-bold">
-                        <span>🚪</span> {{ __('Abmelden') }}
+                    <x-responsive-nav-link class="rounded-xl text-rose-400 font-bold">
+                        <span>{{ __('Abmelden') }}</span>
                     </x-responsive-nav-link>
                 </button>
             </div>

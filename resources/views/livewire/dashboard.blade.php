@@ -701,129 +701,146 @@ new class extends Component {
 
 <div class="space-y-8 font-sans">
     <!-- Top Command Center Banner & Quick Actions -->
-    <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 text-white rounded-2xl p-6 shadow-xl border border-blue-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative overflow-hidden">
-        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="bg-[#091224] text-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
+        <!-- Hairline & Blueprint Grid Overlay -->
+        <div class="arch-hairline-overlay"></div>
+        <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div class="space-y-1 relative z-10">
-            <h2 class="text-xl font-black text-white tracking-tight flex items-center gap-2.5">
-                <span>🏗️ BT Bautechnik CRM Steuerzentrale</span>
+        <div class="space-y-2 relative z-10">
+            <div class="arch-section-label">
+                <span>BAULEITER-COCKPIT & PROJEKTSTEUERUNG</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2.5">
+                <span>BT Bautechnik Steuerzentrale</span>
             </h2>
-            <p class="text-xs text-slate-300 font-medium">Echtzeit-Kostenkontrolle, KI-Wochenberichte & Baustellen-Management</p>
+            <p class="text-xs text-slate-300 font-medium">Echtzeit-Kostenkontrolle, VOB/B § 2 Nachträge & Baustellen-Pipeline</p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2 relative z-10">
+        <div class="flex flex-wrap items-center gap-2.5 relative z-10">
             <button wire:click="openCreateProject" 
-                    class="px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/20 transition-all flex items-center gap-1.5 cursor-pointer btn-press">
-                <span>+ Neue Baustelle</span>
+                    class="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center gap-1.5 cursor-pointer btn-press">
+                <span>+ Neue Baustelle anlegen</span>
             </button>
 
             <a href="{{ route('daily-logs') }}" wire:navigate 
-               class="px-3.5 py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 btn-press">
-                <span>🎙️ Bautagebuch</span>
+               class="px-3.5 py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 btn-press">
+                <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+                </svg>
+                <span>Bautagebuch</span>
             </a>
 
             <a href="{{ route('defects') }}" wire:navigate 
-               class="px-3.5 py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 btn-press">
-                <span>⚠️ Mängel</span>
+               class="px-3.5 py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 btn-press">
+                <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span>Mängel</span>
             </a>
 
             <a href="{{ route('invoices') }}" wire:navigate 
-               class="px-3.5 py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 btn-press">
-                <span>📄 Rechnungen</span>
+               class="px-3.5 py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 btn-press">
+                <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>Rechnungen</span>
             </a>
 
             <a href="{{ route('knowledge-base') }}" wire:navigate 
-               class="px-3.5 py-2.5 bg-blue-900/40 hover:bg-blue-900/60 text-blue-200 border border-blue-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5 btn-press">
-                <span>📚 Wissen</span>
+               class="px-3.5 py-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 btn-press">
+                <svg class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <span>Wissen</span>
             </a>
         </div>
     </div>
 
-    <!-- Header Summary Stats (Elevated KPI Cards) -->
+    <!-- Header Summary Stats (Architectural KPI Cards) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <!-- Stat Card 1: Aktive Baustellen -->
-        <div class="bg-white border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-lg hover:-translate-y-0.5 transition duration-200 relative overflow-hidden group">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-cyan-500"></div>
+        <div class="arch-card p-5 sm:p-6 space-y-3">
             <div class="flex items-center justify-between">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Aktive Baustellen</p>
-                <span class="p-2.5 rounded-xl bg-blue-50 group-hover:bg-blue-600 text-blue-600 group-hover:text-white border border-blue-200/60 shadow-2xs transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                <p class="text-[10.5px] font-bold uppercase tracking-wider text-slate-500">Aktive Baustellen</p>
+                <span class="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 text-slate-900 flex items-center justify-center">
+                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
                 </span>
             </div>
-            <p class="text-2xl xl:text-3xl font-extrabold text-slate-900 mt-2 tracking-tight tabular-nums">{{ $this->stats['active_projects'] }}</p>
-            <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-100">
-                <span class="inline-flex items-center text-xs font-semibold text-blue-600">
-                    🟢 In laufender Betreuung
+            <p class="text-2xl xl:text-3xl font-black text-slate-950 tracking-tight tabular-nums">{{ $this->stats['active_projects'] }}</p>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> In laufender Betreuung
                 </span>
-                <span class="text-[10px] text-slate-500 font-bold bg-slate-50 px-2 py-0.5 rounded-full border border-slate-200/60">100% aktiv</span>
+                <span class="text-[10px] text-slate-600 font-bold bg-slate-100 px-2 py-0.5 rounded-md">100% aktiv</span>
             </div>
         </div>
 
         <!-- Stat Card 2: Gesamtes Budget -->
-        <div class="bg-white border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-lg hover:-translate-y-0.5 transition duration-200 relative overflow-hidden group">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+        <div class="arch-card p-5 sm:p-6 space-y-3">
             <div class="flex items-center justify-between">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Gesamtes Budget (Soll)</p>
-                <span class="p-2.5 rounded-xl bg-blue-50 group-hover:bg-blue-600 text-blue-600 group-hover:text-white border border-blue-200/60 shadow-2xs transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <p class="text-[10.5px] font-bold uppercase tracking-wider text-slate-500">Gesamtes Budget (Soll)</p>
+                <span class="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center">
+                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                 </span>
             </div>
-            <div class="mt-2 flex items-baseline gap-1">
-                <span class="text-2xl xl:text-3xl font-extrabold text-slate-900 tracking-tight tabular-nums truncate">{{ number_format($this->stats['total_budget'], 2, ',', '.') }}</span>
+            <div class="flex items-baseline gap-1">
+                <span class="text-2xl xl:text-3xl font-black text-slate-950 tracking-tight tabular-nums truncate">{{ number_format($this->stats['total_budget'], 2, ',', '.') }}</span>
                 <span class="text-base font-bold text-slate-500">€</span>
             </div>
-            <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-100">
-                <span class="inline-flex items-center text-xs font-semibold text-blue-700">
-                    Kalkuliert inkl. Puffer
-                </span>
-                <span class="text-[10px] text-blue-600 font-bold bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">15% Puffer</span>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                <span class="text-xs font-semibold text-slate-600">Kalkuliert inkl. Puffer</span>
+                <span class="text-[10px] text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">15% Puffer</span>
             </div>
         </div>
 
         <!-- Stat Card 3: Gesamte Ist-Kosten -->
-        <div class="bg-white border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-lg hover:-translate-y-0.5 transition duration-200 relative overflow-hidden group">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 to-amber-500"></div>
+        <div class="arch-card p-5 sm:p-6 space-y-3">
             <div class="flex items-center justify-between">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Gesamte Ist-Kosten</p>
-                <span class="p-2.5 rounded-xl bg-rose-50 group-hover:bg-rose-600 text-rose-600 group-hover:text-white border border-rose-200/60 shadow-2xs transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                <p class="text-[10.5px] font-bold uppercase tracking-wider text-slate-500">Gesamte Ist-Kosten</p>
+                <span class="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 text-rose-600 flex items-center justify-center">
+                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                    </svg>
                 </span>
             </div>
-            <div class="mt-2 flex items-baseline gap-1">
-                <span class="text-2xl xl:text-3xl font-extrabold text-rose-600 tracking-tight tabular-nums truncate">{{ number_format($this->stats['total_costs'], 2, ',', '.') }}</span>
+            <div class="flex items-baseline gap-1">
+                <span class="text-2xl xl:text-3xl font-black text-rose-600 tracking-tight tabular-nums truncate">{{ number_format($this->stats['total_costs'], 2, ',', '.') }}</span>
                 <span class="text-base font-bold text-rose-500">€</span>
             </div>
-            <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-100">
-                <span class="inline-flex items-center text-xs font-semibold text-slate-600">
-                    Material & Nachunternehmer
-                </span>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                <span class="text-xs font-semibold text-slate-600">Material & Subunternehmer</span>
                 @php
                     $consumption = $this->stats['total_budget'] > 0 ? ($this->stats['total_costs'] / $this->stats['total_budget']) * 100 : 0;
                 @endphp
-                <span class="text-[10px] font-bold {{ $consumption > 90 ? 'text-rose-600 bg-rose-50 border border-rose-200' : 'text-slate-600 bg-slate-100' }} px-2 py-0.5 rounded-full">
+                <span class="text-[10px] font-bold {{ $consumption > 90 ? 'text-rose-700 bg-rose-50 border border-rose-200' : 'text-slate-700 bg-slate-100' }} px-2 py-0.5 rounded-md">
                     {{ number_format($consumption, 0) }}% verbraucht
                 </span>
             </div>
         </div>
 
         <!-- Stat Card 4: Verbleibende Marge -->
-        <div class="bg-white border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-lg hover:-translate-y-0.5 transition duration-200 relative overflow-hidden group">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500"></div>
+        <div class="arch-card p-5 sm:p-6 space-y-3">
             <div class="flex items-center justify-between">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Verbleibende Marge</p>
-                <span class="p-2.5 rounded-xl bg-emerald-50 group-hover:bg-emerald-600 text-emerald-600 group-hover:text-white border border-emerald-200/60 shadow-2xs transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <p class="text-[10.5px] font-bold uppercase tracking-wider text-slate-500">Verbleibende Marge</p>
+                <span class="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center">
+                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                 </span>
             </div>
-            <div class="mt-2 flex items-baseline gap-1">
-                <span class="text-2xl xl:text-3xl font-extrabold text-emerald-600 tracking-tight tabular-nums truncate">{{ number_format($this->stats['margin'], 1, ',', '.') }}</span>
+            <div class="flex items-baseline gap-1">
+                <span class="text-2xl xl:text-3xl font-black text-emerald-600 tracking-tight tabular-nums truncate">{{ number_format($this->stats['margin'], 1, ',', '.') }}</span>
                 <span class="text-base font-bold text-emerald-500">%</span>
             </div>
-            <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-100 gap-1.5 flex-wrap">
-                <span class="inline-flex items-center text-xs font-semibold text-slate-600 whitespace-nowrap">
-                    Rest: <span class="tabular-nums font-bold text-slate-900 ml-1">{{ number_format($this->stats['remaining_budget'], 0, ',', '.') }} €</span>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-100 gap-1.5 flex-wrap">
+                <span class="text-xs font-semibold text-slate-600">
+                    Rest: <strong class="tabular-nums text-slate-950">{{ number_format($this->stats['remaining_budget'], 0, ',', '.') }} €</strong>
                 </span>
-                <span class="text-[10px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-200">
+                <span class="text-[10px] font-black text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-md border border-emerald-200">
                     Im Plan
                 </span>
             </div>
@@ -834,52 +851,56 @@ new class extends Component {
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         <!-- Projects Directory List (Full Width) -->
-        <div class="lg:col-span-12 bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden space-y-0">
+        <div class="lg:col-span-12 arch-card shadow-sm overflow-hidden space-y-0">
             <!-- Header & Search/Filter Bar -->
-            <div class="p-6 border-b border-slate-200/80 bg-slate-50/60 space-y-4">
+            <div class="p-6 border-b border-slate-200 bg-slate-50/70 space-y-4">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
-                        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse"></span>
+                        <h3 class="text-base font-black text-slate-950 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
                             Baustellenübersicht & Pipeline
                         </h3>
                         <p class="text-xs text-slate-500 mt-0.5">Echtzeit-Projektfortschritt & Kostenkontrolle nach KW</p>
                     </div>
-                    <button wire:click="openCreateProject" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl shadow-md shadow-blue-500/10 transition cursor-pointer">
+                    <button wire:click="openCreateProject" class="px-4 py-2 bg-slate-950 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-md border border-slate-800 transition cursor-pointer btn-press">
                         + Neue Baustelle
                     </button>
                 </div>
 
                 <!-- Live Search & Filter Bar -->
                 <div class="flex flex-col sm:flex-row gap-3 items-center justify-between pt-1">
-                    <div class="relative w-full sm:w-72">
+                    <div class="relative w-full sm:w-80">
                         <input wire:model.live.debounce.250ms="searchQuery" type="text" 
-                               class="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:outline-none transition shadow-2xs"
+                               class="w-full bg-white border border-slate-300 text-slate-950 rounded-xl pl-9 pr-4 py-2 text-xs placeholder-slate-400 focus:border-slate-950 focus:ring-2 focus:ring-amber-500/20 focus:outline-none transition shadow-2xs"
                                placeholder="Baustelle, Ort oder Gewerk suchen...">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">🔍</span>
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </span>
                     </div>
 
-                    <div class="flex items-center gap-1.5 bg-slate-200/60 p-1 rounded-xl w-full sm:w-auto overflow-x-auto">
+                    <div class="flex items-center gap-1.5 bg-slate-200/70 p-1 rounded-xl w-full sm:w-auto overflow-x-auto">
                         <button wire:click="$set('statusFilter', 'all')" 
-                                class="px-3 py-1 rounded-lg text-xs font-bold transition {{ $statusFilter === 'all' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900' }}">
+                                class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer {{ $statusFilter === 'all' ? 'bg-white text-slate-950 shadow-xs font-black' : 'text-slate-600 hover:text-slate-950' }}">
                             Alle ({{ \App\Models\Project::count() }})
                         </button>
                         <button wire:click="$set('statusFilter', 'active')" 
-                                class="px-3 py-1 rounded-lg text-xs font-bold transition {{ $statusFilter === 'active' ? 'bg-white text-blue-700 shadow-2xs' : 'text-slate-600 hover:text-slate-900' }}">
+                                class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer {{ $statusFilter === 'active' ? 'bg-slate-950 text-white shadow-xs font-black' : 'text-slate-600 hover:text-slate-950' }}">
                             Aktiv
                         </button>
                         <button wire:click="$set('statusFilter', 'completed')" 
-                                class="px-3 py-1 rounded-lg text-xs font-bold transition {{ $statusFilter === 'completed' ? 'bg-white text-emerald-700 shadow-2xs' : 'text-slate-600 hover:text-slate-900' }}">
+                                class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer {{ $statusFilter === 'completed' ? 'bg-emerald-700 text-white shadow-xs font-black' : 'text-slate-600 hover:text-slate-950' }}">
                             Beendet
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div class="divide-y divide-slate-200/80">
+            <div class="divide-y divide-slate-100">
                 @forelse ($this->projects as $proj)
                     <div wire:key="{{ $proj->id }}" wire:click="selectProject('{{ $proj->id }}')" 
-                         class="p-5 sm:p-6 cursor-pointer hover:bg-slate-50/90 transition duration-200 border-b border-slate-100 flex flex-col gap-4 group relative overflow-hidden {{ $this->selectedProjectId === $proj->id ? 'bg-blue-50/70 border-l-4 border-l-blue-600 shadow-xs' : '' }}">
+                         class="p-5 sm:p-6 cursor-pointer hover:bg-slate-50/90 transition duration-200 flex flex-col gap-4 group relative overflow-hidden {{ $this->selectedProjectId === $proj->id ? 'bg-amber-50/40 border-l-4 border-l-amber-500 shadow-xs' : '' }}">
                         
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <!-- Left: Status & Title & Metadata -->
@@ -895,13 +916,13 @@ new class extends Component {
                                 </div>
 
                                 <div>
-                                    <h4 class="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight group-hover:text-blue-600 transition flex items-center gap-2">
+                                    <h4 class="font-black text-slate-950 text-base sm:text-lg tracking-tight group-hover:text-amber-700 transition flex items-center gap-2">
                                         <span>{{ $proj->name }}</span>
                                     </h4>
                                     <p class="text-xs text-slate-600 font-medium leading-relaxed flex items-center gap-2 mt-0.5">
-                                        <span>🏗️ {{ $proj->work_type }}</span>
+                                        <span>{{ $proj->work_type }}</span>
                                         <span class="text-slate-300">•</span>
-                                        <span>📍 {{ $proj->city_street }}</span>
+                                        <span>{{ $proj->city_street }}</span>
                                     </p>
                                 </div>
                             </div>
@@ -916,16 +937,16 @@ new class extends Component {
 
                                 <div class="flex justify-between md:justify-end items-center gap-2">
                                     <span class="text-[10px] text-slate-500 font-black uppercase tracking-wider">Kosten / Budget:</span>
-                                    <span class="text-xs sm:text-sm font-extrabold text-slate-900">
-                                        <span class="{{ $costSum > $budgetTotal ? 'text-rose-600 font-black' : 'text-blue-600' }}">{{ number_format($costSum, 2, ',', '.') }} €</span> 
+                                    <span class="text-xs sm:text-sm font-black text-slate-950">
+                                        <span class="{{ $costSum > $budgetTotal ? 'text-rose-600 font-black' : 'text-slate-900' }}">{{ number_format($costSum, 2, ',', '.') }} €</span> 
                                         <span class="text-slate-300">/</span> 
-                                        <span class="text-slate-700">{{ number_format($budgetTotal, 2, ',', '.') }} €</span>
+                                        <span class="text-slate-600">{{ number_format($budgetTotal, 2, ',', '.') }} €</span>
                                     </span>
                                 </div>
 
                                 <div class="space-y-1">
-                                    <div class="w-full bg-slate-200/90 rounded-full h-3 overflow-hidden border border-slate-300/50 p-0.5 shadow-inner">
-                                        <div class="h-full rounded-full transition-all duration-500 {{ $percent > 90 ? 'bg-gradient-to-r from-amber-500 to-rose-600 shadow-xs' : 'bg-gradient-to-r from-blue-600 to-indigo-600 shadow-xs' }}" style="width: {{ max($percent, 3) }}%"></div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden border border-slate-300/50 p-0.5 shadow-inner">
+                                        <div class="h-full rounded-full transition-all duration-500 {{ $percent > 90 ? 'bg-rose-500' : 'bg-slate-950' }}" style="width: {{ max($percent, 3) }}%"></div>
                                     </div>
                                     <div class="flex justify-between items-center text-[10px] font-bold text-slate-500">
                                         <span>Fortschritt</span>
@@ -939,40 +960,40 @@ new class extends Component {
                         <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2 flex-wrap" @click.stop>
                             <div class="flex items-center gap-1.5 flex-wrap">
                                 <button wire:click="openQuickInvoiceModalForProject('{{ $proj->id }}')" 
-                                        class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 font-bold text-[11px] rounded-lg border border-slate-200 hover:border-blue-300 shadow-2xs transition flex items-center gap-1 cursor-pointer"
+                                        class="px-2.5 py-1 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-950 font-bold text-[11px] rounded-lg border border-slate-200 shadow-2xs transition flex items-center gap-1 cursor-pointer"
                                         title="Schnell-Rechnung für diese Baustelle erstellen">
-                                    <span>🧾</span> <span>Rechnung</span>
+                                    <span>Rechnung</span>
                                 </button>
 
                                 <button wire:click="openQuickOfferModalForProject('{{ $proj->id }}')" 
-                                        class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 font-bold text-[11px] rounded-lg border border-slate-200 hover:border-blue-300 shadow-2xs transition flex items-center gap-1 cursor-pointer"
+                                        class="px-2.5 py-1 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-950 font-bold text-[11px] rounded-lg border border-slate-200 shadow-2xs transition flex items-center gap-1 cursor-pointer"
                                         title="Angebot / LV für diese Baustelle erstellen">
-                                    <span>📄</span> <span>Angebot</span>
+                                    <span>Angebot</span>
                                 </button>
 
                                 <button wire:click="openQuickDailyLogModalForProject('{{ $proj->id }}')" 
-                                        class="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 font-bold text-[11px] rounded-lg border border-slate-200 hover:border-blue-300 shadow-2xs transition flex items-center gap-1 cursor-pointer"
+                                        class="px-2.5 py-1 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-950 font-bold text-[11px] rounded-lg border border-slate-200 shadow-2xs transition flex items-center gap-1 cursor-pointer"
                                         title="Tagesbericht für diese Baustelle verfassen">
-                                    <span>🎙️</span> <span>Tagebuch</span>
+                                    <span>Tagebuch</span>
                                 </button>
 
                                 <button wire:click="openCreateDefectModal('{{ $proj->id }}')" 
-                                        class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-[11px] rounded-lg border border-amber-200 hover:border-amber-300 shadow-2xs transition flex items-center gap-1 cursor-pointer"
+                                        class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold text-[11px] rounded-lg border border-amber-200 shadow-2xs transition flex items-center gap-1 cursor-pointer"
                                         title="Mangel erfassen">
-                                    <span>⚠️</span> <span>Mangel</span>
+                                    <span>Mangel</span>
                                 </button>
 
                                 <a href="/projects/{{ $proj->id }}/abnahmeprotokoll-pdf" target="_blank"
-                                   class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold text-[11px] rounded-lg border border-blue-200 transition flex items-center gap-1"
+                                   class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] rounded-lg border border-slate-200 transition flex items-center gap-1"
                                    title="VOB/B Abnahmeprotokoll PDF herunterladen">
-                                    <span>📋</span> <span>Abnahme-PDF</span>
+                                    <span>Abnahme-PDF</span>
                                 </a>
                             </div>
 
                             <div class="flex items-center gap-2">
                                 <button wire:click="selectProject('{{ $proj->id }}')" 
-                                        class="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] rounded-lg transition shadow-2xs cursor-pointer flex items-center gap-1">
-                                    <span>Öffnen ➔</span>
+                                        class="px-3 py-1 bg-slate-950 hover:bg-slate-800 text-white font-bold text-[11px] rounded-lg transition shadow-2xs cursor-pointer flex items-center gap-1">
+                                    <span>Öffnen →</span>
                                 </button>
                                 <button wire:click.stop="confirmDeleteProject('{{ $proj->id }}')" 
                                         class="p-1 text-slate-400 hover:text-rose-600 rounded hover:bg-rose-50 transition cursor-pointer"
@@ -984,12 +1005,12 @@ new class extends Component {
                     </div>
                 @empty
                     <div class="p-12 text-center text-slate-400 space-y-2">
-                        <div class="text-3xl">🔍</div>
                         <p class="text-xs font-semibold">Keine Baustellen für Ihre Filterkriterien gefunden.</p>
                     </div>
                 @endforelse
             </div>
         </div>
+    </div>
 
     <!-- BAUSTELLEN DETAIL VIEW MODAL (DESKTOP MAXIMIZABLE & MOBILE FULLSCREEN) -->
     @if ($this->selectedProject)
@@ -1003,16 +1024,17 @@ new class extends Component {
                  :class="isMaximized ? 'sm:w-screen sm:h-screen sm:max-w-none sm:max-h-none sm:rounded-none sm:border-0' : ''">
                 
                 <!-- Modal Header -->
-                <div class="shrink-0 p-4 sm:p-6 bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 text-white relative overflow-hidden space-y-3">
-                    <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="shrink-0 p-4 sm:p-6 bg-[#091224] text-white relative overflow-hidden space-y-3 border-b border-slate-800">
+                    <div class="arch-hairline-overlay"></div>
+                    <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
 
                     <!-- Top Bar: Status + Action Buttons -->
                     <div class="flex items-center justify-between gap-2 relative z-10">
                         <div class="flex items-center gap-2 flex-wrap">
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-extrabold uppercase bg-blue-500/30 text-blue-200 border border-blue-400/30">
-                                {{ $proj->status === 'active' ? '🟢 Aktiv' : ($proj->status === 'draft' ? '📸 Bestandsaufnahme / Planung' : $proj->status) }}
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black uppercase {{ $proj->status === 'active' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-800 text-slate-300 border border-slate-700' }}">
+                                {{ $proj->status === 'active' ? '● Aktiv' : ($proj->status === 'draft' ? 'Planung / Aufnahme' : $proj->status) }}
                             </span>
-                            <span class="text-[10px] sm:text-xs font-semibold text-slate-300">
+                            <span class="text-[10px] sm:text-xs font-bold text-slate-300 bg-slate-900/90 px-2.5 py-0.5 rounded-full border border-slate-700">
                                 KW {{ $proj->start_week }} — KW {{ $proj->end_week }}
                             </span>
                         </div>
@@ -1021,17 +1043,15 @@ new class extends Component {
                         <div class="flex items-center gap-2">
                             <!-- Quick Defect Button -->
                             <button wire:click="openCreateDefectModal('{{ $proj->id }}')"
-                                    class="px-2.5 py-1 sm:py-1.5 bg-amber-500/20 hover:bg-amber-500/40 text-amber-200 hover:text-white font-bold text-xs rounded-xl transition border border-amber-400/30 flex items-center gap-1 cursor-pointer"
+                                    class="px-2.5 py-1 sm:py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 hover:text-white font-bold text-xs rounded-xl transition border border-amber-500/30 flex items-center gap-1 cursor-pointer"
                                     title="Mangel für diese Baustelle aufnehmen">
-                                <span>⚠️</span>
                                 <span class="hidden sm:inline">+ Mangel erfassen</span>
                             </button>
 
                             <!-- Delete Button -->
                             <button wire:click="confirmDeleteProject('{{ $proj->id }}')"
-                                    class="px-2.5 py-1 sm:py-1.5 bg-rose-500/20 hover:bg-rose-500/40 text-rose-200 hover:text-white font-bold text-xs rounded-xl transition border border-rose-400/30 flex items-center gap-1 cursor-pointer"
+                                    class="px-2.5 py-1 sm:py-1.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 hover:text-white font-bold text-xs rounded-xl transition border border-rose-500/30 flex items-center gap-1 cursor-pointer"
                                     title="Baustelle löschen">
-                                <span>🗑️</span>
                                 <span class="hidden sm:inline">Löschen</span>
                             </button>
 
@@ -1060,9 +1080,9 @@ new class extends Component {
                     <div class="space-y-1 relative z-10">
                         <h2 class="text-lg sm:text-2xl font-black text-white tracking-tight leading-snug">{{ $proj->name }}</h2>
                         <p class="text-xs text-slate-300 flex flex-wrap items-center gap-2">
-                            <span>🏗️ {{ $proj->work_type }}</span>
+                            <span>{{ $proj->work_type }}</span>
                             <span>•</span>
-                            <span>📍 {{ $proj->contact_address ?: $proj->city_street }}</span>
+                            <span>{{ $proj->contact_address ?: $proj->city_street }}</span>
                         </p>
                     </div>
                 </div>
@@ -1071,63 +1091,78 @@ new class extends Component {
                 <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
                     
                     <!-- PROJEKT COMMAND CENTER (All-in-One 1-Klick Aktionsleiste) -->
-                    <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-4 sm:p-5 rounded-2xl shadow-md border border-indigo-500/20 space-y-3">
-                        <div class="flex items-center justify-between flex-wrap gap-2">
+                    <div class="bg-[#091224] text-white p-4 sm:p-5 rounded-2xl shadow-md border border-slate-800 space-y-3 relative overflow-hidden">
+                        <div class="arch-hairline-overlay"></div>
+                        <div class="flex items-center justify-between flex-wrap gap-2 relative z-10">
                             <div class="flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                                <h4 class="font-extrabold text-xs uppercase tracking-wider text-white">⚡ Projekt Schnellaktionen — Alles aus 1 Hand</h4>
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                                <h4 class="font-black text-xs uppercase tracking-wider text-white">Projekt Schnellaktionen</h4>
                             </div>
                             <span class="text-[10px] text-slate-400 font-medium">Belege & Berichte direkt für <strong>{{ $proj->name }}</strong> erstellen</span>
                         </div>
 
-                        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 pt-1">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 pt-1 relative z-10">
                             <!-- 1. Rechnung erstellen -->
                             <button wire:click="openQuickInvoiceModal" 
-                                    class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
-                                <span class="text-base group-hover:scale-110 transition-transform">🧾</span>
+                                    class="p-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl border border-slate-700 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                                <svg class="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
                                 <span class="text-[11px] truncate">Rechnung</span>
                             </button>
 
                             <!-- 2. Angebot / LV -->
                             <button wire:click="openQuickOfferModal" 
-                                    class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
-                                <span class="text-base group-hover:scale-110 transition-transform">📄</span>
+                                    class="p-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl border border-slate-700 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                                <svg class="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
                                 <span class="text-[11px] truncate">Angebot / LV</span>
                             </button>
 
                             <!-- 3. Bautagebuch -->
                             <button wire:click="openQuickDailyLogModal" 
-                                    class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
-                                <span class="text-base group-hover:scale-110 transition-transform">🎙️</span>
+                                    class="p-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl border border-slate-700 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                                <svg class="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+                                </svg>
                                 <span class="text-[11px] truncate">Bautagebuch</span>
                             </button>
 
                             <!-- 4. Mangel erfassen -->
                             <button wire:click="openCreateDefectModal('{{ $proj->id }}')" 
-                                    class="p-2.5 bg-amber-500/20 hover:bg-amber-500 text-amber-200 hover:text-white font-bold text-xs rounded-xl border border-amber-400/30 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
-                                <span class="text-base group-hover:scale-110 transition-transform">⚠️</span>
+                                    class="p-2.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 hover:text-white font-bold text-xs rounded-xl border border-amber-500/30 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                                <svg class="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
                                 <span class="text-[11px] truncate">Mangel</span>
                             </button>
 
                             <!-- 5. VOB/B Abnahmeprotokoll PDF -->
                             <a href="/projects/{{ $proj->id }}/abnahmeprotokoll-pdf" 
                                target="_blank"
-                               class="p-2.5 bg-blue-500/20 hover:bg-blue-600 text-blue-200 hover:text-white font-bold text-xs rounded-xl border border-blue-400/30 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group shadow-xs">
-                                <span class="text-base group-hover:scale-110 transition-transform">📋</span>
+                               class="p-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white font-bold text-xs rounded-xl border border-slate-700 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group shadow-xs">
+                                <svg class="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
                                 <span class="text-[11px] truncate">Abnahme-PDF</span>
                             </a>
 
                             <!-- 6. Einsatzplan -->
                             <button wire:click="openQuickScheduleModal" 
-                                    class="p-2.5 bg-white/10 hover:bg-blue-600 text-white font-bold text-xs rounded-xl border border-white/10 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
-                                <span class="text-base group-hover:scale-110 transition-transform">👷</span>
+                                    class="p-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl border border-slate-700 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                                <svg class="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
                                 <span class="text-[11px] truncate">Einsatzplan</span>
                             </button>
 
                             <!-- 7. KI-Wochenbericht -->
                             <button wire:click="generateWeeklyReport" 
-                                    class="p-2.5 bg-emerald-500/20 hover:bg-emerald-600 text-emerald-200 hover:text-white font-bold text-xs rounded-xl border border-emerald-400/30 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
-                                <span class="text-base group-hover:scale-110 transition-transform">📊</span>
+                                    class="p-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 hover:text-white font-bold text-xs rounded-xl border border-emerald-500/30 transition flex flex-col items-center justify-center gap-1 cursor-pointer text-center group">
+                                <svg class="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                </svg>
                                 <span class="text-[11px] truncate">Wochenbericht</span>
                             </button>
                         </div>
@@ -1421,7 +1456,6 @@ new class extends Component {
             </div>
         </div>
     @endif
-</div>
 
     <!-- MODALS -->
 

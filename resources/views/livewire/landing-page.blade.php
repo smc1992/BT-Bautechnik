@@ -133,7 +133,7 @@ new class extends Component {
             </a>
 
             <!-- Nav Links (Desktop) - Clean Architectural Typography -->
-            <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+            <nav class="hidden xl:flex items-center gap-1 xl:gap-2">
                 <a href="#story" class="px-3.5 py-2 rounded-xl text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
                     Baupraxis & Story
                 </a>
@@ -155,17 +155,17 @@ new class extends Component {
                 </a>
             </nav>
 
-            <!-- Action Buttons (Desktop & Tablet) -->
-            <div class="hidden sm:flex items-center gap-2 sm:gap-3 shrink-0">
+            <!-- Action Buttons (Responsive for all screens) -->
+            <div class="flex items-center gap-2 sm:gap-3 shrink-0">
                 @auth
-                    <a href="{{ route('dashboard') }}" class="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-[13px] rounded-xl shadow-xs transition flex items-center gap-2">
+                    <a href="{{ route('dashboard') }}" class="px-3.5 py-2 sm:px-4 sm:py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-[13px] rounded-xl shadow-xs transition flex items-center gap-2 whitespace-nowrap">
                         <svg class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                         </svg>
-                        <span>Zum Cockpit</span>
+                        <span>Cockpit</span>
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="px-3.5 py-2 text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 rounded-xl transition flex items-center gap-1.5">
+                    <a href="{{ route('login') }}" class="hidden sm:flex px-3.5 py-2 text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 rounded-xl transition items-center gap-1.5 whitespace-nowrap">
                         <span>Login</span>
                         <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -173,23 +173,16 @@ new class extends Component {
                     </a>
                 @endauth
 
-                <button wire:click="openDemoModal" class="px-5 py-2.5 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs sm:text-[13px] rounded-xl border border-slate-800 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 btn-press">
+                <button wire:click="openDemoModal" class="px-3.5 sm:px-5 py-2 sm:py-2.5 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs sm:text-[13px] rounded-xl border border-slate-800 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 shrink-0 whitespace-nowrap btn-press">
                     <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                    <span>Live-Demo anfordern</span>
-                </button>
-            </div>
-
-            <!-- Mobile Actions (Screen < 640px) -->
-            <div class="flex sm:hidden items-center gap-2 shrink-0">
-                <button type="button" wire:click="openDemoModal" class="px-3 py-2 bg-slate-950 active:scale-95 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-1.5 btn-press">
-                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                    <span>Demo</span>
+                    <span class="hidden sm:inline">Live-Demo anfordern</span>
+                    <span class="sm:hidden">Demo</span>
                 </button>
 
-                <!-- Hamburger Toggle Button -->
+                <!-- Hamburger Toggle Button (shown on < xl) -->
                 <button type="button" 
                         @click="mobileMenuOpen = !mobileMenuOpen" 
-                        class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 focus:outline-none transition-colors cursor-pointer" 
+                        class="xl:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 focus:outline-none transition-colors cursor-pointer shrink-0" 
                         aria-label="Menü öffnen">
                     <svg x-show="!mobileMenuOpen" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -202,7 +195,7 @@ new class extends Component {
 
         </div>
 
-        <!-- Mobile Drawer Navigation -->
+        <!-- Mobile & Tablet Drawer Navigation -->
         <div x-show="mobileMenuOpen" 
              x-cloak 
              x-transition:enter="transition ease-out duration-250 transform" 
@@ -212,7 +205,7 @@ new class extends Component {
              x-transition:leave-start="opacity-100 translate-y-0" 
              x-transition:leave-end="opacity-0 -translate-y-2" 
              @click.away="mobileMenuOpen = false"
-             class="lg:hidden bg-white border-b border-slate-200 shadow-xl px-4 py-5 space-y-4">
+             class="xl:hidden bg-white border-b border-slate-200 shadow-xl px-4 py-5 space-y-4">
             
             <div class="space-y-1">
                 <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider px-3 block mb-1">Navigation</span>

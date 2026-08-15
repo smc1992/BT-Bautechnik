@@ -1903,7 +1903,7 @@ new class extends Component {
                 <x-brand-logo size="small" />
                 <span class="text-slate-300 hidden sm:inline">•</span>
                 <span class="text-slate-500 text-[11px] sm:text-xs font-medium">
-                    BT Bautechnik UG (haftungsbeschränkt) | Sollngriesbacher Str. 4, 92334 Berching 🇩🇪
+                    BT Bautechnik UG (haftungsbeschränkt) | Brunnenstraße 4, 92334 Berching 🇩🇪
                 </span>
             </div>
 

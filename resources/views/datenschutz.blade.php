@@ -40,9 +40,9 @@
                 </h2>
                 <div class="space-y-1 text-slate-800">
                     <p class="font-extrabold text-slate-900">BT Bautechnik UG (haftungsbeschränkt)</p>
-                    <p>Sollngriesbacher Str. 4, 92334 Berching, Deutschland</p>
+                    <p>Brunnenstraße 4, 92334 Berching, Deutschland</p>
                     <p>Geschäftsführerin: Julia Haberzettel</p>
-                    <p>Telefon: 08462 123456 | E-Mail: <a href="mailto:info@bt-bautechnik.de" class="text-blue-600 hover:underline">info@bt-bautechnik.de</a></p>
+                    <p>Telefon: 0160 96275910 | E-Mail: <a href="mailto:info@bt-bautechnik.de" class="text-blue-600 hover:underline">info@bt-bautechnik.de</a></p>
                 </div>
             </div>
 

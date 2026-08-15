@@ -118,14 +118,14 @@ class EInvoicingService
         $contactPerson = $seller->addChild('ram:DefinedTradeContact', null, $ramNs);
         $contactPerson->addChild('ram:PersonName', $this->sanitize($settings->managing_director ?: 'Julia Haberzettel'), $ramNs);
         $phone = $contactPerson->addChild('ram:TelephoneUniversalCommunication', null, $ramNs);
-        $phone->addChild('ram:CompleteNumber', $this->sanitize($settings->phone ?: '08462 123456'), $ramNs);
+        $phone->addChild('ram:CompleteNumber', $this->sanitize($settings->phone ?: '0160 96275910'), $ramNs);
         $email = $contactPerson->addChild('ram:EmailURIUniversalCommunication', null, $ramNs);
         $email->addChild('ram:URIID', $this->sanitize($settings->email ?: 'info@bt-bautechnik.de'), $ramNs);
 
         // Postal Address
         $sellerAddr = $seller->addChild('ram:PostalTradeAddress', null, $ramNs);
         $sellerAddr->addChild('ram:PostcodeCode', $this->sanitize($settings->zip ?: '92334'), $ramNs);
-        $sellerAddr->addChild('ram:LineOne', $this->sanitize($settings->street ?: 'Sollngriesbacher Str. 4'), $ramNs);
+        $sellerAddr->addChild('ram:LineOne', $this->sanitize($settings->street ?: 'Brunnenstraße 4'), $ramNs);
         $sellerAddr->addChild('ram:CityName', $this->sanitize($settings->city ?: 'Berching'), $ramNs);
         $sellerAddr->addChild('ram:CountryID', 'DE', $ramNs);
 

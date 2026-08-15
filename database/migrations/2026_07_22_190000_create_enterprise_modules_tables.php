@@ -59,15 +59,15 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('company_name')->default('BT Bautechnik UG (haftungsbeschränkt)');
             $table->string('managing_director')->default('Julia Haberzettel');
-            $table->string('street')->default('Sollngriesbacher Str. 4');
+            $table->string('street')->default('Brunnenstraße 4');
             $table->string('zip')->default('92334');
             $table->string('city')->default('Berching');
-            $table->string('phone')->default('08462 123456');
+            $table->string('phone')->default('0160 96275910');
             $table->string('email')->default('info@bt-bautechnik.de');
             $table->string('website')->default('www.bt-bautechnik.de');
             $table->string('tax_number')->default('110/123/45678');
             $table->string('vat_id')->default('DE345678901');
-            $table->string('commercial_register')->default('HRB 12345 AG Nürnberg');
+            $table->string('commercial_register')->default('HRB 46210 AG Nürnberg');
             $table->string('bank_name')->default('Sparkasse Neumarkt-Parsberg');
             $table->string('iban')->default('DE89 7605 0101 0001 2345 67');
             $table->string('bic')->default('BYLADEM1NM');

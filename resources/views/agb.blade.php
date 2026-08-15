@@ -39,7 +39,7 @@
                     § 1 Geltungsbereich & Vertragspartner
                 </h2>
                 <p>
-                    (1) Diese Allgemeinen Geschäftsbedingungen gelten für alle Verträge über die Nutzung der Softwarelösung „BT Bautechnik ERP Cockpit“ zwischen der <strong>BT Bautechnik UG (haftungsbeschränkt)</strong>, Sollngriesbacher Str. 4, 92334 Berching (nachfolgend „Anbieter“) und dem Kunden (ausschließlich Unternehmer im Sinne des § 14 BGB, Bauträger, Generalübernehmer, Bauunternehmen und Handwerksbetriebe).
+                    (1) Diese Allgemeinen Geschäftsbedingungen gelten für alle Verträge über die Nutzung der Softwarelösung „BT Bautechnik ERP Cockpit“ zwischen der <strong>BT Bautechnik UG (haftungsbeschränkt)</strong>, Brunnenstraße 4, 92334 Berching (nachfolgend „Anbieter“) und dem Kunden (ausschließlich Unternehmer im Sinne des § 14 BGB, Bauträger, Generalübernehmer, Bauunternehmen und Handwerksbetriebe).
                 </p>
                 <p>
                     (2) Abweichende oder entgegenstehende Bedingungen des Kunden werden nicht anerkannt, es sei denn, der Anbieter stimmt ihrer Geltung ausdrücklich schriftlich zu.

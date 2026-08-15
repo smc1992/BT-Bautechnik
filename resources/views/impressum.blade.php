@@ -40,7 +40,7 @@
                 </h2>
                 <div class="space-y-1 text-slate-800">
                     <p class="font-black text-base text-slate-900">BT Bautechnik UG (haftungsbeschränkt)</p>
-                    <p>Sollngriesbacher Str. 4</p>
+                    <p>Brunnenstraße 4</p>
                     <p>92334 Berching</p>
                     <p>Deutschland</p>
                 </div>
@@ -62,7 +62,7 @@
                     Kontaktmöglichkeiten
                 </h2>
                 <div class="space-y-1.5">
-                    <p><strong>Telefon:</strong> 08462 123456</p>
+                    <p><strong>Telefon / Mobil:</strong> 0160 96275910</p>
                     <p><strong>E-Mail:</strong> <a href="mailto:info@bt-bautechnik.de" class="text-blue-600 hover:underline font-bold">info@bt-bautechnik.de</a></p>
                     <p><strong>Website:</strong> <a href="https://bautechnik-bt.de" class="text-blue-600 hover:underline">www.bautechnik-bt.de</a></p>
                 </div>
@@ -74,8 +74,8 @@
                     Registereintrag & Umsatzsteuer-Identifikationsnummer
                 </h2>
                 <div class="space-y-1.5">
-                    <p><strong>Handelsregister:</strong> Amtsgericht Nürnberg / Regensburg</p>
-                    <p><strong>Registernummer:</strong> HRB 12345</p>
+                    <p><strong>Handelsregister:</strong> Amtsgericht Nürnberg</p>
+                    <p><strong>Registernummer:</strong> HRB 46210</p>
                     <p><strong>Umsatzsteuer-Identifikationsnummer gem. § 27a UStG:</strong> DE345678901</p>
                     <p><strong>Steuernummer:</strong> 110/123/45678</p>
                 </div>

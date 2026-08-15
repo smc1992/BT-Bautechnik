@@ -184,7 +184,7 @@ class OpenAiParserService
             throw new Exception("OpenAI API Key ist nicht konfiguriert.");
         }
 
-        $prompt = "Erstelle ein rechtssicheres Mängelrüge-Schreiben nach VOB/B § 13 für das Bauunternehmen BT Bautechnik UG (Sollngriesbacher Str. 4, 92334 Berching).\n" .
+        $prompt = "Erstelle ein rechtssicheres Mängelrüge-Schreiben nach VOB/B § 13 für das Bauunternehmen BT Bautechnik UG (Brunnenstraße 4, 92334 Berching).\n" .
             "Baustelle/Projekt: " . ($defectData['project'] ?? 'Baustelle') . "\n" .
             "Empfänger (Subunternehmer): " . ($defectData['contact'] ?? 'Subunternehmer') . "\n" .
             "Mangel: " . ($defectData['title'] ?? '') . "\n" .

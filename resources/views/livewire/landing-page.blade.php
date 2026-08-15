@@ -336,10 +336,10 @@ new class extends Component {
             </div>
 
             <!-- Architectural Cockpit Preview with City Construct Style Gallery Switcher -->
-            <div class="mt-10 sm:mt-16 max-w-6xl mx-auto arch-card p-2 sm:p-4 border-slate-300 shadow-2xl relative">
+            <div class="mt-12 sm:mt-16 max-w-6xl mx-auto arch-card p-2 sm:p-4 border-slate-300 shadow-2xl relative">
                 
                 <!-- Floating CAD Dimension Badge 1: Top-Right -->
-                <div class="hidden md:flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-xl absolute -top-5 -right-3 z-30 text-left">
+                <div class="hidden md:flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-xl absolute -top-6 right-6 z-30 text-left">
                     <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center font-bold text-sm shrink-0">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
@@ -355,7 +355,7 @@ new class extends Component {
                 </div>
 
                 <!-- Floating CAD Dimension Badge 2: Bottom-Left -->
-                <div class="hidden md:flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-950 text-white border border-slate-800 shadow-2xl absolute -bottom-5 -left-3 z-30 text-left">
+                <div class="hidden md:flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-950 text-white border border-slate-800 shadow-2xl absolute -bottom-6 left-6 z-30 text-left">
                     <div class="w-8 h-8 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-sm shrink-0">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />

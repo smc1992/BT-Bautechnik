@@ -173,8 +173,8 @@ new class extends Component {
                     </a>
                 @endauth
 
-                <button wire:click="openDemoModal" class="px-3.5 2xl:px-5 py-2 sm:py-2.5 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs 2xl:text-[13px] rounded-xl border border-slate-800 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 shrink-0 whitespace-nowrap btn-press">
-                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                <button wire:click="openDemoModal" class="micro-action px-3.5 2xl:px-5 py-2 sm:py-2.5 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs 2xl:text-[13px] rounded-xl border border-slate-800 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 shrink-0 whitespace-nowrap btn-press">
+                    <span class="micro-status-dot w-2 h-2 rounded-full bg-amber-400"></span>
                     <span class="hidden sm:inline">Live-Demo anfordern</span>
                     <span class="sm:hidden">Demo</span>
                 </button>
@@ -281,27 +281,27 @@ new class extends Component {
             <div class="text-center max-w-4xl mx-auto space-y-4 sm:space-y-6">
                 
                 <!-- Architectural Category Prefix Label -->
-                <div class="arch-section-label">
+                <div class="arch-section-label reveal-on-scroll">
                     <span>DIGITALES BAULEITER-COCKPIT & BAUTRÄGER-SYSTEM</span>
                 </div>
 
                 <!-- Main Hero Headline in Architectural Typography -->
-                <h1 class="text-3xl sm:text-5xl lg:text-7xl font-black tracking-tight text-slate-950 leading-[1.08]">
+                <h1 class="reveal-on-scroll reveal-delay-100 text-3xl sm:text-5xl lg:text-7xl font-black tracking-tight text-slate-950 leading-[1.08]">
                     WIR BAUEN DIE ZUKUNFT DER<br>
                     <span class="text-amber-600">DIGITALEN BAUSTELLE.</span>
                 </h1>
 
                 <!-- Subtitle with Construction Authenticity -->
-                <p class="text-xs sm:text-base lg:text-lg text-slate-600 font-medium max-w-3xl mx-auto leading-relaxed">
+                <p class="reveal-on-scroll reveal-delay-200 text-xs sm:text-base lg:text-lg text-slate-600 font-medium max-w-3xl mx-auto leading-relaxed">
                     Entwickelt aus der täglichen Baupraxis der <strong>BT Bautechnik UG (haftungsbeschränkt)</strong> in Bayern. Lückenlose Baustellen-Steuerung, 360° Kunden-Zentrale, digitale VOB/C Aufmaße, KI-Bautagebücher und DATEV SKR03/04 in einer hochpräzisen Lösung.
                 </p>
 
                 <!-- Hero CTAs with Clean Architectural Alignment -->
-                <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-                    <button wire:click="openDemoModal" class="w-full sm:w-auto px-8 py-4 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl border border-slate-800 shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2.5 btn-press">
-                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                <div class="reveal-on-scroll reveal-delay-300 pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                    <button wire:click="openDemoModal" class="micro-action w-full sm:w-auto px-8 py-4 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl border border-slate-800 shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2.5 btn-press">
+                        <span class="micro-status-dot w-2 h-2 rounded-full bg-amber-400"></span>
                         <span>Kostenlose Live-Demo vereinbaren</span>
-                        <span class="text-amber-400 ml-1">→</span>
+                        <span class="micro-arrow text-amber-400 ml-1">→</span>
                     </button>
 
                     <a href="https://wa.me/4916096275910?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20gerne%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="w-full sm:w-auto px-6 py-4 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl border border-slate-300 shadow-xs transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
@@ -313,7 +313,7 @@ new class extends Component {
                 </div>
 
                 <!-- Builder Trust Metric Line -->
-                <div class="pt-2 sm:pt-3 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-center">
+                <div class="reveal-on-scroll reveal-delay-400 pt-2 sm:pt-3 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-center">
                     <div class="flex items-center text-amber-500 text-xs tracking-wider">
                         ★ ★ ★ ★ ★
                     </div>
@@ -329,10 +329,10 @@ new class extends Component {
             </div>
 
             <!-- Architectural Cockpit Preview with City Construct Style Gallery Switcher -->
-            <div class="mt-12 sm:mt-16 max-w-6xl mx-auto arch-card p-2 sm:p-4 border-slate-300 shadow-2xl relative">
+            <div data-reveal="scale" class="mt-12 sm:mt-16 max-w-6xl mx-auto arch-card p-2 sm:p-4 border-slate-300 shadow-2xl relative">
                 
                 <!-- Floating CAD Dimension Badge 1: Top-Right -->
-                <div class="hidden md:flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-xl absolute -top-6 right-6 z-30 text-left">
+                <div class="micro-float hidden md:flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-xl absolute -top-6 right-6 z-30 text-left">
                     <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center font-bold text-sm shrink-0">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
@@ -348,7 +348,7 @@ new class extends Component {
                 </div>
 
                 <!-- Floating CAD Dimension Badge 2: Bottom-Left -->
-                <div class="hidden md:flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-950 text-white border border-slate-800 shadow-2xl absolute -bottom-6 left-6 z-30 text-left">
+                <div class="micro-float-reverse hidden md:flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-950 text-white border border-slate-800 shadow-2xl absolute -bottom-6 left-6 z-30 text-left">
                     <div class="w-8 h-8 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-sm shrink-0">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -470,7 +470,7 @@ new class extends Component {
     <!-- ========================================================================= -->
     <div class="border-y border-slate-200/90 bg-white py-6 sm:py-8 shadow-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 text-[11px] sm:text-xs text-slate-700 font-bold">
+            <div data-reveal-group="trust" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 text-[11px] sm:text-xs text-slate-700 font-bold">
                 
                 <!-- VOB/B -->
                 <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 transition">
@@ -562,7 +562,7 @@ new class extends Component {
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             
             <!-- Section Header -->
-            <div class="max-w-3xl mb-12 space-y-3">
+            <div data-reveal class="max-w-3xl mb-12 space-y-3">
                 <div class="arch-section-label">
                     <span>AUS DER BAU-PRAXIS</span>
                 </div>
@@ -576,7 +576,7 @@ new class extends Component {
             </div>
 
             <!-- Bento Grid Problem -> Solution -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
+            <div data-reveal-group class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
                 
                 <!-- Card 1: Nachträge -->
                 <div class="arch-card p-6 sm:p-8 space-y-4 group">
@@ -654,7 +654,7 @@ new class extends Component {
     <section id="module" class="py-14 sm:py-24 bg-white border-t border-slate-200/90 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            <div class="text-center max-w-3xl mx-auto space-y-3 mb-12 sm:mb-16">
+            <div data-reveal class="text-center max-w-3xl mx-auto space-y-3 mb-12 sm:mb-16">
                 <div class="arch-section-label">
                     <span>SYSTEMÜBERSICHT & MODULE</span>
                 </div>
@@ -667,7 +667,7 @@ new class extends Component {
             </div>
 
             <!-- 6-Grid with Inverted Featured Card (City Construct Architecture) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            <div data-reveal-group class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 
                 <!-- Card 1: Cockpit -->
                 <div class="arch-card p-6 sm:p-8 flex flex-col justify-between space-y-4 group">
@@ -838,7 +838,7 @@ new class extends Component {
     <section class="py-12 bg-slate-950 text-white relative overflow-hidden border-y border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             
-            <div class="arch-dock-dark p-6 sm:p-8">
+            <div data-reveal="scale" class="arch-dock-dark p-6 sm:p-8">
                 <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                     
                     <div class="space-y-1 max-w-md">
@@ -864,9 +864,9 @@ new class extends Component {
                             <input wire:model="demoPhone" type="tel" placeholder="Telefon / Mobil *" class="w-full bg-slate-900 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-3.5 py-3 focus:border-amber-500 focus:outline-none" required>
                         </div>
                         <div>
-                            <button type="submit" class="w-full h-full py-3 px-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 transition cursor-pointer flex items-center justify-center gap-1.5 btn-press">
+                            <button type="submit" class="micro-action w-full h-full py-3 px-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 transition cursor-pointer flex items-center justify-center gap-1.5 btn-press">
                                 <span>Demo anfordern</span>
-                                <span>→</span>
+                                <span class="micro-arrow">→</span>
                             </button>
                         </div>
                     </form>
@@ -883,7 +883,7 @@ new class extends Component {
     <section class="py-14 sm:py-24 bg-slate-50 border-b border-slate-200 relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            <div class="text-center max-w-3xl mx-auto space-y-3 mb-10 sm:mb-14">
+            <div data-reveal class="text-center max-w-3xl mx-auto space-y-3 mb-10 sm:mb-14">
                 <div class="arch-section-label">
                     <span>LIVE-DEMO SIMULATOR</span>
                 </div>
@@ -940,7 +940,7 @@ new class extends Component {
                     this.isPlaying = false;
                     clearInterval(this.interval);
                 }
-            }" class="arch-dock-dark p-6 sm:p-8 space-y-6">
+            }" data-reveal="scale" class="arch-dock-dark p-6 sm:p-8 space-y-6">
                 
                 <!-- Scenario Switcher -->
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-slate-800">
@@ -1063,7 +1063,7 @@ new class extends Component {
     <section id="rechner" class="py-14 sm:py-24 bg-white border-b border-slate-200 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            <div class="text-center max-w-3xl mx-auto space-y-3 mb-10 sm:mb-14">
+            <div data-reveal class="text-center max-w-3xl mx-auto space-y-3 mb-10 sm:mb-14">
                 <div class="arch-section-label">
                     <span>WIRTSCHAFTLICHKEIT</span>
                 </div>
@@ -1075,7 +1075,7 @@ new class extends Component {
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center max-w-5xl mx-auto">
+            <div data-reveal-group class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center max-w-5xl mx-auto">
                 
                 <!-- Left: Sliders -->
                 <div class="lg:col-span-6 arch-card p-6 sm:p-8 space-y-6">
@@ -1152,8 +1152,9 @@ new class extends Component {
                         </div>
                     </div>
 
-                    <button wire:click="openDemoModal" class="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 transition cursor-pointer btn-press">
-                        Diesen Vorteil für Ihren Betrieb sichern →
+                    <button wire:click="openDemoModal" class="micro-action w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 transition cursor-pointer btn-press">
+                        <span>Diesen Vorteil für Ihren Betrieb sichern</span>
+                        <span class="micro-arrow ml-1">→</span>
                     </button>
                 </div>
 
@@ -1167,7 +1168,7 @@ new class extends Component {
     <!-- ========================================================================= -->
     <section id="vorteile" x-data="{ viewMode: 'both' }" class="py-14 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div class="text-center max-w-3xl mx-auto space-y-3 mb-10 sm:mb-12">
+        <div data-reveal class="text-center max-w-3xl mx-auto space-y-3 mb-10 sm:mb-12">
             <div class="arch-section-label">
                 <span>DIREKTER VERGLEICH</span>
             </div>
@@ -1201,7 +1202,7 @@ new class extends Component {
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto">
+        <div data-reveal-group class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto">
             
             <!-- BEFORE CARD -->
             <div x-show="viewMode === 'both' || viewMode === 'before'" 
@@ -1283,7 +1284,7 @@ new class extends Component {
     <section class="py-14 sm:py-24 bg-white border-t border-slate-200/90 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            <div class="text-center max-w-3xl mx-auto space-y-3 mb-10 sm:mb-14">
+            <div data-reveal class="text-center max-w-3xl mx-auto space-y-3 mb-10 sm:mb-14">
                 <div class="arch-section-label">
                     <span>ERFAHRUNGSBERICHTE</span>
                 </div>
@@ -1295,7 +1296,7 @@ new class extends Component {
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            <div data-reveal-group class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
                 
                 <!-- Testimonial 1 -->
                 <div class="arch-card p-6 sm:p-8 flex flex-col justify-between space-y-4">
@@ -1371,7 +1372,7 @@ new class extends Component {
     <section id="faq" class="py-14 sm:py-20 bg-slate-50 border-t border-slate-200">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            <div class="text-center space-y-3 mb-8 sm:mb-10">
+            <div data-reveal class="text-center space-y-3 mb-8 sm:mb-10">
                 <div class="arch-section-label">
                     <span>HÄUFIGE FRAGEN</span>
                 </div>
@@ -1380,7 +1381,7 @@ new class extends Component {
                 </h2>
             </div>
 
-            <div x-data="{ openFaq: 0 }" class="space-y-3 text-xs">
+            <div x-data="{ openFaq: 0 }" data-reveal-group class="space-y-3 text-xs">
                 
                 <div class="arch-card p-4 sm:p-5">
                     <button type="button" @click="openFaq = (openFaq === 0 ? null : 0)" class="w-full flex justify-between items-center text-left font-black text-slate-950 text-xs sm:text-sm cursor-pointer gap-2">
@@ -1432,7 +1433,7 @@ new class extends Component {
     <!-- ========================================================================= -->
     <section class="py-14 sm:py-20 relative overflow-hidden bg-white border-t border-slate-200">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <div class="arch-card-featured p-8 sm:p-14 space-y-6">
+            <div data-reveal="scale" class="arch-card-featured p-8 sm:p-14 space-y-6">
                 <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
                     Bereit, Ihre Baustellen & Finanzen auf das nächste Level zu heben?
                 </h2>
@@ -1440,8 +1441,9 @@ new class extends Component {
                     Schließen Sie sich zukunftsorientierten Bauunternehmen & Bauträgern an. Fordern Sie jetzt Ihre persönliche Live-Präsentation an.
                 </p>
                 <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-                    <button wire:click="openDemoModal" class="w-full sm:w-auto px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-xl transition cursor-pointer btn-press">
-                        Jetzt kostenlose Demo anfordern →
+                    <button wire:click="openDemoModal" class="micro-action w-full sm:w-auto px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-xl transition cursor-pointer btn-press">
+                        <span>Jetzt kostenlose Demo anfordern</span>
+                        <span class="micro-arrow ml-1">→</span>
                     </button>
                     <a href="{{ route('login') }}" class="w-full sm:w-auto px-6 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl border border-slate-700 transition">
                         Bestehendes Kundenkonto Login ↗

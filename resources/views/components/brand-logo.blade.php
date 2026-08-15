@@ -22,10 +22,10 @@
 @endphp
 
 <div {{ $attributes->merge(['class' => 'inline-flex items-center gap-2 sm:gap-3 select-none group']) }}>
-    <!-- Architectural Building B + Crane T Monogram Icon (Bold & Uncut) -->
+    <!-- Reduced architectural BT monogram, aligned with the landing-page palette -->
     <div class="relative flex items-center justify-center shrink-0">
-        <img src="{{ asset('logo-icon-transparent.png') }}?v=5" 
-             alt="BT Bautechnik (Gebäude B & Kran T)" 
+        <img src="{{ asset('images/branding/bt-monogram-v2.png') }}?v=1"
+             alt="BT Bautechnik Monogramm"
              class="{{ $imgHeight }} w-auto object-contain drop-shadow-xs group-hover:scale-105 transition-transform duration-300">
     </div>
 
@@ -35,7 +35,7 @@
                 <span class="font-black tracking-tight text-slate-950 {{ $titleSize }} whitespace-nowrap">BT BAUTECHNIK</span>
                 <span class="text-[8px] sm:text-[9px] font-black uppercase tracking-wider px-1 sm:px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs">UG</span>
             </div>
-            <span class="{{ $subSize }} font-black text-blue-700 tracking-wider uppercase mt-0.5 sm:mt-1 whitespace-nowrap">Bauträger & Bauleiter-Software</span>
+            <span class="{{ $subSize }} font-black text-amber-700 tracking-wider uppercase mt-0.5 sm:mt-1 whitespace-nowrap">Bauträger & Bauleiter-Software</span>
         </div>
     @endif
 </div>

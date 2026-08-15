@@ -125,7 +125,7 @@ new class extends Component {
     <!-- 1. STICKY TOP NAVBAR (ARCHITECTURAL DUAL-TONE & GLASS)                     -->
     <!-- ========================================================================= -->
     <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-slate-200/90 shadow-xs transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3 2xl:gap-4">
             
             <!-- Real Brand Logo Component -->
             <a href="/" class="hover:opacity-90 transition-opacity group shrink-0">
@@ -133,24 +133,24 @@ new class extends Component {
             </a>
 
             <!-- Nav Links (Desktop) - Clean Architectural Typography -->
-            <nav class="hidden xl:flex items-center gap-1 xl:gap-2">
-                <a href="#story" class="px-3.5 py-2 rounded-xl text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
+            <nav class="hidden min-[1400px]:flex items-center gap-0 2xl:gap-1">
+                <a href="#story" class="px-2.5 2xl:px-3.5 py-2 rounded-xl text-xs 2xl:text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
                     Baupraxis & Story
                 </a>
-                <a href="#module" class="px-3.5 py-2 rounded-xl text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
+                <a href="#module" class="px-2.5 2xl:px-3.5 py-2 rounded-xl text-xs 2xl:text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
                     Module & VOB
                 </a>
-                <a href="#integrations" class="px-3.5 py-2 rounded-xl text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
+                <a href="#integrations" class="px-2.5 2xl:px-3.5 py-2 rounded-xl text-xs 2xl:text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
                     Schnittstellen
                 </a>
-                <a href="#rechner" class="px-3.5 py-2 rounded-xl text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap inline-flex items-center gap-1.5">
+                <a href="#rechner" class="px-2.5 2xl:px-3.5 py-2 rounded-xl text-xs 2xl:text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap inline-flex items-center gap-1.5">
                     <span>Ersparnisrechner</span>
-                    <span class="px-1.5 py-0.5 text-[9.5px] font-black rounded-md bg-amber-50 text-amber-800 border border-amber-200/80">Rechner</span>
+                    <span class="hidden 2xl:inline-flex px-1.5 py-0.5 text-[9.5px] font-black rounded-md bg-amber-50 text-amber-800 border border-amber-200/80">Rechner</span>
                 </a>
-                <a href="#vorteile" class="px-3.5 py-2 rounded-xl text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
+                <a href="#vorteile" class="px-2.5 2xl:px-3.5 py-2 rounded-xl text-xs 2xl:text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
                     Vorher / Nachher
                 </a>
-                <a href="#faq" class="px-3.5 py-2 rounded-xl text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
+                <a href="#faq" class="px-2.5 2xl:px-3.5 py-2 rounded-xl text-xs 2xl:text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
                     FAQ
                 </a>
             </nav>
@@ -165,7 +165,7 @@ new class extends Component {
                         <span>Cockpit</span>
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="hidden sm:flex px-3.5 py-2 text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 rounded-xl transition items-center gap-1.5 whitespace-nowrap">
+                    <a href="{{ route('login') }}" class="hidden sm:flex px-2.5 2xl:px-3.5 py-2 text-xs 2xl:text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 rounded-xl transition items-center gap-1.5 whitespace-nowrap">
                         <span>Login</span>
                         <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -173,16 +173,16 @@ new class extends Component {
                     </a>
                 @endauth
 
-                <button wire:click="openDemoModal" class="px-3.5 sm:px-5 py-2 sm:py-2.5 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs sm:text-[13px] rounded-xl border border-slate-800 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 shrink-0 whitespace-nowrap btn-press">
+                <button wire:click="openDemoModal" class="px-3.5 2xl:px-5 py-2 sm:py-2.5 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs 2xl:text-[13px] rounded-xl border border-slate-800 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 shrink-0 whitespace-nowrap btn-press">
                     <span class="w-2 h-2 rounded-full bg-amber-400"></span>
                     <span class="hidden sm:inline">Live-Demo anfordern</span>
                     <span class="sm:hidden">Demo</span>
                 </button>
 
-                <!-- Hamburger Toggle Button (shown on < xl) -->
+                <!-- Hamburger Toggle Button (shown below the full desktop navigation) -->
                 <button type="button" 
                         @click="mobileMenuOpen = !mobileMenuOpen" 
-                        class="xl:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 focus:outline-none transition-colors cursor-pointer shrink-0" 
+                        class="min-[1400px]:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 focus:outline-none transition-colors cursor-pointer shrink-0"
                         aria-label="Menü öffnen">
                     <svg x-show="!mobileMenuOpen" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -205,7 +205,7 @@ new class extends Component {
              x-transition:leave-start="opacity-100 translate-y-0" 
              x-transition:leave-end="opacity-0 -translate-y-2" 
              @click.away="mobileMenuOpen = false"
-             class="xl:hidden bg-white border-b border-slate-200 shadow-xl px-4 py-5 space-y-4">
+             class="min-[1400px]:hidden bg-white border-b border-slate-200 shadow-xl px-4 py-5 space-y-4">
             
             <div class="space-y-1">
                 <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider px-3 block mb-1">Navigation</span>

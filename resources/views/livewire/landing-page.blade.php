@@ -32,6 +32,7 @@ new class extends Component {
         if ($trade) {
             $this->demoTrade = $trade;
         }
+        $this->resetValidation();
         $this->demoSuccess = false;
         $this->showDemoModal = true;
     }
@@ -48,6 +49,15 @@ new class extends Component {
             'demoCompany' => 'required|min:2',
             'demoEmail' => 'required|email',
             'demoPhone' => 'required|min:6',
+        ], [
+            'required' => 'Bitte füllen Sie das Feld :attribute aus.',
+            'min' => ':attribute muss mindestens :min Zeichen enthalten.',
+            'email' => 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
+        ], [
+            'demoName' => 'Name',
+            'demoCompany' => 'Unternehmen',
+            'demoEmail' => 'E-Mail-Adresse',
+            'demoPhone' => 'Telefon',
         ]);
 
         $tradeLabels = [
@@ -80,7 +90,9 @@ new class extends Component {
                 'notes' => $notes,
             ]);
         } catch (\Exception $e) {
-            Log::error('Failed to create demo request contact: ' . $e->getMessage());
+            Log::warning('Demo request could not be saved.', ['exception_type' => get_class($e)]);
+            $this->addError('demoRequest', 'Ihre Anfrage konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.');
+            return;
         }
 
         $this->demoSuccess = true;
@@ -113,8 +125,8 @@ new class extends Component {
 }; ?>
 
 <div x-data="{ showStickyBar: false, mobileMenuOpen: false }" 
-     @scroll.window="showStickyBar = (window.pageYOffset || document.documentElement.scrollTop) > 450" 
-     class="min-h-screen arch-blueprint-bg text-slate-900 font-sans selection:bg-amber-500 selection:text-slate-950 relative overflow-x-hidden">
+     @scroll.window="showStickyBar = (window.pageYOffset || document.documentElement.scrollTop) > 450 && document.getElementById('bt-footer').getBoundingClientRect().top > window.innerHeight"
+     class="bt-landing min-h-screen text-slate-900 font-sans selection:bg-amber-500 selection:text-slate-950 relative">
     
     <!-- Architectural Hairline Vertical Guides & Ambient Layer -->
     <div class="arch-hairline-overlay"></div>
@@ -124,435 +136,12 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 1. STICKY TOP NAVBAR (ARCHITECTURAL DUAL-TONE & GLASS)                     -->
     <!-- ========================================================================= -->
-    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-slate-200/90 shadow-xs transition-all duration-300">
-        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3 2xl:gap-4">
-            
-            <!-- Real Brand Logo Component -->
-            <a href="/" class="hover:opacity-90 transition-opacity group shrink-0">
-                <x-brand-logo size="default" />
-            </a>
-
-            <!-- Nav Links (Desktop) - Clean Architectural Typography -->
-            <nav class="hidden min-[1400px]:flex items-center gap-0 2xl:gap-1">
-                <a href="#story" class="px-2.5 2xl:px-3.5 py-2 rounded-xl text-xs 2xl:text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
-                    Baupraxis & Story
-                </a>
-                <a href="#module" class="px-2.5 2xl:px-3.5 py-2 rounded-xl text-xs 2xl:text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
-                    Module & VOB
-                </a>
-                <a href="#integrations" class="px-2.5 2xl:px-3.5 py-2 rounded-xl text-xs 2xl:text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
-                    Schnittstellen
-                </a>
-                <a href="#rechner" class="px-2.5 2xl:px-3.5 py-2 rounded-xl text-xs 2xl:text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap inline-flex items-center gap-1.5">
-                    <span>Ersparnisrechner</span>
-                    <span class="hidden 2xl:inline-flex px-1.5 py-0.5 text-[9.5px] font-black rounded-md bg-amber-50 text-amber-800 border border-amber-200/80">Rechner</span>
-                </a>
-                <a href="#vorteile" class="px-2.5 2xl:px-3.5 py-2 rounded-xl text-xs 2xl:text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
-                    Vorher / Nachher
-                </a>
-                <a href="#faq" class="px-2.5 2xl:px-3.5 py-2 rounded-xl text-xs 2xl:text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 transition-all whitespace-nowrap">
-                    FAQ
-                </a>
-            </nav>
-
-            <!-- Action Buttons (Responsive for all screens) -->
-            <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-                @auth
-                    <a href="{{ route('dashboard') }}" class="px-3.5 py-2 sm:px-4 sm:py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-[13px] rounded-xl shadow-xs transition flex items-center gap-2 whitespace-nowrap">
-                        <svg class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                        </svg>
-                        <span>Cockpit</span>
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" class="hidden sm:flex px-2.5 2xl:px-3.5 py-2 text-xs 2xl:text-[13px] font-bold text-slate-700 hover:text-slate-950 hover:bg-slate-100 rounded-xl transition items-center gap-1.5 whitespace-nowrap">
-                        <span>Login</span>
-                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
-                    </a>
-                @endauth
-
-                <button wire:click="openDemoModal" class="micro-action px-3.5 2xl:px-5 py-2 sm:py-2.5 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs 2xl:text-[13px] rounded-xl border border-slate-800 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 shrink-0 whitespace-nowrap btn-press">
-                    <span class="micro-status-dot w-2 h-2 rounded-full bg-amber-400"></span>
-                    <span class="hidden sm:inline">Live-Demo anfordern</span>
-                    <span class="sm:hidden">Demo</span>
-                </button>
-
-                <!-- Hamburger Toggle Button (shown below the full desktop navigation) -->
-                <button type="button" 
-                        @click="mobileMenuOpen = !mobileMenuOpen" 
-                        class="min-[1400px]:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 focus:outline-none transition-colors cursor-pointer shrink-0"
-                        aria-label="Menü öffnen">
-                    <svg x-show="!mobileMenuOpen" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                    <svg x-show="mobileMenuOpen" x-cloak class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-
-        </div>
-
-        <!-- Mobile & Tablet Drawer Navigation -->
-        <div x-show="mobileMenuOpen" 
-             x-cloak 
-             x-transition:enter="transition ease-out duration-250 transform" 
-             x-transition:enter-start="opacity-0 -translate-y-2" 
-             x-transition:enter-end="opacity-100 translate-y-0" 
-             x-transition:leave="transition ease-in duration-150 transform" 
-             x-transition:leave-start="opacity-100 translate-y-0" 
-             x-transition:leave-end="opacity-0 -translate-y-2" 
-             @click.away="mobileMenuOpen = false"
-             class="min-[1400px]:hidden bg-white border-b border-slate-200 shadow-xl px-4 py-5 space-y-4">
-            
-            <div class="space-y-1">
-                <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider px-3 block mb-1">Navigation</span>
-                
-                <nav class="flex flex-col space-y-1">
-                    <a href="#story" @click="mobileMenuOpen = false" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-800 hover:text-amber-600 hover:bg-slate-50 transition">
-                        <span>Baupraxis & Story</span>
-                        <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                    </a>
-                    <a href="#module" @click="mobileMenuOpen = false" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-800 hover:text-amber-600 hover:bg-slate-50 transition">
-                        <span>Module & VOB</span>
-                        <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                    </a>
-                    <a href="#integrations" @click="mobileMenuOpen = false" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-800 hover:text-amber-600 hover:bg-slate-50 transition">
-                        <span>Schnittstellen & DATEV</span>
-                        <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                    </a>
-                    <a href="#rechner" @click="mobileMenuOpen = false" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-800 hover:text-amber-700 hover:bg-amber-50/60 transition">
-                        <span class="flex items-center gap-2">
-                            <span>Ersparnisrechner</span>
-                            <span class="px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-amber-100 text-amber-800">Live</span>
-                        </span>
-                        <svg class="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                    </a>
-                    <a href="#vorteile" @click="mobileMenuOpen = false" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-800 hover:text-slate-900 hover:bg-slate-50 transition">
-                        <span>Vorher / Nachher Vergleich</span>
-                        <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                    </a>
-                    <a href="#faq" @click="mobileMenuOpen = false" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-800 hover:text-slate-900 hover:bg-slate-50 transition">
-                        <span>Häufige Fragen (FAQ)</span>
-                        <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                    </a>
-                </nav>
-            </div>
-
-            <!-- Mobile Drawer Actions & CTA -->
-            <div class="pt-3 border-t border-slate-100 space-y-2">
-                <button type="button" wire:click="openDemoModal" @click="mobileMenuOpen = false" class="w-full py-3 bg-slate-950 text-white font-bold text-xs rounded-xl shadow-md text-center flex items-center justify-center gap-2 btn-press">
-                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                    <span>Kostenlose Live-Demo anfordern</span>
-                </button>
-                
-                <div class="grid grid-cols-2 gap-2">
-                    @auth
-                        <a href="{{ route('dashboard') }}" class="py-2.5 bg-slate-900 text-white font-bold text-xs rounded-xl text-center flex items-center justify-center gap-1.5">
-                            <span>Zum Cockpit</span>
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl text-center flex items-center justify-center gap-1.5">
-                            <span>Login</span>
-                            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                        </a>
-                    @endauth
-                    
-                    <a href="https://wa.me/4916096275910?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="py-2.5 bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold text-xs rounded-xl text-center flex items-center justify-center gap-1.5">
-                        <span>WhatsApp</span>
-                    </a>
-                </div>
-            </div>
-
-        </div>
-    </header>
+    @include('livewire.partials.landing-navigation')
 
     <!-- ========================================================================= -->
     <!-- 2. HERO SECTION (CITY CONSTRUCT ARCHITECTURAL EDITORIAL STYLE)            -->
     <!-- ========================================================================= -->
-    <section class="relative pt-10 pb-14 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-28 overflow-hidden">
-        
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            
-            <div class="text-center max-w-4xl mx-auto space-y-4 sm:space-y-6">
-                
-                <!-- Architectural Category Prefix Label -->
-                <div class="arch-section-label reveal-on-scroll">
-                    <span>DIGITALES BAULEITER-COCKPIT & BAUTRÄGER-SYSTEM</span>
-                </div>
-
-                <!-- Main Hero Headline in Architectural Typography -->
-                <h1 class="reveal-on-scroll reveal-delay-100 text-3xl sm:text-5xl lg:text-7xl font-black tracking-tight text-slate-950 leading-[1.08]">
-                    WIR BAUEN DIE ZUKUNFT DER<br>
-                    <span class="text-amber-600">DIGITALEN BAUSTELLE.</span>
-                </h1>
-
-                <!-- Subtitle with Construction Authenticity -->
-                <p class="reveal-on-scroll reveal-delay-200 text-xs sm:text-base lg:text-lg text-slate-600 font-medium max-w-3xl mx-auto leading-relaxed">
-                    Entwickelt aus der täglichen Baupraxis der <strong>BT Bautechnik UG (haftungsbeschränkt)</strong> in Bayern. Lückenlose Baustellen-Steuerung, 360° Kunden-Zentrale, digitale VOB/C Aufmaße, KI-Bautagebücher und DATEV SKR03/04 in einer hochpräzisen Lösung.
-                </p>
-
-                <!-- Hero CTAs with Clean Architectural Alignment -->
-                <div class="reveal-on-scroll reveal-delay-300 pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-                    <button wire:click="openDemoModal" class="micro-action w-full sm:w-auto px-8 py-4 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl border border-slate-800 shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2.5 btn-press">
-                        <span class="micro-status-dot w-2 h-2 rounded-full bg-amber-400"></span>
-                        <span>Kostenlose Live-Demo vereinbaren</span>
-                        <span class="micro-arrow text-amber-400 ml-1">→</span>
-                    </button>
-
-                    <a href="https://wa.me/4916096275910?text=Hallo%20BT%20Bautechnik,%20ich%20m%C3%B6chte%20gerne%20eine%20Live-Demo%20f%C3%BCr%20unser%20Bauunternehmen%20anfragen." target="_blank" class="w-full sm:w-auto px-6 py-4 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl border border-slate-300 shadow-xs transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.772.82 2.79.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.766-5.767-5.766zm3.385 8.169c-.14.394-.814.73-1.121.776-.307.046-.66.064-1.928-.46-1.52-.628-2.502-2.176-2.578-2.278-.076-.102-.619-.824-.619-1.571 0-.748.393-1.116.533-1.269.14-.153.307-.191.41-.191.102 0 .205.002.294.006.094.005.218-.036.342.261.127.306.435 1.062.473 1.139.038.077.064.166.013.268-.051.102-.077.166-.153.255-.077.09-.161.2-.23.268-.077.077-.157.161-.067.315.09.153.398.657.854 1.063.587.522 1.082.684 1.236.76.153.077.243.064.333-.038.09-.102.384-.447.486-.6.102-.153.205-.128.342-.077.137.051.87.41 1.02.486.15.077.25.115.286.179.036.064.036.371-.104.765z"/>
-                        </svg>
-                        <span>Direkt per WhatsApp anfragen</span>
-                    </a>
-                </div>
-
-                <!-- Builder Trust Metric Line -->
-                <div class="reveal-on-scroll reveal-delay-400 pt-2 sm:pt-3 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-center">
-                    <div class="flex items-center text-amber-500 text-xs tracking-wider">
-                        ★ ★ ★ ★ ★
-                    </div>
-                    <span class="text-[11px] sm:text-xs text-slate-600 font-bold">
-                        <strong class="text-slate-950">4.9 / 5.0</strong> von über 120 Bauleitern & Bauträgern geschätzt
-                    </span>
-                    <span class="hidden sm:inline-block text-slate-300">•</span>
-                    <span class="inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-600 font-bold">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Keine Installation oder Kreditkarte nötig
-                    </span>
-                </div>
-
-            </div>
-
-            <!-- Architectural Cockpit Preview with City Construct Style Gallery Switcher -->
-            <div data-reveal="scale" class="mt-12 sm:mt-16 max-w-6xl mx-auto arch-card p-2 sm:p-4 border-slate-300 shadow-2xl relative">
-                
-                <!-- Floating CAD Dimension Badge 1: Top-Right -->
-                <div class="micro-float hidden md:flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-xl absolute -top-6 right-6 z-30 text-left">
-                    <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center font-bold text-sm shrink-0">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
-                        </svg>
-                    </div>
-                    <div class="space-y-0.5">
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span class="text-[9.5px] font-black uppercase text-slate-500 tracking-wider">Whisper KI Engine</span>
-                        </div>
-                        <p class="text-[11.5px] font-black text-slate-950 leading-tight">14:32 Tiefgarage: 3 Mängel & Wetter erfasst</p>
-                    </div>
-                </div>
-
-                <!-- Floating CAD Dimension Badge 2: Bottom-Left -->
-                <div class="micro-float-reverse hidden md:flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-950 text-white border border-slate-800 shadow-2xl absolute -bottom-6 left-6 z-30 text-left">
-                    <div class="w-8 h-8 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-sm shrink-0">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="space-y-0.5">
-                        <span class="text-[9.5px] font-mono text-amber-400 font-bold uppercase tracking-wider">VOB/B § 2 Abs. 6 Freigabe</span>
-                        <p class="text-[11.5px] font-black text-white leading-tight">+ 4.850,00 € Nachtrag rechtssicher als PDF</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200 overflow-hidden relative z-10">
-                    
-                    <!-- Architectural Frame Window Header -->
-                    <div class="px-4 sm:px-6 py-3 bg-slate-950 border-b border-slate-800 flex items-center justify-between text-white">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
-                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
-                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
-                            <span class="text-[11px] sm:text-xs text-slate-400 font-mono ml-2">
-                                bt-bautechnik.de / cockpit / projektsteuerung
-                            </span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="px-2 py-0.5 rounded text-[9.5px] font-mono uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">
-                                VOB/B & DATEV AKTIV
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Split Photo & Cockpit Layer -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 bg-slate-50">
-                        
-                        <!-- Left: High-End Real On-Site Photography -->
-                        <div class="lg:col-span-5 relative overflow-hidden border-b lg:border-b-0 lg:border-r border-slate-200 group">
-                            <img src="{{ asset('images/bauleiter-tablet-hero.jpg') }}" 
-                                 alt="Bauleiter vor Ort mit digitalem BT Bautechnik Tablet Cockpit" 
-                                 class="w-full h-56 sm:h-72 lg:h-full object-cover min-h-[220px] lg:min-h-[440px] group-hover:scale-105 transition-transform duration-700">
-                            
-                            <!-- Architectural Blueprint Floating Badge -->
-                            <div class="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 bg-slate-950/90 backdrop-blur-md text-white p-3 sm:p-4 rounded-xl border border-white/10 shadow-lg">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                                    <span class="text-[10px] sm:text-xs font-black text-amber-400 uppercase tracking-wider">Echte Baustelle vor Ort</span>
-                                </div>
-                                <p class="text-[11px] sm:text-xs text-slate-300 font-medium leading-relaxed">
-                                    Bautagesberichte, digitale VOB/C Aufmaße und Mängelerfassung in Echtzeit auf dem Smartphone & Tablet.
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Right: Interactive Cockpit KPIs & Status -->
-                        <div class="lg:col-span-7 p-4 sm:p-7 space-y-4 sm:space-y-5 flex flex-col justify-between">
-                            
-                            <!-- Project Header -->
-                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-xs">
-                                <div>
-                                    <span class="text-[9.5px] font-mono text-amber-700 font-black uppercase tracking-wider">BAUVORHABEN #2026-081</span>
-                                    <h3 class="text-sm sm:text-base font-black text-slate-950">WEG Maximilianstraße 44 – Tiefgaragenabdichtung</h3>
-                                    <p class="text-[11px] text-slate-500 font-medium">Auftraggeber: Hausverwaltung Müller & Partner GmbH</p>
-                                </div>
-                                <div class="flex items-center gap-2 shrink-0">
-                                    <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 border border-slate-200 font-black text-[10px] sm:text-xs">
-                                        KW 32 – 38
-                                    </span>
-                                    <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-black text-[10px] sm:text-xs">
-                                        Im Soll
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Progress & Budget Metric Tiles -->
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                <div class="bg-white p-3.5 rounded-xl border border-slate-200">
-                                    <span class="text-[9.5px] text-slate-500 font-bold uppercase block">Budget Soll</span>
-                                    <p class="text-sm sm:text-base font-black text-slate-950 mt-0.5 tabular-nums">85.000,00 €</p>
-                                    <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
-                                        <div class="bg-slate-900 h-full w-[65%]"></div>
-                                    </div>
-                                </div>
-                                <div class="bg-white p-3.5 rounded-xl border border-slate-200">
-                                    <span class="text-[9.5px] text-slate-500 font-bold uppercase block">Nachträge (VOB/B)</span>
-                                    <p class="text-sm sm:text-base font-black text-amber-700 mt-0.5 tabular-nums">+ 12.450,00 €</p>
-                                    <span class="text-[9.5px] text-emerald-700 font-bold">3 freigegeben</span>
-                                </div>
-                                <div class="bg-white p-3.5 rounded-xl border border-slate-200">
-                                    <span class="text-[9.5px] text-slate-500 font-bold uppercase block">Aufmaß (VOB/C)</span>
-                                    <p class="text-sm sm:text-base font-black text-slate-950 mt-0.5 tabular-nums">620 m² / 750 m²</p>
-                                    <span class="text-[9.5px] text-slate-600 font-bold">82% fertig</span>
-                                </div>
-                            </div>
-
-                            <!-- Quick Action Row -->
-                            <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
-                                <div class="flex items-center gap-2 text-slate-700 font-medium text-[11px] sm:text-xs">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                    <span>Bautagesbericht heute per Sprachmemo erfasst</span>
-                                </div>
-                                <div class="flex items-center gap-1.5 w-full sm:w-auto justify-end">
-                                    <span class="px-2.5 py-1 bg-slate-100 text-slate-800 border border-slate-200 rounded-lg font-bold text-[10px]">
-                                        PDF-Export
-                                    </span>
-                                    <span class="px-2.5 py-1 bg-amber-50 text-amber-800 border border-amber-200 rounded-lg font-bold text-[10px]">
-                                        Aufmaß freigegeben
-                                    </span>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 3. ARCHITECTURAL TRUST & COMPLIANCE RIBBON (6 COLS)                       -->
-    <!-- ========================================================================= -->
-    <div class="border-y border-slate-200/90 bg-white py-6 sm:py-8 shadow-xs">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div data-reveal-group="trust" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 text-[11px] sm:text-xs text-slate-700 font-bold">
-                
-                <!-- VOB/B -->
-                <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 transition">
-                    <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-900 flex items-center justify-center shrink-0">
-                        <svg class="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-                        </svg>
-                    </div>
-                    <div class="leading-tight">
-                        <span class="block font-black text-slate-950">VOB/B § 2</span>
-                        <span class="text-[9.5px] text-slate-500 font-medium">Rechtssicher</span>
-                    </div>
-                </div>
-
-                <!-- DATEV -->
-                <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 transition">
-                    <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-900 flex items-center justify-center shrink-0">
-                        <svg class="w-4 h-4 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                    </div>
-                    <div class="leading-tight">
-                        <span class="block font-black text-slate-950">DATEV Export</span>
-                        <span class="text-[9.5px] text-slate-500 font-medium">SKR03 / SKR04</span>
-                    </div>
-                </div>
-
-                <!-- DIN 18299 -->
-                <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 transition">
-                    <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-900 flex items-center justify-center shrink-0">
-                        <svg class="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                        </svg>
-                    </div>
-                    <div class="leading-tight">
-                        <span class="block font-black text-slate-950">DIN 18299/18533</span>
-                        <span class="text-[9.5px] text-slate-500 font-medium">VOB/C Aufmaße</span>
-                    </div>
-                </div>
-
-                <!-- GAEB -->
-                <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 transition">
-                    <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-900 flex items-center justify-center shrink-0">
-                        <svg class="w-4 h-4 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-                        </svg>
-                    </div>
-                    <div class="leading-tight">
-                        <span class="block font-black text-slate-950">GAEB & GoBD</span>
-                        <span class="text-[9.5px] text-slate-500 font-medium">Revisionssicher</span>
-                    </div>
-                </div>
-
-                <!-- DSGVO DE -->
-                <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 transition">
-                    <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-900 flex items-center justify-center shrink-0">
-                        <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
-                    </div>
-                    <div class="leading-tight">
-                        <span class="block font-black text-slate-950">100% DSGVO</span>
-                        <span class="text-[9.5px] text-slate-500 font-medium">Server Frankfurt</span>
-                    </div>
-                </div>
-
-                <!-- Offline PWA -->
-                <div class="col-span-2 sm:col-span-1 flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 transition">
-                    <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-900 flex items-center justify-center shrink-0">
-                        <svg class="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                    </div>
-                    <div class="leading-tight">
-                        <span class="block font-black text-slate-950">PWA Offline-First</span>
-                        <span class="text-[9.5px] text-slate-500 font-medium">Kein Funkloch-Stopp</span>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
+    @include('livewire.partials.landing-hero')
 
     <!-- ========================================================================= -->
     <!-- 4. DIE STORY: VON BAUUNTERNEHMERN FÜR BAUUNTERNEHMER                      -->
@@ -651,229 +240,15 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 5. CITY CONSTRUCT STYLE: LEISTUNGS- & MODULGRID MIT FEATURED-CARD        -->
     <!-- ========================================================================= -->
-    <section id="module" class="py-14 sm:py-24 bg-white border-t border-slate-200/90 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            
-            <div data-reveal class="text-center max-w-3xl mx-auto space-y-3 mb-12 sm:mb-16">
-                <div class="arch-section-label">
-                    <span>SYSTEMÜBERSICHT & MODULE</span>
-                </div>
-                <h2 class="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight">
-                    Vollständige Kontrolle für Ihr Bauunternehmen
-                </h2>
-                <p class="text-xs sm:text-base text-slate-600 font-medium">
-                    Sechs exakt aufeinander abgestimmte Kernmodule für Bauleiter, Poliere, Projektleiter und Geschäftsführung:
-                </p>
-            </div>
-
-            <!-- 6-Grid with Inverted Featured Card (City Construct Architecture) -->
-            <div data-reveal-group class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                
-                <!-- Card 1: Cockpit -->
-                <div class="arch-card p-6 sm:p-8 flex flex-col justify-between space-y-4 group">
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div class="w-11 h-11 rounded-xl bg-slate-100 border border-slate-200 text-slate-950 flex items-center justify-center font-bold">
-                                <svg class="w-5 h-5 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-                            </div>
-                            <span class="text-[10px] font-mono text-slate-500 font-bold uppercase">MODUL 01</span>
-                        </div>
-                        <h3 class="text-base sm:text-lg font-black text-slate-950 group-hover:text-amber-600 transition-colors">
-                            Baustellen-Cockpit & Soll/Ist
-                        </h3>
-                        <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                            Echtzeit-Kostenüberwachung, Bauzeitenplan nach Kalenderwochen und automatischer Wetter-Abruf per GPS.
-                        </p>
-                    </div>
-                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-900">
-                        <button type="button" wire:click="openDemoModal('hoch_tiefbau')" class="text-amber-700 hover:text-amber-600 cursor-pointer flex items-center gap-1.5">
-                            <span>Mehr erfahren</span>
-                            <span>→</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Card 2: Kunden 360 -->
-                <div class="arch-card p-6 sm:p-8 flex flex-col justify-between space-y-4 group">
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div class="w-11 h-11 rounded-xl bg-slate-100 border border-slate-200 text-slate-950 flex items-center justify-center font-bold">
-                                <svg class="w-5 h-5 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>
-                            </div>
-                            <span class="text-[10px] font-mono text-slate-500 font-bold uppercase">MODUL 02</span>
-                        </div>
-                        <h3 class="text-base sm:text-lg font-black text-slate-950 group-hover:text-amber-600 transition-colors">
-                            360° Kunden- & Bauherren-Zentrale
-                        </h3>
-                        <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                            Alle Baustellen, Nachträge, Aufmaße und Notizen eines Bauherrn an einem zentralen Ort gebündelt.
-                        </p>
-                    </div>
-                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-900">
-                        <button type="button" wire:click="openDemoModal('generalunternehmer')" class="text-amber-700 hover:text-amber-600 cursor-pointer flex items-center gap-1.5">
-                            <span>Mehr erfahren</span>
-                            <span>→</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Card 3: FEATURED INVERTED CARD (VOB/B Nachtragsmanagement) -->
-                <div class="arch-card-featured p-6 sm:p-8 flex flex-col justify-between space-y-4 group">
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div class="w-11 h-11 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold shadow-md shadow-amber-500/20">
-                                <svg class="w-5 h-5 text-slate-950" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                </svg>
-                            </div>
-                            <span class="px-2.5 py-0.5 rounded-full text-[9.5px] font-mono text-amber-300 bg-amber-500/20 border border-amber-400/40 uppercase font-black">
-                                KERN-FEATURE
-                            </span>
-                        </div>
-                        <h3 class="text-base sm:text-lg font-black text-white group-hover:text-amber-400 transition-colors">
-                            VOB/B Nachtragsmanagement (§ 2)
-                        </h3>
-                        <p class="text-xs text-slate-300 leading-relaxed font-medium">
-                            Automatische Unterscheidung nach § 2 Abs. 5 und § 2 Abs. 6. Erstellung von rechtssicheren PDF-Angeboten vor Ausführung.
-                        </p>
-                    </div>
-                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-white">
-                        <button type="button" wire:click="openDemoModal('sanierung_abdichtung')" class="text-amber-400 hover:text-amber-300 cursor-pointer flex items-center gap-1.5">
-                            <span>Nachtrags-Automatik testen</span>
-                            <span>→</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Card 4: Aufmaß -->
-                <div class="arch-card p-6 sm:p-8 flex flex-col justify-between space-y-4 group">
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div class="w-11 h-11 rounded-xl bg-slate-100 border border-slate-200 text-slate-950 flex items-center justify-center font-bold">
-                                <svg class="w-5 h-5 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
-                                </svg>
-                            </div>
-                            <span class="text-[10px] font-mono text-slate-500 font-bold uppercase">MODUL 04</span>
-                        </div>
-                        <h3 class="text-base sm:text-lg font-black text-slate-950 group-hover:text-amber-600 transition-colors">
-                            Digitales Aufmaßblatt (VOB/C)
-                        </h3>
-                        <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                            Formelberechnung (L×B×H), automatischer VOB-Abzug nach DIN 18299 / DIN 18336 und 1-Klick Übergabe in die Schlussrechnung.
-                        </p>
-                    </div>
-                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-900">
-                        <button type="button" wire:click="openDemoModal('hoch_tiefbau')" class="text-amber-700 hover:text-amber-600 cursor-pointer flex items-center gap-1.5">
-                            <span>Mehr erfahren</span>
-                            <span>→</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Card 5: KI-Bautagebuch -->
-                <div class="arch-card p-6 sm:p-8 flex flex-col justify-between space-y-4 group">
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div class="w-11 h-11 rounded-xl bg-slate-100 border border-slate-200 text-slate-950 flex items-center justify-center font-bold">
-                                <svg class="w-5 h-5 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
-                                </svg>
-                            </div>
-                            <span class="text-[10px] font-mono text-slate-500 font-bold uppercase">MODUL 05</span>
-                        </div>
-                        <h3 class="text-base sm:text-lg font-black text-slate-950 group-hover:text-amber-600 transition-colors">
-                            KI-Bautagebuch & Sprachmemo
-                        </h3>
-                        <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                            30 Sekunden Audio auf der Baustelle einsprechen – Whisper KI formuliert den druckreifen Tagesbericht mit Gewerken & Wetter.
-                        </p>
-                    </div>
-                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-900">
-                        <button type="button" wire:click="openDemoModal('bautraeger')" class="text-amber-700 hover:text-amber-600 cursor-pointer flex items-center gap-1.5">
-                            <span>Mehr erfahren</span>
-                            <span>→</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Card 6: DATEV SKR03/04 -->
-                <div class="arch-card p-6 sm:p-8 flex flex-col justify-between space-y-4 group">
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div class="w-11 h-11 rounded-xl bg-slate-100 border border-slate-200 text-slate-950 flex items-center justify-center font-bold">
-                                <svg class="w-5 h-5 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                </svg>
-                            </div>
-                            <span class="text-[10px] font-mono text-slate-500 font-bold uppercase">MODUL 06</span>
-                        </div>
-                        <h3 class="text-base sm:text-lg font-black text-slate-950 group-hover:text-amber-600 transition-colors">
-                            DATEV & § 13b UStG Controlling
-                        </h3>
-                        <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                            Standardisierter Buchungsstapel-Export an den Steuerberater inkl. automatischer Nachunternehmer-Steuerschlüssel.
-                        </p>
-                    </div>
-                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-900">
-                        <button type="button" wire:click="openDemoModal('generalunternehmer')" class="text-amber-700 hover:text-amber-600 cursor-pointer flex items-center gap-1.5">
-                            <span>Mehr erfahren</span>
-                            <span>→</span>
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-    </section>
+    @include('livewire.partials.landing-modules')
 
     <!-- ========================================================================= -->
     <!-- 6. CITY CONSTRUCT STYLE: HORIZONTALES SCHNELL-ANFRAGE DOCK                -->
     <!-- ========================================================================= -->
-    <section class="py-12 bg-slate-950 text-white relative overflow-hidden border-y border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            
-            <div data-reveal="scale" class="arch-dock-dark p-6 sm:p-8">
-                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-                    
-                    <div class="space-y-1 max-w-md">
-                        <span class="text-[10px] font-mono uppercase text-amber-400 font-black tracking-wider block">
-                            — UNVERBINDLICHE SCHNELL-ANFRAGE —
-                        </span>
-                        <h3 class="text-lg sm:text-2xl font-black text-white tracking-tight">
-                            Live-Präsentation für Ihr Bauunternehmen
-                        </h3>
-                        <p class="text-xs text-slate-400 font-medium">
-                            Direkte Vorführung über Teams/Zoom oder vor Ort in Ihrem Betrieb.
-                        </p>
-                    </div>
-
-                    <form wire:submit="submitDemoRequest" class="w-full lg:flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-                        <div>
-                            <input wire:model="demoName" type="text" placeholder="Ihr Name *" class="w-full bg-slate-900 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-3.5 py-3 focus:border-amber-500 focus:outline-none" required>
-                        </div>
-                        <div>
-                            <input wire:model="demoCompany" type="text" placeholder="Firma / Betrieb *" class="w-full bg-slate-900 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-3.5 py-3 focus:border-amber-500 focus:outline-none" required>
-                        </div>
-                        <div>
-                            <input wire:model="demoPhone" type="tel" placeholder="Telefon / Mobil *" class="w-full bg-slate-900 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-3.5 py-3 focus:border-amber-500 focus:outline-none" required>
-                        </div>
-                        <div>
-                            <button type="submit" class="micro-action w-full h-full py-3 px-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 transition cursor-pointer flex items-center justify-center gap-1.5 btn-press">
-                                <span>Demo anfordern</span>
-                                <span class="micro-arrow">→</span>
-                            </button>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
-
+    <section class="py-12 bg-slate-950 text-white">
+        <div class="bt-shell bt-demo-entry">
+            <div><p class="bt-eyebrow">Ihr Betrieb. Ihre Abläufe.</p><h3>Sehen Sie, wie alles zusammenpasst.</h3><p>Wir zeigen Ihnen die passenden Module und besprechen, wie Sie Ihre Baustellen damit organisieren können.</p></div>
+            <button type="button" wire:click="openDemoModal" class="bt-button">Persönliche Demo anfordern <span aria-hidden="true">↗</span></button>
         </div>
     </section>
 
@@ -1083,12 +458,12 @@ new class extends Component {
                     <!-- Slider 1 -->
                     <div class="space-y-2">
                         <div class="flex justify-between items-center text-xs">
-                            <label class="font-bold text-slate-900">Gleichzeitige Baustellen:</label>
+                            <label for="roiProjectCount" class="font-bold text-slate-900">Gleichzeitige Baustellen:</label>
                             <span class="px-3 py-1 rounded-lg bg-slate-100 text-slate-950 font-black text-xs sm:text-sm border border-slate-200 tabular-nums">
                                 {{ $roiProjectCount }} Baustellen
                             </span>
                         </div>
-                        <input type="range" wire:model.live="roiProjectCount" min="1" max="25" step="1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-950">
+                        <input id="roiProjectCount" type="range" wire:model.live="roiProjectCount" min="1" max="25" step="1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-950">
                         <div class="flex justify-between text-[10px] text-slate-500 font-semibold">
                             <span>1 Baustelle</span>
                             <span>25 Baustellen</span>
@@ -1098,12 +473,12 @@ new class extends Component {
                     <!-- Slider 2 -->
                     <div class="space-y-2">
                         <div class="flex justify-between items-center text-xs">
-                            <label class="font-bold text-slate-900">Mitarbeiter & Bauleiter:</label>
+                            <label for="roiWorkerCount" class="font-bold text-slate-900">Mitarbeiter & Bauleiter:</label>
                             <span class="px-3 py-1 rounded-lg bg-slate-100 text-slate-950 font-black text-xs sm:text-sm border border-slate-200 tabular-nums">
                                 {{ $roiWorkerCount }} Personen
                             </span>
                         </div>
-                        <input type="range" wire:model.live="roiWorkerCount" min="2" max="40" step="1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-950">
+                        <input id="roiWorkerCount" type="range" wire:model.live="roiWorkerCount" min="2" max="40" step="1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-950">
                         <div class="flex justify-between text-[10px] text-slate-500 font-semibold">
                             <span>2 Mitarbeiter</span>
                             <span>40 Mitarbeiter</span>
@@ -1113,12 +488,12 @@ new class extends Component {
                     <!-- Slider 3 -->
                     <div class="space-y-2">
                         <div class="flex justify-between items-center text-xs">
-                            <label class="font-bold text-slate-900">Kalkulatorischer Stundensatz:</label>
+                            <label for="roiHourlyRate" class="font-bold text-slate-900">Kalkulatorischer Stundensatz:</label>
                             <span class="px-3 py-1 rounded-lg bg-amber-50 text-amber-800 font-black text-xs sm:text-sm border border-amber-200 tabular-nums">
                                 {{ $roiHourlyRate }} € / Std.
                             </span>
                         </div>
-                        <input type="range" wire:model.live="roiHourlyRate" min="45" max="110" step="5" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600">
+                        <input id="roiHourlyRate" type="range" wire:model.live="roiHourlyRate" min="45" max="110" step="1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600">
                         <div class="flex justify-between text-[10px] text-slate-500 font-semibold">
                             <span>45 €</span>
                             <span>110 €</span>
@@ -1159,6 +534,7 @@ new class extends Component {
                 </div>
 
             </div>
+            <p class="mt-6 text-center text-xs text-slate-500 max-w-3xl mx-auto">Unverbindliche Modellrechnung mit angenommenen Zeitersparnissen und Nachtragserlösen. Der tatsächliche Nutzen hängt von Ihren Projekten und Arbeitsabläufen ab.</p>
 
         </div>
     </section>
@@ -1369,123 +745,18 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 11. FAQ SECTION                                                           -->
     <!-- ========================================================================= -->
-    <section id="faq" class="py-14 sm:py-20 bg-slate-50 border-t border-slate-200">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            
-            <div data-reveal class="text-center space-y-3 mb-8 sm:mb-10">
-                <div class="arch-section-label">
-                    <span>HÄUFIGE FRAGEN</span>
-                </div>
-                <h2 class="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">
-                    Fragen von Bauträgern & Bauunternehmen
-                </h2>
-            </div>
+    @include('livewire.partials.landing-faq')
 
-            <div x-data="{ openFaq: 0 }" data-reveal-group class="space-y-3 text-xs">
-                
-                <div class="arch-card p-4 sm:p-5">
-                    <button type="button" @click="openFaq = (openFaq === 0 ? null : 0)" class="w-full flex justify-between items-center text-left font-black text-slate-950 text-xs sm:text-sm cursor-pointer gap-2">
-                        <span>Ist die Software auf Smartphones und Tablets auf der Baustelle nutzbar?</span>
-                        <span class="text-amber-600 text-sm sm:text-base font-bold shrink-0" x-text="openFaq === 0 ? '−' : '+'">−</span>
-                    </button>
-                    <p x-show="openFaq === 0" x-cloak class="mt-3 text-slate-600 leading-relaxed pt-3 border-t border-slate-100 font-medium text-xs">
-                        Ja! BT Bautechnik Cockpit ist als Progressive Web App (PWA) konzipiert. Es läuft reaktionsschnell auf jedem iPhone, Android-Smartphone, iPad oder Laptop – ohne umständliche App-Store Installation.
-                    </p>
-                </div>
-
-                <div class="arch-card p-4 sm:p-5">
-                    <button type="button" @click="openFaq = (openFaq === 1 ? null : 1)" class="w-full flex justify-between items-center text-left font-black text-slate-950 text-xs sm:text-sm cursor-pointer gap-2">
-                        <span>Wie funktioniert die Nachtragserstellung nach VOB/B § 2?</span>
-                        <span class="text-amber-600 text-sm sm:text-base font-bold shrink-0" x-text="openFaq === 1 ? '−' : '+'">+</span>
-                    </button>
-                    <p x-show="openFaq === 1" x-cloak class="mt-3 text-slate-600 leading-relaxed pt-3 border-t border-slate-100 font-medium text-xs">
-                        Das System unterscheidet automatisch zwischen Leistungsänderungen (§ 2 Abs. 5) und unvorhergesehenen Zusatzleistungen (§ 2 Abs. 6). Sie geben Titel und Menge ein – das System erstellt sofort das unterschriftsreife Nachtragsangebot als PDF mit rechtssicherer Klausulierung.
-                    </p>
-                </div>
-
-                <div class="arch-card p-4 sm:p-5">
-                    <button type="button" @click="openFaq = (openFaq === 2 ? null : 2)" class="w-full flex justify-between items-center text-left font-black text-slate-950 text-xs sm:text-sm cursor-pointer gap-2">
-                        <span>Kann mein Steuerberater die Rechnungen und Kosten direkt importieren?</span>
-                        <span class="text-amber-600 text-sm sm:text-base font-bold shrink-0" x-text="openFaq === 2 ? '−' : '+'">+</span>
-                    </button>
-                    <p x-show="openFaq === 2" x-cloak class="mt-3 text-slate-600 leading-relaxed pt-3 border-t border-slate-100 font-medium text-xs">
-                        Ja. Das System verfügt über eine integrierte DATEV CSV-Schnittstelle nach SKR03 und SKR04 inklusive automatischem Buchungsschlüssel für Nachunternehmer-Rechnungen (§ 13b UStG Bauleistungen).
-                    </p>
-                </div>
-
-                <div class="arch-card p-4 sm:p-5">
-                    <button type="button" @click="openFaq = (openFaq === 3 ? null : 3)" class="w-full flex justify-between items-center text-left font-black text-slate-950 text-xs sm:text-sm cursor-pointer gap-2">
-                        <span>Können wir das System unverbindlich testen?</span>
-                        <span class="text-amber-600 text-sm sm:text-base font-bold shrink-0" x-text="openFaq === 3 ? '−' : '+'">+</span>
-                    </button>
-                    <p x-show="openFaq === 3" x-cloak class="mt-3 text-slate-600 leading-relaxed pt-3 border-t border-slate-100 font-medium text-xs">
-                        Absolut. Klicken Sie einfach auf "Demo anfordern". Wir zeigen Ihnen in 15 Minuten per Videoschalte oder direkt vor Ort, wie Sie das System für Ihre Baustellen einrichten.
-                    </p>
-                </div>
-
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 12. BOTTOM CTA BANNER                                                     -->
-    <!-- ========================================================================= -->
-    <section class="py-14 sm:py-20 relative overflow-hidden bg-white border-t border-slate-200">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <div data-reveal="scale" class="arch-card-featured p-8 sm:p-14 space-y-6">
-                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
-                    Bereit, Ihre Baustellen & Finanzen auf das nächste Level zu heben?
-                </h2>
-                <p class="text-xs sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed font-medium">
-                    Schließen Sie sich zukunftsorientierten Bauunternehmen & Bauträgern an. Fordern Sie jetzt Ihre persönliche Live-Präsentation an.
-                </p>
-                <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-                    <button wire:click="openDemoModal" class="micro-action w-full sm:w-auto px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-xl transition cursor-pointer btn-press">
-                        <span>Jetzt kostenlose Demo anfordern</span>
-                        <span class="micro-arrow ml-1">→</span>
-                    </button>
-                    <a href="{{ route('login') }}" class="w-full sm:w-auto px-6 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl border border-slate-700 transition">
-                        Bestehendes Kundenkonto Login ↗
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 13. FOOTER WITH LEGAL ENTITY                                              -->
-    <!-- ========================================================================= -->
-    <footer class="border-t border-slate-200 bg-white py-8 sm:py-12 text-xs text-slate-500">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6">
-            
-            <!-- Brand Identity -->
-            <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
-                <x-brand-logo size="small" />
-                <span class="text-slate-300 hidden sm:inline">•</span>
-                <span class="text-slate-600 text-[11px] sm:text-xs font-medium">
-                    BT Bautechnik UG (haftungsbeschränkt) | Brunnenstraße 4, 92334 Berching 🇩🇪
-                </span>
-            </div>
-
-            <!-- Legal Links -->
-            <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 font-bold text-slate-700 text-xs">
-                <a href="/impressum" class="hover:text-amber-600 transition">Impressum</a>
-                <a href="/datenschutz" class="hover:text-amber-600 transition">Datenschutz</a>
-                <a href="/agb" class="hover:text-amber-600 transition">AGB</a>
-                <a href="{{ route('login') }}" class="hover:text-amber-600 transition text-slate-900">Kunden-Login ↗</a>
-            </div>
-        </div>
-    </footer>
+    @include('livewire.partials.landing-footer')
 
     <!-- ========================================================================= -->
     <!-- 14. DEMO REQUEST MODAL                                                    -->
     <!-- ========================================================================= -->
     @if ($showDemoModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-sm">
+        <div data-ui-dialog role="dialog" aria-modal="true" aria-label="Live-Demo anfordern" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-sm">
             <div class="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl p-6 sm:p-8 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl space-y-4 sm:space-y-6 relative">
                 
-                <button wire:click="closeDemoModal" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 text-xl font-bold cursor-pointer">✕</button>
+                <button type="button" data-dialog-close aria-label="Dialog schließen" wire:click="closeDemoModal" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 text-xl font-bold cursor-pointer">✕</button>
 
                 @if ($demoSuccess)
                     <div class="py-6 sm:py-8 text-center space-y-3 sm:space-y-4">
@@ -1508,35 +779,40 @@ new class extends Component {
                             <span>UNVERBINDLICHE PRÄSENTATION</span>
                         </div>
                         <h3 class="text-lg sm:text-xl font-black text-slate-950">Live-Demo für Ihr Bauunternehmen</h3>
-                        <p class="text-xs text-slate-500 font-medium">Erfahren Sie, wie BT Cockpit Ihren Baustellenalltag revolutioniert.</p>
+                        <p class="text-xs text-slate-500 font-medium">Lernen Sie die passenden Module für Ihren Betrieb kennen.</p>
                     </div>
 
                     <form wire:submit="submitDemoRequest" class="space-y-3 sm:space-y-3.5 text-xs">
+                        @error('demoRequest') <p role="alert" class="bt-form-error">{{ $message }}</p> @enderror
                         <div>
-                            <label class="block font-bold text-slate-800 mb-1">Ihr Name / Ansprechpartner *</label>
-                            <input wire:model="demoName" type="text" placeholder="z. B. Dipl.-Ing. Markus Huber" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-bold rounded-xl p-2.5 focus:border-amber-500 focus:outline-none" required>
+                            <label for="demoName" class="block font-bold text-slate-800 mb-1">Ihr Name / Ansprechpartner *</label>
+                            <input id="demoName" wire:model="demoName" @error('demoName') aria-describedby="demoName-error" aria-invalid="true" @enderror type="text" placeholder="z. B. Dipl.-Ing. Markus Huber" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-bold rounded-xl p-2.5 focus:border-amber-500 focus:outline-none" required>
+                            @error('demoName') <p id="demoName-error" class="bt-form-error">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
-                            <label class="block font-bold text-slate-800 mb-1">Unternehmen / Firma *</label>
-                            <input wire:model="demoCompany" type="text" placeholder="z. B. Huber Bau & Sanierung GmbH" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-bold rounded-xl p-2.5 focus:border-amber-500 focus:outline-none" required>
+                            <label for="demoCompany" class="block font-bold text-slate-800 mb-1">Unternehmen / Firma *</label>
+                            <input id="demoCompany" wire:model="demoCompany" @error('demoCompany') aria-describedby="demoCompany-error" aria-invalid="true" @enderror type="text" placeholder="z. B. Huber Bau & Sanierung GmbH" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-bold rounded-xl p-2.5 focus:border-amber-500 focus:outline-none" required>
+                            @error('demoCompany') <p id="demoCompany-error" class="bt-form-error">{{ $message }}</p> @enderror
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                                <label class="block font-bold text-slate-800 mb-1">E-Mail-Adresse *</label>
-                                <input wire:model="demoEmail" type="email" placeholder="m.huber@huberbau.de" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium rounded-xl p-2.5 focus:border-amber-500 focus:outline-none" required>
+                                <label for="demoEmail" class="block font-bold text-slate-800 mb-1">E-Mail-Adresse *</label>
+                                <input id="demoEmail" wire:model="demoEmail" @error('demoEmail') aria-describedby="demoEmail-error" aria-invalid="true" @enderror type="email" placeholder="m.huber@huberbau.de" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium rounded-xl p-2.5 focus:border-amber-500 focus:outline-none" required>
+                            @error('demoEmail') <p id="demoEmail-error" class="bt-form-error">{{ $message }}</p> @enderror
                             </div>
                             <div>
-                                <label class="block font-bold text-slate-800 mb-1">Telefon / Mobil *</label>
-                                <input wire:model="demoPhone" type="tel" placeholder="0171 1234567" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium rounded-xl p-2.5 focus:border-amber-500 focus:outline-none" required>
+                                <label for="demoPhone" class="block font-bold text-slate-800 mb-1">Telefon / Mobil *</label>
+                                <input id="demoPhone" wire:model="demoPhone" @error('demoPhone') aria-describedby="demoPhone-error" aria-invalid="true" @enderror type="tel" placeholder="0171 1234567" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium rounded-xl p-2.5 focus:border-amber-500 focus:outline-none" required>
+                            @error('demoPhone') <p id="demoPhone-error" class="bt-form-error">{{ $message }}</p> @enderror
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                                <label class="block font-bold text-slate-800 mb-1">Ihr Schwerpunkt</label>
-                                <select wire:model="demoTrade" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-bold rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+                                <label for="demoTrade" class="block font-bold text-slate-800 mb-1">Ihr Schwerpunkt</label>
+                                <select id="demoTrade" wire:model="demoTrade" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-bold rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
                                     <option value="bautraeger">Bauträger / Entwickler</option>
                                     <option value="generalunternehmer">Generalübernehmer / GU</option>
                                     <option value="sanierung_abdichtung">Sanierung & Abdichtung</option>
@@ -1545,8 +821,8 @@ new class extends Component {
                                 </select>
                             </div>
                             <div>
-                                <label class="block font-bold text-slate-800 mb-1">Baustellen pro Jahr</label>
-                                <select wire:model="demoProjectCount" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-bold rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
+                                <label for="demoProjectCount" class="block font-bold text-slate-800 mb-1">Baustellen pro Jahr</label>
+                                <select id="demoProjectCount" wire:model="demoProjectCount" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-bold rounded-xl p-2.5 focus:border-amber-500 focus:outline-none">
                                     <option value="1-3">1 – 3 Bauvorhaben</option>
                                     <option value="4-10">4 – 10 Bauvorhaben</option>
                                     <option value="10+">Über 10 Bauvorhaben</option>
@@ -1555,8 +831,8 @@ new class extends Component {
                         </div>
 
                         <div>
-                            <label class="block font-bold text-slate-800 mb-1">Nachricht / Notiz (optional)</label>
-                            <textarea wire:model="demoMessage" rows="2" placeholder="Welche Module interessieren Sie besonders (z.B. VOB-Nachträge, Aufmaße, KI-Bautagebuch)?" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-2.5 focus:border-amber-500 focus:outline-none"></textarea>
+                            <label for="demoMessage" class="block font-bold text-slate-800 mb-1">Nachricht / Notiz (optional)</label>
+                            <textarea id="demoMessage" wire:model="demoMessage" rows="2" placeholder="Welche Module interessieren Sie besonders (z.B. VOB-Nachträge, Aufmaße, KI-Bautagebuch)?" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-2.5 focus:border-amber-500 focus:outline-none"></textarea>
                         </div>
 
                         <div class="pt-3 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -1564,8 +840,9 @@ new class extends Component {
                                 <span>💬 Lieber per WhatsApp anfragen</span>
                             </a>
 
-                            <button type="submit" class="w-full sm:w-auto px-6 py-2.5 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs rounded-xl shadow-md cursor-pointer btn-press">
-                                Demo-Termin vereinbaren →
+                            <button type="submit" wire:loading.attr="disabled" wire:target="submitDemoRequest" class="w-full sm:w-auto px-6 py-2.5 bg-slate-950 hover:bg-slate-800 text-white font-black text-xs rounded-xl shadow-md cursor-pointer btn-press">
+                                <span wire:loading.remove wire:target="submitDemoRequest">Demo-Termin anfragen →</span>
+                                <span wire:loading wire:target="submitDemoRequest">Anfrage wird gesendet …</span>
                             </button>
                         </div>
                     </form>
@@ -1578,7 +855,7 @@ new class extends Component {
     <!-- ========================================================================= -->
     <!-- 15. MOBILE STICKY BAR                                                     -->
     <!-- ========================================================================= -->
-    <div x-show="showStickyBar" 
+    <div x-show="showStickyBar && !mobileMenuOpen"
          x-transition:enter="transition ease-out duration-300 transform" 
          x-transition:enter-start="translate-y-20 opacity-0" 
          x-transition:enter-end="translate-y-0 opacity-100" 

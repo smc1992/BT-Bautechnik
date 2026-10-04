@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 new class extends Component {
     public ?int $selectedYear = null;
+    public ?string $contextProjectId = null;
     public string $filterWorkType = 'all';
 
     // Modal state
@@ -22,6 +23,7 @@ new class extends Component {
     public function mount()
     {
         $this->selectedYear = (int) date('Y');
+        $this->contextProjectId = \App\Support\ProjectContext::id();
     }
 
     public function getAvailableYearsProperty()
@@ -42,6 +44,7 @@ new class extends Component {
         $y = $this->selectedYear;
 
         return Project::with(['contact', 'budget', 'actualCosts', 'invoices'])
+            ->when($this->contextProjectId, fn($q) => $q->where('id', $this->contextProjectId))
             ->where(function ($q) use ($y) {
                 // Include projects that overlap with $selectedYear
                 $q->where(function ($sub) use ($y) {
@@ -359,7 +362,7 @@ new class extends Component {
             $invoicedTotal = $proj->invoices->sum('total_net');
             $isMultiYr = ($editStartYear !== $editEndYear);
         @endphp
-        <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-4">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 <!-- Modal Header (Corporate Slate & Navy Blue Gradient) -->
                 <div class="p-6 bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 text-white flex justify-between items-start relative overflow-hidden">

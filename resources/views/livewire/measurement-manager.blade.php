@@ -31,6 +31,7 @@ new class extends Component {
 
     public function mount(): void
     {
+        $this->projectFilter = \App\Support\ProjectContext::id() ?? 'all';
         $this->measurementDate = date('Y-m-d');
     }
 
@@ -59,7 +60,7 @@ new class extends Component {
     public function openCreateSheet(): void
     {
         $this->activeMeasurementId = null;
-        $this->projectId = Project::first()?->id ?? '';
+        $this->projectId = \App\Support\ProjectContext::id() ?? Project::first()?->id ?? '';
         $this->measurementDate = date('Y-m-d');
         $this->locationArea = '';
         $this->inspectorName = 'Bauleiter BT';
@@ -349,7 +350,7 @@ new class extends Component {
 
     <!-- Sheet Modal (Full Editor with Live Formula Engine) -->
     @if ($showSheetModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/70 backdrop-blur-xs">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/70 backdrop-blur-xs">
             <div class="bg-white rounded-3xl p-6 max-w-5xl w-full shadow-2xl border border-slate-200 space-y-5 max-h-[95vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div>

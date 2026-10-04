@@ -466,7 +466,7 @@ new class extends Component {
 
     <!-- MANUELL ERSTELLEN / BEARBEITEN MODAL -->
     @if($showModal)
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
                 <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
                     <h3 class="text-base font-extrabold text-white">
@@ -544,7 +544,7 @@ new class extends Component {
 
     <!-- KI PREISANPASSUNGS PROPOSAL MODAL (PREVIEW BEFORE APPLYING) -->
     @if($showAiPromptModal)
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden my-6 flex flex-col max-h-[85vh]">
                 <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center shrink-0">
                     <div class="flex items-center gap-2">

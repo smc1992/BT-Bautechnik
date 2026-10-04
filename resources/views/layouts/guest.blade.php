@@ -25,7 +25,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased text-slate-900 bg-[#091224] min-h-screen flex flex-col selection:bg-amber-500 selection:text-slate-950">
+    <body class="ui-guest font-sans antialiased text-slate-900 bg-[#091224] min-h-screen flex flex-col selection:bg-amber-500 selection:text-slate-950">
         
         <div class="min-h-screen flex flex-col lg:flex-row w-full flex-1">
             

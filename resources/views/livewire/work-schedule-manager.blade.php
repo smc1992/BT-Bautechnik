@@ -25,10 +25,10 @@ new class extends Component {
         $this->selectedWeekStart = Carbon::now()->startOfWeek()->format('Y-m-d');
         $this->date = Carbon::now()->format('Y-m-d');
 
-        $reqProjectId = request()->query('project_id');
+        $reqProjectId = \App\Support\ProjectContext::id();
         if ($reqProjectId && Project::find($reqProjectId)) {
             $this->projectId = $reqProjectId;
-            $this->showModal = true;
+            $this->showModal = request()->query('action') === 'new';
         }
     }
 
@@ -53,7 +53,7 @@ new class extends Component {
         if ($projectId) {
             $this->projectId = $projectId;
         } else {
-            $firstP = Project::where('status', 'active')->first();
+            $firstP = \App\Support\ProjectContext::current() ?? Project::where('status', 'active')->first();
             $this->projectId = $firstP?->id ?? '';
         }
 
@@ -358,7 +358,7 @@ new class extends Component {
 
     <!-- Assignment Modal -->
     @if($showModal)
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
             <div class="bg-white rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-200 space-y-4">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                     <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">

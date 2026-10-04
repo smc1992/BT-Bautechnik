@@ -1,78 +1,23 @@
-const CACHE_NAME = 'bt-bautechnik-pwa-v2';
-const STATIC_ASSETS = [
-    '/',
-    '/dashboard',
-    '/bautagebuch',
-    '/zeiterfassung',
-    '/aufmass',
-    '/nachtraege',
-    '/manifest.json',
-    '/favicon.ico',
-    '/logo.png'
-];
-
-// Install: Pre-cache core shell
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(STATIC_ASSETS).catch((err) => {
-                console.warn('Pre-caching partial error:', err);
-            });
-        })
-    );
+const CACHE_NAME = 'bt-bautechnik-static-v3';
+const STATIC_ASSETS = ['/favicon.ico', '/manifest.json', '/images/branding/bt-monogram-v2.png'];
+self.addEventListener('install', event => {
+    event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS)));
     self.skipWaiting();
 });
-
-// Activate: Clean up older cache versions
-self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then((keys) => {
-            return Promise.all(
-                keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-            );
-        })
-    );
+self.addEventListener('activate', event => {
+    event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('bt-bautechnik-') && key !== CACHE_NAME).map(key => caches.delete(key)))));
     self.clients.claim();
 });
-
-// Fetch: Stale-while-revalidate for static assets, network-first for HTML pages
-self.addEventListener('fetch', (event) => {
-    if (event.request.method !== 'GET') return;
-
+self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
-
-    // If requesting static assets (CSS, JS, Fonts, Images)
-    if (url.pathname.startsWith('/build/') || url.pathname.endsWith('.css') || url.pathname.endsWith('.js') || url.pathname.endsWith('.png') || url.pathname.endsWith('.svg') || url.pathname.endsWith('.ico')) {
-        event.respondWith(
-            caches.match(event.request).then((cachedResponse) => {
-                const fetchPromise = fetch(event.request).then((networkResponse) => {
-                    if (networkResponse && networkResponse.status === 200) {
-                        const responseClone = networkResponse.clone();
-                        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
-                    }
-                    return networkResponse;
-                }).catch(() => cachedResponse);
-
-                return cachedResponse || fetchPromise;
-            })
-        );
-        return;
-    }
-
-    // Dynamic pages: Network-first with offline cache fallback
-    event.respondWith(
-        fetch(event.request)
-            .then((response) => {
-                if (response && response.status === 200) {
-                    const responseClone = response.clone();
-                    caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
-                }
-                return response;
-            })
-            .catch(() => {
-                return caches.match(event.request).then((cachedResponse) => {
-                    return cachedResponse || caches.match('/dashboard');
-                });
-            })
-    );
+    // Livewire, forms and authenticated HTML always use the network. Drafts are explicit.
+    if (event.request.method !== 'GET' || url.origin !== self.location.origin || (!url.pathname.startsWith('/build/') && !STATIC_ASSETS.includes(url.pathname))) return;
+    const response = caches.open(CACHE_NAME).then(async cache => {
+        const cached = await cache.match(event.request);
+        if (cached) return cached;
+        const fresh = await fetch(event.request);
+        if (fresh.ok) await cache.put(event.request, fresh.clone());
+        return fresh;
+    });
+    event.respondWith(response);
 });

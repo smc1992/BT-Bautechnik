@@ -31,9 +31,11 @@ new class extends Component {
 
     public function mount(): void
     {
+        $this->selectedProject = \App\Support\ProjectContext::id() ?? 'all';
         $this->selectedMonth = date('Y-m');
         $this->entryDate = date('Y-m-d');
         $this->userId = auth()->id() ?: 1;
+        if (request()->query('action') === 'new') $this->openCreateModal();
     }
 
     public function with(): array
@@ -85,7 +87,7 @@ new class extends Component {
     {
         $this->editingId = null;
         $this->userId = auth()->id() ?: 1;
-        $this->projectId = Project::first()?->id;
+        $this->projectId = \App\Support\ProjectContext::id() ?? Project::first()?->id;
         $this->entryDate = date('Y-m-d');
         $this->startTime = '07:00';
         $this->endTime = '16:30';
@@ -321,7 +323,7 @@ new class extends Component {
 
     <!-- Create / Edit Time Entry Modal -->
     @if ($showModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
             <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-200 space-y-5">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <h3 class="text-lg font-black text-slate-900">

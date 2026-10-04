@@ -326,7 +326,7 @@ new class extends Component {
 
     <!-- Modal: Add Document or Upload PDF/TXT -->
     @if ($showModal)
-        <div class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
             <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-150">
                 <div class="p-5 bg-gradient-to-r from-slate-950 to-blue-950 text-white flex justify-between items-center">
                     <h3 class="font-bold text-sm flex items-center gap-2">

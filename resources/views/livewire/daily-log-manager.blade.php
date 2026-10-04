@@ -34,7 +34,7 @@ new class extends Component {
     public function mount()
     {
         $this->date = date('Y-m-d');
-        $reqProjectId = request()->query('project_id');
+        $reqProjectId = \App\Support\ProjectContext::id();
         if ($reqProjectId && Project::find($reqProjectId)) {
             $this->projectId = $reqProjectId;
             $this->selectedProjectId = $reqProjectId;
@@ -45,6 +45,8 @@ new class extends Component {
                 $this->selectedProjectId = $firstProject->id;
             }
         }
+        if (request()->boolean('clear_project')) $this->selectedProjectId = null;
+        if (request()->query('action') === 'new') $this->showModal = true;
     }
 
     public function getProjectsProperty()
@@ -92,8 +94,9 @@ new class extends Component {
             'special_occurrences' => $this->specialOccurrences,
         ]);
 
+        $this->dispatch('daily-log-saved', projectId: $this->projectId);
         $this->showModal = false;
-        $this->dispatch('notify', 'Bautagebuch-Eintrag erfolgreich gespeichert!');
+        $this->dispatch('notify', 'Tagesbericht auf Server gespeichert.');
     }
 
     public function generateLogWithAi(?\App\Services\OpenAiParserService $parser = null)
@@ -147,25 +150,25 @@ new class extends Component {
     <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div class="space-y-1">
             <h2 class="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                <span>🎙️ Bautagebuch & Regieberichte</span>
+                <x-ui-icon name="book" /><span>Bautagebuch & Regieberichte</span>
             </h2>
             <p class="text-xs text-slate-500 font-medium">Tägliche Dokumentation von Wetter, Baufortschritt, Personal, KI-Diktat und Bauherren-Freigaben.</p>
         </div>
 
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full md:w-auto">
-            <select wire:model.live="selectedProjectId" class="w-full sm:w-auto bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-blue-600 cursor-pointer">
+            <select aria-label="Baustelle filtern" wire:model.live="selectedProjectId" class="w-full sm:w-auto bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-900 focus:bg-white focus:border-blue-600 cursor-pointer">
                 <option value="">Alle Baustellen anzeigen</option>
                 @foreach ($this->projects as $p)
                     <option value="{{ $p->id }}">{{ $p->name }}</option>
                 @endforeach
             </select>
 
-            <button wire:click="$set('showAiModal', true)" class="w-full sm:w-auto px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/20 flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">
-                <span>🎙️ KI-Diktat / Spracheingabe</span>
+            <button wire:click="$set('showAiModal', true)" class="ui-button ui-button-secondary">
+                <x-ui-icon name="sparkles" /><span>KI-Diktat</span>
             </button>
 
-            <button wire:click="openCreateModal" class="w-full sm:w-auto px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/10 flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
-                <span>+ Tagebucheintrag</span>
+            <button wire:click="openCreateModal" class="ui-button ui-button-primary">
+                <x-ui-icon name="plus" /><span>Tagebucheintrag</span>
             </button>
         </div>
     </div>
@@ -258,14 +261,17 @@ new class extends Component {
 
     <!-- Create Modal -->
     @if ($showModal)
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-2 sm:p-4">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-2 sm:p-4">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center shrink-0">
                     <h3 class="text-base font-bold text-slate-900">Neuen Tagesbericht verfassen</h3>
                     <button wire:click="$set('showModal', false)" class="text-slate-400 hover:text-slate-700 cursor-pointer">✕</button>
                 </div>
 
-                <form wire:submit="saveLog" class="p-4 sm:p-6 space-y-4 overflow-y-auto">
+                <form x-data="dailyLogDraft($wire, @js(auth()->id()))" wire:submit="saveLog" class="p-4 sm:p-6 space-y-4 overflow-y-auto">
+                    <div class="ui-draft-status" role="status"><span x-text="state"></span><p data-connection-status>Zum Übertragen „Eintrag speichern“ wählen.</p><p class="text-xs mt-1">Entwürfe können 7 Tage auf diesem Gerät wiederhergestellt werden. Die Übertragung erfolgt beim Speichern.</p><button type="button" @click="discard()" class="underline mt-1 text-sm">Lokalen Entwurf verwerfen</button></div>
+                    @if($errors->any())<div role="alert" class="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">Bitte prüfen Sie die Eingaben: {{ $errors->first() }}</div>@endif
+                    <div data-submit-status aria-live="polite"></div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Baustelle</label>
@@ -319,7 +325,7 @@ new class extends Component {
 
                     <div class="flex justify-end space-x-3 pt-4 border-t border-slate-200">
                         <button type="button" wire:click="$set('showModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold">Abbrechen</button>
-                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/10">Eintrag speichern</button>
+                        <button type="submit" data-online-submit wire:loading.attr="disabled" wire:target="saveLog" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/10"><span wire:loading.remove wire:target="saveLog">Eintrag speichern</span><span wire:loading wire:target="saveLog">Wird gespeichert …</span></button>
                     </div>
                 </form>
             </div>
@@ -328,7 +334,7 @@ new class extends Component {
 
     <!-- KI Bautagebuch & Voice Dictation Modal -->
     @if ($showAiModal)
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-2 sm:p-4 font-sans">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-2 sm:p-4 font-sans">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]" x-data="{ isRecording: false, recognition: null }">
                 <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center shrink-0">
                     <h3 class="text-base font-black flex items-center gap-2">
@@ -396,7 +402,7 @@ new class extends Component {
 
     <!-- Share & Approval Link Modal -->
     @if ($showShareModal)
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-2 sm:p-4 font-sans">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-2 sm:p-4 font-sans">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center shrink-0">
                     <div class="flex items-center gap-2">

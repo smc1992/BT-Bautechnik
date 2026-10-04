@@ -13,7 +13,7 @@
         <link rel="icon" type="image/png" sizes="512x512" href="{{ asset('icon-512.png') }}?v=4">
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v=4">
         <link rel="manifest" href="{{ asset('manifest.json') }}?v=4">
-        <meta name="theme-color" content="#1d4ed8">
+        <meta name="theme-color" content="#0f172a">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="default">
         <meta name="apple-mobile-web-app-title" content="BT Bautechnik">
@@ -28,48 +28,19 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body x-data="{ isOffline: !navigator.onLine }" 
-          x-init="
-              window.addEventListener('offline', () => isOffline = true);
-              window.addEventListener('online', () => isOffline = false);
-              if ('serviceWorker' in navigator) {
-                  navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW Reg Error', err));
-              }
-          " 
-          class="font-sans antialiased bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white flex flex-col min-h-screen">
-
-        <!-- Offline Status Banner -->
-        <div x-show="isOffline" x-cloak class="bg-amber-500 text-slate-900 px-4 py-2 text-center text-xs font-black shadow-md flex items-center justify-center gap-2 relative z-50 sticky top-0">
-            <span class="w-2.5 h-2.5 rounded-full bg-slate-900 animate-ping"></span>
-            <span>📡 OFFLINE-MODUS AKTIV: Bautagebuch-Einträge & Notizen werden lokal gespeichert und bei Netzempfang automatisch synchronisiert!</span>
+    <body class="ui-app font-sans antialiased" data-user-id="{{ auth()->id() }}">
+        <a href="#main-content" class="ui-skip-link">Zum Inhalt springen</a>
+        <div class="ui-network-status" data-network-banner hidden role="status">Verbindung unterbrochen. Tagesbericht-Entwürfe bleiben auf diesem Gerät. Zum Übertragen bitte wieder verbinden und speichern.</div>
+        <livewire:layout.navigation />
+        <div class="ui-app-frame">
+            <livewire:layout.sidebar />
+            <main id="main-content" tabindex="-1" class="ui-main {{ request()->routeIs('ai-agent') ? 'ui-main-agent' : '' }}">
+                @if(isset($header))<div class="ui-page-heading">{{ $header }}</div>@endif
+                {{ $slot }}
+            </main>
         </div>
-
-        <div class="min-h-screen bg-slate-50 flex flex-col">
-            <livewire:layout.navigation />
-
-            <!-- Page Heading -->
-            @if (isset($header))
-                <header class="bg-white border-b border-slate-200/80 shadow-xs">
-                    <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endif
-
-            <!-- Main Content Area with HubSpot-Style Sidebar -->
-            <div class="flex-1 w-full flex items-start">
-                <livewire:layout.sidebar />
-
-                <main class="flex-1 min-w-0 {{ request()->routeIs('ai-agent') ? 'p-0 h-[calc(100vh-4rem)] overflow-hidden flex flex-col' : 'p-4 sm:p-6 lg:p-8 w-full overflow-x-hidden' }}">
-                    {{ $slot }}
-                </main>
-            </div>
-        </div>
-
-        <!-- Global Command Palette -->
         <x-command-palette />
-
-        <!-- Mobile Bottom Navigation & Quick Action Center -->
         <x-mobile-quick-action />
+        <div id="ui-notifications" class="ui-notifications" role="status" aria-live="polite" aria-atomic="true"></div>
     </body>
 </html>

@@ -32,6 +32,7 @@ new class extends Component {
 
     // Document Meta
     public ?string $projectId = null;
+    public ?string $contextProjectId = null;
     public string $projectSearch = '';
     public string $docNumber = '';
     public string $docDate = '';
@@ -226,6 +227,7 @@ new class extends Component {
     {
         $this->mode = 'invoice';
         $this->resetForm();
+        if ($this->contextProjectId) $this->selectProject($this->contextProjectId);
         $this->activeTab = 'editor';
     }
 
@@ -233,6 +235,7 @@ new class extends Component {
     {
         $this->mode = 'offer';
         $this->resetForm();
+        if ($this->contextProjectId) $this->selectProject($this->contextProjectId);
         $this->activeTab = 'editor';
     }
 
@@ -409,17 +412,14 @@ new class extends Component {
         $this->docDate = date('Y-m-d');
         $this->resetForm();
 
-        $reqProjectId = request()->query('project_id');
+        $reqProjectId = \App\Support\ProjectContext::id();
+        $this->contextProjectId = $reqProjectId;
         $reqAction = request()->query('action');
 
         if ($reqProjectId) {
             $this->selectProject($reqProjectId);
-            $this->activeTab = 'editor';
-        } elseif ($reqAction === 'new') {
-            $this->activeTab = 'editor';
-        } else {
-            $this->activeTab = 'archive';
         }
+        $this->activeTab = $reqAction === 'new' ? 'editor' : 'archive';
 
         $this->loadSavedDocuments();
     }
@@ -430,6 +430,10 @@ new class extends Component {
 
         $invoicesQuery = Invoice::with(['project', 'contact']);
         $offersQuery = Offer::with(['project', 'contact']);
+        if ($this->contextProjectId) {
+            $invoicesQuery->where('project_id', $this->contextProjectId);
+            $offersQuery->where('project_id', $this->contextProjectId);
+        }
 
         if (!empty($search)) {
             $invoicesQuery->where(function ($q) use ($search) {
@@ -1689,7 +1693,7 @@ new class extends Component {
             <!-- 1. Archive / Overview Tab (DEFAULT FIRST) -->
             <button wire:click="setTab('archive')" 
                     class="px-5 py-2.5 rounded-xl text-xs font-black transition cursor-pointer flex items-center gap-2 {{ $activeTab === 'archive' ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
-                <span>📁 Alle Rechnungen & Angebote</span>
+                <x-ui-icon name="folder" /><span>{{ $contextProjectId ? 'Projektbelege' : 'Alle Rechnungen & Angebote' }}</span>
                 <span class="px-2 py-0.5 rounded-full text-[10px] font-black {{ $activeTab === 'archive' ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-300' }}">
                     {{ count($savedDocs) }}
                 </span>
@@ -2731,7 +2735,7 @@ new class extends Component {
 
     <!-- OpenAI Import Modal -->
     @if ($showAiModal)
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden">
                 <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
                     <div class="flex items-center gap-2">
@@ -2765,7 +2769,7 @@ new class extends Component {
 
     <!-- KI Cover Letter Modal -->
     @if ($showCoverLetterModal)
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden">
                 <div class="px-6 py-4 bg-indigo-950 text-white flex justify-between items-center">
                     <div class="flex items-center gap-2">
@@ -2794,7 +2798,7 @@ new class extends Component {
 
     <!-- KI Offer Audit Modal -->
     @if ($showOfferAuditModal)
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden">
                 <div class="px-6 py-4 bg-amber-950 text-white flex justify-between items-center">
                     <div class="flex items-center gap-2">
@@ -2852,7 +2856,7 @@ new class extends Component {
 
     <!-- 3-STUFEN MAHNWESEN MODAL -->
     @if ($showDunningModal && $this->selectedDunningInvoice)
-        <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-4">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col">
                 <div class="p-5 bg-gradient-to-r from-rose-950 via-slate-900 to-amber-950 text-white flex justify-between items-center">
                     <div class="flex items-center gap-2">
@@ -2911,7 +2915,7 @@ new class extends Component {
 
     <!-- AUFMASS & MASSENERMITTLUNGS MODAL -->
     @if($showAufmassModal)
-        <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-3xl shadow-2xl overflow-hidden my-6 flex flex-col max-h-[90vh]">
                 <div class="px-6 py-4 bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-950 text-white flex justify-between items-center shrink-0">
                     <div class="flex items-center gap-2">
@@ -3047,7 +3051,7 @@ new class extends Component {
 
     <!-- BEGRIFFE GLOSSAR SPICKER MODAL -->
     @if($showGlossarModal)
-        <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden my-6 flex flex-col max-h-[85vh]">
                 <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center shrink-0">
                     <div class="flex items-center gap-2">

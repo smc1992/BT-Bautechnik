@@ -29,8 +29,9 @@ new class extends Component {
 
     public function mount(): void
     {
+        $this->projectFilter = \App\Support\ProjectContext::id() ?? 'all';
         $this->planDate = date('Y-m-d');
-        $this->projectId = Project::first()?->id ?? '';
+        $this->projectId = \App\Support\ProjectContext::id() ?? Project::first()?->id ?? '';
     }
 
     public function with(): array
@@ -62,7 +63,7 @@ new class extends Component {
     public function openCreateModal(): void
     {
         $this->editingId = null;
-        $this->projectId = Project::first()?->id ?? '';
+        $this->projectId = \App\Support\ProjectContext::id() ?? Project::first()?->id ?? '';
         $this->planNumber = 'PL-' . date('y') . '-' . str_pad((string)(ProjectPlan::count() + 1), 3, '0', STR_PAD_LEFT);
         $this->title = '';
         $this->category = 'architecture';
@@ -248,7 +249,7 @@ new class extends Component {
 
     <!-- Upload Modal -->
     @if ($showModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
             <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-200 space-y-5">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <h3 class="text-lg font-black text-slate-900">Bauplan hochladen</h3>

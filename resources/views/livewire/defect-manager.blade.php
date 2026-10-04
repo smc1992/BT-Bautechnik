@@ -7,6 +7,7 @@ use App\Models\Contact;
 
 new class extends Component {
     public bool $showModal = false;
+    public ?string $contextProjectId = null;
 
     // Form
     public string $projectId = '';
@@ -21,13 +22,15 @@ new class extends Component {
     public function mount()
     {
         $this->deadline = date('Y-m-d', strtotime('+14 days'));
-        $p = Project::first();
+        $this->contextProjectId = \App\Support\ProjectContext::id();
+        $p = $this->contextProjectId ? Project::find($this->contextProjectId) : Project::first();
         if ($p) $this->projectId = $p->id;
+        if (request()->query('action') === 'new') $this->openCreateModal();
     }
 
     public function getDefectsProperty()
     {
-        return Defect::with(['project', 'assignedContact'])->latest()->get();
+        return Defect::with(['project', 'assignedContact'])->when($this->contextProjectId, fn($q) => $q->where('project_id', $this->contextProjectId))->latest()->get();
     }
 
     public function getProjectsProperty()
@@ -410,7 +413,7 @@ new class extends Component {
 
     <!-- Create Modal -->
     @if ($showModal)
-        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
                 <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
                     <h3 class="text-base font-bold text-slate-900">Mangel / Restarbeit aufnehmen</h3>
@@ -479,7 +482,7 @@ new class extends Component {
 
     <!-- KI VOB/B Mängelrüge Modal -->
     @if ($showNoticeModal)
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden">
                 <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
                     <div class="flex items-center gap-2">
@@ -508,7 +511,7 @@ new class extends Component {
 
     <!-- Abnahmeprotokoll (VOB/B & BGB) Modal -->
     @if ($showAcceptanceModal)
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-3xl shadow-2xl overflow-hidden my-6 flex flex-col max-h-[90vh]">
                 <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center shrink-0">
                     <div class="flex items-center gap-2.5">

@@ -30,6 +30,7 @@ new class extends Component {
 
     public function mount(): void
     {
+        $this->projectFilter = \App\Support\ProjectContext::id() ?? 'all';
         $this->submissionDate = date('Y-m-d');
     }
 
@@ -71,7 +72,7 @@ new class extends Component {
     public function openCreateModal(?string $defaultProjectId = null): void
     {
         $this->reset(['editingId', 'description', 'notes', 'approvalDate']);
-        $this->projectId = $defaultProjectId ?: (Project::first()?->id ?? '');
+        $this->projectId = $defaultProjectId ?: (\App\Support\ProjectContext::id() ?? Project::first()?->id ?? '');
         $this->submissionDate = date('Y-m-d');
         $this->amountNet = 0.00;
         $this->vatRate = 19.00;
@@ -340,7 +341,7 @@ new class extends Component {
 
     <!-- Create / Edit Modal -->
     @if ($showModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
             <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl border border-slate-200 space-y-5 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <h3 class="text-lg font-black text-slate-900">

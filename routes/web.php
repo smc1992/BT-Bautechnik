@@ -19,6 +19,10 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+Route::get('/projects/{project}', function (\App\Models\Project $project) {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('projects.show');
+
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');

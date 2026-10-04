@@ -88,7 +88,7 @@ new #[Layout('layouts.guest')] class extends Component
                     </svg>
                 </span>
                 
-                <button type="button" @click="showPassword = !showPassword" 
+                <button type="button" @click="showPassword = !showPassword" :aria-label="showPassword ? 'Passwort verbergen' : 'Passwort anzeigen'" :aria-pressed="showPassword"
                         class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer">
                     <!-- Eye Open Icon -->
                     <svg x-show="!showPassword" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

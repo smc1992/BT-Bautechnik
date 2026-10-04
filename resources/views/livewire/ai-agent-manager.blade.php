@@ -1040,7 +1040,7 @@ new class extends Component {
     <!-- RENAME CHAT MODAL                          -->
     <!-- ========================================== -->
     @if ($showRenameModal)
-        <div class="fixed inset-0 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans animate-fade-in">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans animate-fade-in">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
                 <div class="px-6 py-4 bg-slate-950 text-white flex justify-between items-center">
                     <div class="flex items-center gap-2">

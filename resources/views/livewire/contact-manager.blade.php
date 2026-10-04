@@ -1045,7 +1045,7 @@ new class extends Component {
     <!-- ========================================================================= -->
     @if ($showDetailModal && $this->selectedContact)
         @php $c = $this->selectedContact; @endphp
-        <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-2 sm:p-4">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-2 sm:p-4">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-6xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
                 
                 <!-- TOP HEADER WITH CLIENT BANNER & 1-CLICK ACTION HUB -->
@@ -1755,7 +1755,7 @@ new class extends Component {
     <!-- SUB-MODAL 1: NEUE BAUSTELLE FÜR KUNDEN ANLEGEN                            -->
     <!-- ========================================================================= -->
     @if ($showNewProjectModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
             <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-slate-200 space-y-4 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div>
@@ -1836,7 +1836,7 @@ new class extends Component {
     <!-- SUB-MODAL 2: NEUER NACHTRAG FÜR KUNDENBAUSTELLE                           -->
     <!-- ========================================================================= -->
     @if ($showNewSupplementModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
             <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-slate-200 space-y-4 max-h-[90vh] overflow-y-auto">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div>
@@ -1908,7 +1908,7 @@ new class extends Component {
     <!-- SUB-MODAL 3: NEUES AUFMASSBLATT FÜR KUNDENBAUSTELLE                       -->
     <!-- ========================================================================= -->
     @if ($showNewMeasurementModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
             <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-slate-200 space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div>
@@ -1964,7 +1964,7 @@ new class extends Component {
     <!-- SUB-MODAL 4: MANGEL ERFASSEN                                              -->
     <!-- ========================================================================= -->
     @if ($showNewDefectModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
             <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-slate-200 space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div>
@@ -2030,7 +2030,7 @@ new class extends Component {
     <!-- SUB-MODAL 5: ZEITERFASSUNG / STUNDENZETTEL BUCHEN                         -->
     <!-- ========================================================================= -->
     @if ($showNewTimeEntryModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
             <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-slate-200 space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div>
@@ -2101,7 +2101,7 @@ new class extends Component {
     <!-- SUB-MODAL 6: BAUPLAN HOCHLADEN                                            -->
     <!-- ========================================================================= -->
     @if ($showNewPlanModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
             <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-slate-200 space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div>
@@ -2172,7 +2172,7 @@ new class extends Component {
 
     <!-- Standalone Create / Edit Contact Modal -->
     @if ($showContactModal)
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-xl shadow-2xl overflow-hidden">
                 <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
                     <h3 class="text-base font-bold text-slate-900">
@@ -2264,7 +2264,7 @@ new class extends Component {
 
     <!-- CSV / EXCEL IMPORT MODAL -->
     @if ($showImportModal)
-        <div class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+        <div data-ui-dialog role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-50 p-4">
             <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 
                 <div class="p-6 bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 text-white flex justify-between items-start relative overflow-hidden">

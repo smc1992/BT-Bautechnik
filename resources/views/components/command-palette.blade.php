@@ -1,107 +1,46 @@
 @php
-    $projects = \App\Models\Project::where('status', 'active')->orderBy('name', 'asc')->get(['id', 'name', 'city_street', 'zip']);
-@endphp
-
-<div x-data="{ 
-        showCmdPalette: false, 
-        cmdQuery: '',
-        projects: {{ json_encode($projects) }},
-        navItems: [
-            { title: 'Baustellenübersicht & Pipeline', icon: '🏢', url: '/dashboard', cat: 'Baustellen' },
-            { title: 'Nachträge (VOB/B § 2)', icon: '📑', url: '/nachtraege', cat: 'Baustellen' },
-            { title: 'Digitales Aufmaßblatt (VOB/C)', icon: '📐', url: '/aufmass', cat: 'Baustellen' },
-            { title: 'Baupläne & Revisionsstand', icon: '📁', url: '/bauplaene', cat: 'Baustellen' },
-            { title: 'Geräte- & Fuhrpark (UVV)', icon: '🚜', url: '/geraetepark', cat: 'Baustellen' },
-            { title: 'Bautagebuch & Berichte', icon: '🎙️', url: '/bautagebuch', cat: 'Baustellen' },
-            { title: 'Mängel-Verwaltung', icon: '⚠️', url: '/maengel', cat: 'Baustellen' },
-            { title: 'Einsatzplaner', icon: '👷', url: '/einsatzplan', cat: 'Baustellen' },
-            { title: 'Bauzeitenplaner', icon: '📅', url: '/planung', cat: 'Baustellen' },
-            { title: 'Rechnungen & Angebote', icon: '📄', url: '/rechnungen', cat: 'Finanzen' },
-            { title: 'Subunternehmer-Kosten', icon: '🏗️', url: '/baukosten', cat: 'Finanzen' },
-            { title: 'Zeiterfassung (MiLoG)', icon: '⏱️', url: '/zeiterfassung', cat: 'Finanzen' },
-            { title: 'DATEV CSV-Export (SKR03)', icon: '📊', url: '/datev-export', cat: 'Finanzen' },
-            { title: 'Finanz-Analytics', icon: '📈', url: '/analytics', cat: 'Finanzen' },
-            { title: 'Materialkatalog', icon: '📦', url: '/materialien', cat: 'Finanzen' },
-            { title: 'Kunden & Partner (CRM)', icon: '👥', url: '/kontakte', cat: 'CRM' },
-            { title: 'Firmeneinstellungen', icon: '⚙️', url: '/firmeneinstellungen', cat: 'CRM' },
-            { title: 'KI-Agent Steuerzentrale', icon: '🤖', url: '/ki-agent', cat: 'KI & Wissen' },
-            { title: 'Wissensdatenbank (RAG)', icon: '📚', url: '/wissen', cat: 'KI & Wissen' }
-        ],
-        get filteredNav() {
-            if (!this.cmdQuery.trim()) return this.navItems;
-            const q = this.cmdQuery.toLowerCase();
-            return this.navItems.filter(i => i.title.toLowerCase().includes(q) || i.cat.toLowerCase().includes(q));
-        },
-        get filteredProjects() {
-            if (!this.cmdQuery.trim()) return this.projects.slice(0, 5);
-            const q = this.cmdQuery.toLowerCase();
-            return this.projects.filter(p => p.name.toLowerCase().includes(q) || (p.city_street && p.city_street.toLowerCase().includes(q)));
+    $contextId = \App\Support\ProjectContext::id();
+    $searchItems = [];
+    foreach(config('ui.navigation') as $category => $items) {
+        foreach($items as [$route, $label, $icon]) {
+            $searchItems[] = ['title' => $label, 'category' => $category, 'url' => \App\Support\ProjectContext::url($route, $contextId)];
         }
-     }" 
-     x-on:keydown.window.cmd.k.prevent="showCmdPalette = true"
-     x-on:keydown.window.ctrl.k.prevent="showCmdPalette = true"
-     x-on:open-cmd-palette.window="showCmdPalette = true"
-     x-show="showCmdPalette" 
-     x-cloak
-     style="display: none;"
-     class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-start justify-center z-50 pt-16 sm:pt-20 p-4 transition-all">
-    
-    <div @click.away="showCmdPalette = false" 
-         class="bg-white border border-slate-200 rounded-3xl w-full max-w-xl shadow-2xl overflow-hidden flex flex-col space-y-0">
-        
-        <!-- Search Input Header -->
-        <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center gap-3">
-            <span class="text-slate-400 text-lg">🔍</span>
-            <input x-model="cmdQuery" 
-                   x-ref="cmdInput"
-                   x-effect="if (showCmdPalette) setTimeout(() => $refs.cmdInput.focus(), 50)"
-                   type="text" 
-                   class="w-full bg-transparent border-0 text-sm font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-0" 
-                   placeholder="Suchen nach Modulen, Baustellen, Plänen, Rechnungen... (z. B. Nachtrag, Aufmaß, Zeiterfassung)">
-            <button @click="showCmdPalette = false" class="text-slate-400 hover:text-slate-700 text-xs font-bold px-2 py-1 bg-slate-200/60 rounded-lg cursor-pointer">ESC</button>
-        </div>
-
-        <div class="p-4 max-h-[60vh] overflow-y-auto space-y-4">
-            
-            <!-- Navigation Items Grid -->
-            <div>
-                <div class="text-[10px] font-black uppercase tracking-wider text-slate-400 px-1 mb-2">Module & Schnell-Navigation</div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <template x-for="item in filteredNav" :key="item.url">
-                        <a :href="item.url" @click="showCmdPalette = false" wire:navigate
-                           class="p-2.5 bg-slate-50 hover:bg-blue-50 text-left rounded-xl border border-slate-200 hover:border-blue-300 transition cursor-pointer flex items-center gap-2.5 btn-press">
-                            <span class="text-lg" x-text="item.icon"></span>
-                            <div class="min-w-0">
-                                <div class="text-xs font-bold text-slate-900 truncate" x-text="item.title"></div>
-                                <div class="text-[10px] text-slate-500" x-text="item.cat"></div>
-                            </div>
-                        </a>
-                    </template>
-                </div>
+    }
+    foreach(\App\Models\Project::whereIn('status', ['active', 'draft', 'paused'])->orderBy('name')->get(['id', 'name', 'city_street']) as $project) {
+        $searchItems[] = ['title' => $project->name, 'category' => 'Projekt', 'detail' => $project->city_street, 'url' => route('projects.show', $project)];
+    }
+@endphp
+<div x-data="{
+        open: false, query: '', index: 0, items: @js($searchItems),
+        get results() { const q = this.query.trim().toLocaleLowerCase('de'); return this.items.filter(item => !q || [item.title, item.category, item.detail || ''].join(' ').toLocaleLowerCase('de').includes(q)); },
+        show() { this.query = ''; this.index = 0; this.open = true; this.$nextTick(() => this.$refs.search.focus()); },
+        move(direction) { if (!this.results.length) return; this.index = (this.index + direction + this.results.length) % this.results.length; this.$nextTick(() => this.$refs.results.querySelectorAll('a')[this.index]?.scrollIntoView({block: 'nearest'})); },
+        choose() { const link = this.$refs.results.querySelectorAll('a')[this.index]; if (link) link.click(); }
+     }"
+     @open-cmd-palette.window="show()"
+     @keydown.window="if (($event.metaKey || $event.ctrlKey) && $event.key.toLowerCase() === 'k') { $event.preventDefault(); show(); }"
+     @keydown.escape.stop="open = false"
+     x-show="open" x-cloak data-ui-dialog role="dialog" aria-modal="true" aria-labelledby="ui-search-title"
+     class="ui-search-backdrop" @click.self="open = false">
+    <div class="ui-search-dialog">
+        <div class="ui-search-header">
+            <x-ui-icon name="search" />
+            <div class="flex-1 min-w-0">
+                <h2 id="ui-search-title" class="sr-only">Module und Projekte suchen</h2>
+                <label class="sr-only" for="ui-global-search">Suchbegriff</label>
+                <input id="ui-global-search" x-ref="search" x-model="query" @input="index = 0" type="search" role="combobox" aria-autocomplete="list" :aria-expanded="open" autocomplete="off" placeholder="Projekt oder Modul suchen …" :aria-activedescendant="results.length ? 'ui-result-' + index : null" aria-controls="ui-search-results" @keydown.arrow-down.prevent="move(1)" @keydown.arrow-up.prevent="move(-1)" @keydown.enter.prevent="choose()">
             </div>
-
-            <!-- Active Projects Quick Jump -->
-            <div x-show="filteredProjects.length > 0">
-                <div class="text-[10px] font-black uppercase tracking-wider text-slate-400 px-1 mb-2">Aktive Baustellen</div>
-                <div class="space-y-1.5">
-                    <template x-for="p in filteredProjects" :key="p.id">
-                        <a href="/dashboard" @click="showCmdPalette = false" wire:navigate
-                           class="p-2.5 bg-slate-50 hover:bg-blue-50 text-left rounded-xl border border-slate-200 hover:border-blue-300 transition cursor-pointer flex items-center justify-between gap-2 btn-press">
-                            <div class="flex items-center gap-2 truncate">
-                                <span>📍</span>
-                                <span class="text-xs font-bold text-slate-800 truncate" x-text="p.name"></span>
-                            </div>
-                            <span class="text-[10px] text-slate-400 font-medium whitespace-nowrap" x-text="p.city_street || p.zip || 'Baustelle'"></span>
-                        </a>
-                    </template>
-                </div>
-            </div>
-
+            <button type="button" class="ui-icon-button" data-dialog-close @click="open = false" aria-label="Suche schließen"><x-ui-icon name="close" /></button>
         </div>
-
-        <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-            <span>Tippen Sie zur Filterung</span>
-            <span>Drücken Sie <kbd class="font-mono bg-white px-1 py-0.5 rounded border">ESC</kbd> zum Schließen</span>
+        <div id="ui-search-results" x-ref="results" role="listbox" aria-label="Suchergebnisse" class="ui-search-results">
+            <template x-for="(item, i) in results" :key="item.url">
+                <a :id="'ui-result-' + i" :href="item.url" role="option" :aria-selected="index === i" wire:navigate @click="open = false" @focus="index = i" :class="{'is-selected': index === i}" class="ui-search-result">
+                    <div><span class="ui-search-result-title" x-text="item.title"></span><span class="ui-search-result-detail" x-text="[item.category, item.detail].filter(Boolean).join(' · ')"></span></div>
+                    <x-ui-icon name="arrow" />
+                </a>
+            </template>
+            <div x-show="results.length === 0" class="ui-empty-state"><p>Keine Treffer gefunden.</p><p class="text-sm text-slate-500">Versuchen Sie einen Projektnamen, Ort oder Modulnamen.</p></div>
         </div>
+        <div class="ui-search-footer"><span>↑ ↓ Auswählen · Enter Öffnen</span><span>Esc Schließen</span></div>
     </div>
 </div>

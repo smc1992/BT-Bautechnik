@@ -10,7 +10,7 @@
         </div>
     </x-slot>
 
-    <div class="py-8">
+    <div class="ui-page">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-6 sm:p-8 bg-white border border-slate-200/80 shadow-xs rounded-2xl">
                 <div class="max-w-xl">

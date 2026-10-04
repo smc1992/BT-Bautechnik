@@ -1,0 +1,28 @@
+# Local dependencies are installed in the build stages.
+**/node_modules
+vendor
+
+# Keep the retired frontend and local tooling out of the production image.
+legacy-spa
+.git
+.github
+.codex
+.agents
+.idea
+.vscode
+artifacts
+tests
+
+# Runtime secrets, databases and generated files must not enter image layers.
+.env
+.env.*
+!.env.example
+auth.json
+database/*.sqlite*
+storage/**
+!storage/**/.gitignore
+bootstrap/cache/*.php
+public/build
+public/hot
+public/storage
+**/.DS_Store
